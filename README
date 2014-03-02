@@ -1,0 +1,30 @@
+perl-web-js
+~~~~~~~~~~~
+
+A (temporary) wrapper for JavaScript support in Perl.
+
+* Module
+
+Web::JS::Checker
+
+  A JavaScript syntax conformance checker
+
+* Dependency
+
+Perl 5.8 or later is required.
+
+In addition, the module requires a backend JavaScript implementation.
+
+At the time of writing, the module only supports JE as the backend.
+Future revisions of the module might support other backends.
+
+* Author
+
+Wakaba <wakaba@suikawiki.org>.
+
+* License
+
+Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
