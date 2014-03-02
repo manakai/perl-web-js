@@ -33,4 +33,4 @@ test: test-deps test-main
 test-deps: deps
 
 test-main:
-	$(PROVE) t/*.t
+	$(PROVE) t/modules/*.t

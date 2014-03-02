@@ -1,0 +1,11 @@
+Scalar::Util~1.38
+AnyEvent~7.07
+Term::ANSIColor~4.02
+JE~0.060
+Carp~1.32
+Time::Zone~2.24
+Text::Diff~1.41
+Test::More~1.001002
+Test::Differences~0.61
+Path::Class~0.33
+Algorithm::Diff~1.1902
