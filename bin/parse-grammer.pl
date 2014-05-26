@@ -50,11 +50,13 @@ for (split /\x0D?\x0A/, $grammer_path->slurp_utf8) {
       }
 
       if (/^'([^']*)'$/) {
-        $pattern->{value} = $1;
-        if ($1 =~ /\A-?[A-Za-z]/) {
-          $pattern->{type} = 'identifier';
-        } else {
-          $pattern->{type} = 'other';
+        $pattern->{type} = $1;
+
+        if (defined $pattern->{set_value}) {
+          $pattern->{set_type} = delete $pattern->{set_value};
+        }
+        if (defined $pattern->{append_value}) {
+          $pattern->{append_type} = delete $pattern->{append_value};
         }
       } elsif (/[A-Z]/) {
         $pattern->{type} = 'rule';

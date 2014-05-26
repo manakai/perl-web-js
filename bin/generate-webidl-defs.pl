@@ -7,8 +7,11 @@ use Data::Dumper;
 my $Data = {};
 
 my $grammer_path = path (__FILE__)->parent->parent->child ('local/webidl-grammer.json');
-
 $Data->{grammer} = (json_bytes2perl $grammer_path->slurp)->{rules};
+
+my $data_path = path (__FILE__)->parent->parent->child ('local/webidl.json');
+my $data = json_bytes2perl $data_path->slurp;
+$Data->{$_} = $data->{$_} for qw(keyword_tokens other_tokens);
 
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Useqq = 1;

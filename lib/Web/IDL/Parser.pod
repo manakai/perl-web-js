@@ -77,6 +77,10 @@ Type of the definition: C<interface>.
 
 The name of the defined construct.
 
+=item super_name
+
+The name of the member from which the member inherits, if any.
+
 =item members
 
 The array reference containing the members of the definition, if

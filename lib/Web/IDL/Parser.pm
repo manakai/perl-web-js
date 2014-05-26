@@ -22,16 +22,14 @@ sub onerror ($;$) {
   };
 } # onerror
 
-# XXX
 my $integer = qr/-?([1-9][0-9]*|0[Xx][0-9A-Fa-f]+|0[0-7]*)/;
 my $float = qr/-?(([0-9]+\.[0-9]*|[0-9]*\.[0-9]+)([Ee][+-]?[0-9]+)?|[0-9]+[Ee][+-]?[0-9]+)/;
-my $identifier = qr/[_-]?[A-Za-z][0-9A-Z_a-z]*/; # XXX [-] for -Infinity, for now
+my $identifier = qr/_?[A-Za-z][0-9A-Z_a-z]*/;
 my $string = qr/"[^"]*"/;
 my $whitespace = qr/[\x09\x0A\x0D\x20]+/;
 my $comment = qr{//.*|/\*(.|\x0A)*?\*/};
 my $other = qr/[^\x09\x0A\x0D\x200-9A-Za-z]/;
-
-my $token = qr/$float|$integer|$identifier|$string|$whitespace|$comment|$other/;
+my $token = qr/$float|$integer|$identifier|$string|\.\.\.|$whitespace|$comment|$other/;
 
 sub _tokenize ($$) {
   my @result;
@@ -45,7 +43,11 @@ sub _tokenize ($$) {
     } elsif ($t =~ /^$float$/o) {
       push @result, {type => 'float', value => 0+$t, index => $pos};
     } elsif ($t =~ /^$identifier$/o) {
-      push @result, {type => 'identifier', value => $t, index => $pos};
+      if ($Web::IDL::_Defs->{keyword_tokens}->{$t}) {
+        push @result, {type => $t, index => $pos};
+      } else {
+        push @result, {type => 'identifier', value => $t, index => $pos};
+      }
     } elsif ($t =~ /^$string$/o) {
       push @result, {type => 'string',
                      value => (substr $t, 1, -2 + length $t),
@@ -53,11 +55,17 @@ sub _tokenize ($$) {
     } elsif ($t =~ /^$whitespace$/o or
              $t =~ /^$comment$/o) {
       #
+    } elsif ($t =~ /^$other$/o) {
+      if ($Web::IDL::_Defs->{other_tokens}->{$t}) {
+        push @result, {type => $t, index => $pos};
+      } else {
+        push @result, {type => 'other', value => $t, index => $pos};
+      }
     } else {
-      push @result, {type => 'other', value => $t, index => $pos};
+      push @result, {type => $t, index => $pos};
     }
   }
-  push @result, {type => 'EOF', value => '', index => length $_[1]};
+  push @result, {type => 'EOF', index => length $_[1]};
   return \@result;
 } # _tokenize
 
@@ -137,13 +145,15 @@ sub _match ($$$$) {
            $input->[$input_i]->{value} eq $p->{value})) {
         if ($input_i + 1 <= $#$input and
             defined $p->{next_is_not} and
-            $input->[$input_i + 1]->{type} eq 'other' and
-            $p->{next_is_not}->{$input->[$input_i + 1]->{value}}) {
+            $p->{next_is_not}->{$input->[$input_i + 1]->{type}}) {
           #
         } else {
           ## Current token matched to current pattern
           if (defined $p->{set_value}) {
             $returned->{$p->{set_value}} = $input->[$input_i]->{value};
+          }
+          if (defined $p->{set_type}) {
+            $returned->{$p->{set_type}} = $input->[$input_i]->{type};
           }
           if (defined $p->{set_true}) {
             $returned->{$p->{set_true}} = 1;
@@ -151,6 +161,10 @@ sub _match ($$$$) {
           if (defined $p->{append_value}) {
             push @{$returned->{$p->{append_value}} ||= []},
                 $input->[$input_i]->{value};
+          }
+          if (defined $p->{append_type}) {
+            push @{$returned->{$p->{append_type}} ||= []},
+                $input->[$input_i]->{type};
           }
           $input_i++;
           $pattern_i++;
@@ -188,8 +202,7 @@ sub parse_char_string ($$) {
   delete $self->{last_pattern};
   my ($result, $index) = $self->_match
       ($tokens, 0,
-       [{type => 'rule', value => 'Definitions'},
-        {type => 'EOF', value => ''}]);
+       [{type => 'rule', value => 'Definitions'}, {type => 'EOF'}]);
 
   if ($index == @$tokens) {
     $self->{parsed_struct} = $result;
