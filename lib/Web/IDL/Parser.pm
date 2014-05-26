@@ -29,7 +29,7 @@ my $string = qr/"[^"]*"/;
 my $whitespace = qr/[\x09\x0A\x0D\x20]+/;
 my $comment = qr{//.*|/\*(.|\x0A)*?\*/};
 my $other = qr/[^\x09\x0A\x0D\x200-9A-Za-z]/;
-my $token = qr/$float|$integer|$identifier|$string|\.\.\.|$whitespace|$comment|$other/;
+my $token = qr/$float|$integer|$identifier|$string|\.\.\.|-Infinity|$whitespace|$comment|$other/;
 
 sub _tokenize ($$) {
   my @result;
@@ -37,8 +37,9 @@ sub _tokenize ($$) {
     my $t = $1;
     my $pos = $-[0];
     if ($t =~ /^$integer$/o) {
+      my $sign = $t =~ s/^-// ? -1 : +1;
       push @result, {type => 'integer',
-                     value => ($t =~ /^-?0/ ? hex $t : 0+$t),
+                     value => $sign * ($t =~ /^0/ ? hex $t : 0+$t),
                      index => $pos};
     } elsif ($t =~ /^$float$/o) {
       push @result, {type => 'float', value => 0+$t, index => $pos};
@@ -88,9 +89,6 @@ sub _match ($$$$) {
       ## Non-terminal
       my $def = $Web::IDL::_Defs->{grammer}->{$p->{value}};
       if (defined $def) {
-        if (defined $def->{ensure_arrayref}) {
-          $returned->{$def->{ensure_arrayref}} ||= [];
-        }
         my $second;
         MULTIPLE: {
           for my $rule (@{$def->{patterns}}) {
@@ -100,23 +98,36 @@ sub _match ($$$$) {
                 $r->{index} = $input->[$input_i]->{index}
                     if not defined $r->{index};
               }
-              if (defined $def->{set}) {
-                $r->{$def->{set}->[0]} = $def->{set}->[1];
+              if (defined $def->{ensure_arrayref}) {
+                $r->{$def->{ensure_arrayref}} ||= [];
               }
-              $input_i = $new_index;
+              if (defined $def->{set_fields}) {
+                for (@{$def->{set_fields}}) {
+                  $r->{$_->[0]} = $_->[1];
+                }
+              }
               if (defined $p->{append}) {
+                ## See also |append| code below
                 push @{$returned->{$p->{append}} ||= []}, $r;
               } elsif (defined $p->{set}) {
+                ## See also |set| code below
                 $returned->{$p->{set}} = $r;
               } else {
                 for (keys %$r) {
                   if (ref $r->{$_} eq 'ARRAY') {
                     push @{$returned->{$_} ||= []}, @{$r->{$_}};
                   } else {
+                    if ($returned->{$_}) {
+                      $self->onerror->(type => 'webidl:duplicate keyword',
+                                       value => $_,
+                                       index => $input->[$input_i]->{index},
+                                       level => 'm');
+                    }
                     $returned->{$_} = $r->{$_};
                   }
                 }
               }
+              $input_i = $new_index;
               if ($p->{multiple}) {
                 $second = 1;
                 redo MULTIPLE;
@@ -133,7 +144,24 @@ sub _match ($$$$) {
         } # MULTIPLE
         if ($def->{can_be_empty} or $p->{multiple}) {
           if ($p->{multiple} and defined $p->{append}) {
+            ## See also |append| code above
             $returned->{$p->{append}} ||= [];
+          } elsif (defined $p->{set}) {
+            ## See also |set| code above
+            my $r = {};
+            if (defined $def->{set_fields}) {
+              for (@{$def->{set_fields}}) {
+                $r->{$_->[0]} = $_->[1];
+              }
+            }
+            if (defined $def->{ensure_arrayref}) {
+              $r->{$def->{ensure_arrayref}} ||= [];
+            }
+            $returned->{$p->{set}} = $r;
+          } else {
+            if (defined $def->{ensure_arrayref}) {
+              $returned->{$def->{ensure_arrayref}} ||= [];
+            }
           }
           $pattern_i++;
           next INPUT;

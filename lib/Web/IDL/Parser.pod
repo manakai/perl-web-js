@@ -105,10 +105,18 @@ applicable.
 The builtin Web IDL type associated with the definition, if
 applicable.
 
+=item type_unrestricted, type_unsigned
+
+The modifier for the C<type>, if any.
+
 =item type_name
 
 The name of the Web IDL type associated with the definition, if
 applicable.
+
+=item type_nullable
+
+Whether the type is nullable or not.
 
 =item value_strings
 
@@ -139,18 +147,57 @@ C<field>, or C<dictionary_member>.
 
 The name of the member, if applicable.
 
+=item readonly, inherit, static
+
+=item creator, getter, setter, deleter, stringifier, serializer
+
+Whether the keyword is set to the member or not.
+
 =item type
 
 The builtin Web IDL type associated with the member, if applicable.
+
+=item type_unrestricted, type_unsigned
+
+The modifier for the C<type>, if any.
 
 =item type_name
 
 The name of the Web IDL type associated with the member, if
 applicable.
 
+=item type_nullable
+
+Whether the type is nullable or not.
+
+=item value
+
+The builtin value associated with the member, if applicable.  One of:
+C<true>, C<false>, C<null>, C<Infinity>, C<-Infinity>, or C<NaN>.
+
 =item value_float
 
-The value associated with the member, in float, if applicable.
+The value associated with the member, as a float, if applicable.
+
+=item value_integer
+
+The value associated with the member, as a integer, if applicable.
+
+=item value_string
+
+The value associated with the member, as a string, if applicable.
+
+=item value_name
+
+The value associated with the member, as an identifier, if applicable.
+
+=item value_map
+
+The serialization pattern (map) of the member, if applicable.
+
+=item value_list
+
+The serialization pattern (list) of the member, if applicable.
 
 =item arguments
 
@@ -175,9 +222,57 @@ The name of the argument.
 
 The builtin Web IDL type associated with the argument, if any.
 
+=item type_unrestricted, type_unsigned
+
+The modifier for the C<type>, if any.
+
 =item type_name
 
 The name of the Web IDL type associated with the argument, if any.
+
+=item type_nullable
+
+Whether the type is nullable or not.
+
+=item optional
+
+Whether the argument is optional or not.
+
+=item value
+
+The builtin value associated with the argument, if any.  One of:
+C<true>, C<false>, C<null>, C<Infinity>, C<-Infinity>, or C<NaN>.
+
+=item value_float
+
+The value associated with the argument, as a float, if any.
+
+=item value_integer
+
+The value associated with the argument, as an integer, if any.
+
+=item value_string
+
+The value associated with the argument, as a string, if any.
+
+=item variadic
+
+Whether there is the C<...> token or not.
+
+=back
+
+A serialization pattern (either map or list) is a hash reference with
+following key/value pairss:
+
+=over 4
+
+=item value_names
+
+The array reference containing the values in the pattern.
+
+=item inherit, attribute, getter
+
+Whether the keyword is specified for the serialization pattern or not.
 
 =back
 

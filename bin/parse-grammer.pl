@@ -27,7 +27,7 @@ for (split /\x0D?\x0A/, $grammer_path->slurp_utf8) {
   } elsif (defined $rule_name and /^\+(\w+)\[\]$/) {
     $Data->{rules}->{$rule_name}->{ensure_arrayref} = $1;
   } elsif (defined $rule_name and /^\+(\w+)="([^"]+)"$/) {
-    $Data->{rules}->{$rule_name}->{set} = [$1, $2];
+    push @{$Data->{rules}->{$rule_name}->{set_fields} ||= []}, [$1, $2];
   } elsif (defined $rule_name and /\S/) {
     for (split / /, $_) {
       my $set_name;

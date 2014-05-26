@@ -169,23 +169,23 @@ FloatLiteral
 |
 integer="value_integer"
 |
-'null'=value_null?
+'null'="value"
 
 * BooleanLiteral
 
-'true'=value_true?
+'true'="value"
 |
-'false'=value_false?
+'false'="value"
 
 * FloatLiteral
 
 float="value_float"
 |
-'-Infinity'=value_n_infinity?
+'-Infinity'="value"
 |
-'Infinity'=value_inifinity?
+'Infinity'="value"
 |
-'NaN'=value_nan?
+'NaN'="value"
 
 * AttributeOrOperationOrIterator
 
@@ -205,29 +205,59 @@ OperationOrIterator
 
 * SerializerRest
 
+## 'ReturnType' is not in spec grammer but required in prose
+ReturnType
 OperationRest
 |
 '=' SerializationPattern
-?
+|
+_SerializerEnd
+
+* _SerializerEnd
+
++member_type="operation"
++type="DOMString"
++arguments[]
+';'
+
+## ';' is missing in spec
 
 * SerializationPattern
 
-'{' SerializationPatternMap=value_map '}'
++member_type="operation"
++type="DOMString"
++arguments[]
+
+'{' SerializationPatternMap=value_map '}' ';'
 |
-'[' SerializationPatternList=value_list ']'
+'[' SerializationPatternList=value_list ']' ';'
 |
-identifier="value_name"
+identifier="value_name" ';'
+
+## ';' is missing in spec
 
 * SerializationPatternMap
 
++value_names[]
+
 'getter'=getter?
+|
+
+## Not in spec grammer but defined in prose
+'attribute'=attribute?
+|
+'inherit'=inherit? ',' 'attribute'=attribute?
+
 |
 'inherit'=inherit? Identifiers
 |
 identifier="value_names"[] Identifiers
+
 ?
 
 * SerializationPatternList
+
++value_names[]
 
 'getter'=getter?
 |
@@ -244,6 +274,13 @@ AttributeRest
 |
 ReturnType OperationRest
 |
+_StringifierEnd
+
+* _StringifierEnd
+
++member_type="operation"
++type="DOMString"
++arguments[]
 ';'
 
 * StaticMember
@@ -309,13 +346,22 @@ OperationRest
 
 * IteratorRest
 
-'iterator'=iterator? OperationIteratorInterfaceOrObject ';'
+#'iterator'="member_type" OperationIteratorInterfaceOrObject ';'
+
+'iterator'="member_type" OptionalIteratorInterface ';'
+|
+_IteratorObject
 
 * OperationIteratorInterfaceOrObject
 
 OptionalIteratorInterface
 |
 'object'=object?
+
+* _IteratorObject
+
++member_type="iterator_object"
+'iterator' 'object' ';'
 
 * OptionalIteratorInterface
 
@@ -362,7 +408,7 @@ identifier=_"name"
 
 * Ellipsis
 
-'...'=more?
+'...'=variadic?
 ?
 
 * ExceptionMember
@@ -494,7 +540,7 @@ UnrestrictedFloatType
 
 * UnrestrictedFloatType
 
-'unrestricted'=unrestricted? FloatType
+'unrestricted'=type_unrestricted? FloatType
 |
 FloatType
 
@@ -506,7 +552,7 @@ FloatType
 
 * UnsignedIntegerType
 
-'unsigned'=unsigned? IntegerType
+'unsigned'=type_unsigned? IntegerType
 |
 IntegerType
 
@@ -518,6 +564,7 @@ IntegerType
 
 * OptionalLong
 
+# XXX
 'long'="type2"
 ?
 
