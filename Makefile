@@ -53,7 +53,7 @@ PROVE = ./prove
 
 test: test-deps test-main
 
-test-deps: deps
+test-deps: deps json-ps
 
 test-main:
 	$(PROVE) t/modules/*.t t/parsing/*.t
