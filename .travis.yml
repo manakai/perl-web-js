@@ -1,6 +1,7 @@
 language: perl
 perl:
   - "5.18"
+  - "5.14"
   - "5.8"
 before_install: git submodule update --init
 install: "make test-deps"
@@ -12,3 +13,8 @@ notifications:
     channels:
       - "irc.suikawiki.org#mechanize"
     use_notice: true
+env:
+  global:
+    secure: "dt0z4U8XreIRutzRpcTiYZPDnyKsUbWB/5T15fKBjgjrWVZIwmNGI2yfDzk7S0d0i0CFZ5sRdCrWJ40ja4cFF//2OKkowTGPN8JYJyygYVyPXpL4XjIs0vn9hFXa99B/vOkwCdfVEq3CIDWq1MEwflPL5+yTOAj+WZuZDqR2QR8="
+after_success:
+  - curl https://gist.githubusercontent.com/wakaba/9970857/raw/travis-merger.pl | perl

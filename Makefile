@@ -2,6 +2,12 @@ all: deps json-ps lib/Web/IDL/_Defs.pm
 
 clean: clean-json-ps
 
+updatenightly: local/bin/pmbp.pl clean all
+	curl https://gist.githubusercontent.com/wakaba/34a71d3137a52abb562d/raw/gistfile1.txt | sh
+	git add t_deps/modules
+	perl local/bin/pmbp.pl --update
+	git add config lib/
+
 ## ------ Setup ------
 
 WGET = wget
