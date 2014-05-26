@@ -1,0 +1,135 @@
+=head1 NAME
+
+Web::IDL::Parser - A Web IDL parser
+
+=head1 SYNOPSIS
+
+  use Web::IDL::Parser;
+  $parser = Web::IDL::Parser->new;
+  $parser->parse_char_string ($idl_fragment);
+  warn Dumper $parser->parsed_struct;
+
+=head1 DESCRIPTION
+
+The C<Web::IDL::Parser> module provides a Web IDL parser.
+
+=head1 METHODS
+
+Following methods are available:
+
+=over 4
+
+=item $parser = Web::IDL::Parser->new
+
+Create a new Web IDL parser object.
+
+=item $parser->onerror ($code)
+
+=item $code = $parser->onerror
+
+Get or set the error handler for the parser.  Any parse error, as well
+as warning and additional processing information, is reported to the
+handler.  See
+<https://github.com/manakai/data-errors/blob/master/doc/onerror.txt>
+for details of error handling.
+
+The value should not be set while the parser is running.  If the value
+is changed, the result is undefined.
+
+=item $parser->parse_char_string ($input)
+
+Parse a string of character as a Web IDL fragment.  The parsed result
+can be then accessed by the C<parsed_struct> method.  Any parse error
+is reported through the C<onerror> handler.
+
+=item $parsed = $parser->parsed_struct
+
+If the previous invocation of the C<parse_char_string> method
+succeeded, the parsed data structure of the input Web IDL fragment is
+returned.  Otherwise, C<undef> is returned.
+
+Please note that the parsed result might contain Web IDL conformance
+error, e.g. its interface names can be duplicated, or a referenced
+type might not be defined at all.
+
+=back
+
+=head1 DATA STRUCTURE
+
+The parsed data structure is a hash reference, with a key/value pair:
+C<definitions>.  Its value is an array reference containing
+definitions.
+
+A definition is a hash reference with following key/value pairs:
+
+=over 4
+
+=item index
+
+The index in the input character string at which the first character
+for the definition appears.
+
+=item definition_name
+
+Type of the definition: C<interface>.
+
+=item name
+
+The name of the defined construct.
+
+=item members
+
+The array reference containing the members of the definition, if
+applicable.
+
+=back
+
+A member is a hash reference with following key/value pairs:
+
+=over 4
+
+=item index
+
+The index in the input character string at which the first character
+for the definition appears.
+
+=item member_type
+
+The type of the member: C<const>.
+
+=item name
+
+The name of the member, if applicable.
+
+=item type
+
+The Web IDL type associated with the member, if applicable.
+
+=item value_float
+
+The value associated with the member, in float, if applicable.
+
+=back
+
+=head1 SPECIFICATION
+
+=over 4
+
+=item WEBIDL
+
+Web IDL <http://heycam.github.io/webidl/>.
+
+=back
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

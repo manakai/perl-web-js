@@ -1,1 +1,2 @@
 - "../../t_deps/modules/test-x1" tests
+- "../../t_deps/modules/testdataparser" tests
