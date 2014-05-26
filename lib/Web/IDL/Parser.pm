@@ -88,6 +88,9 @@ sub _match ($$$$) {
       ## Non-terminal
       my $def = $Web::IDL::_Defs->{grammer}->{$p->{value}};
       if (defined $def) {
+        if (defined $def->{ensure_arrayref}) {
+          $returned->{$def->{ensure_arrayref}} ||= [];
+        }
         my $second;
         MULTIPLE: {
           for my $rule (@{$def->{patterns}}) {
@@ -96,6 +99,9 @@ sub _match ($$$$) {
               if ($def->{set_index}) {
                 $r->{index} = $input->[$input_i]->{index}
                     if not defined $r->{index};
+              }
+              if (defined $def->{set}) {
+                $r->{$def->{set}->[0]} = $def->{set}->[1];
               }
               $input_i = $new_index;
               if (defined $p->{append}) {
@@ -151,6 +157,8 @@ sub _match ($$$$) {
           ## Current token matched to current pattern
           if (defined $p->{set_value}) {
             $returned->{$p->{set_value}} = $input->[$input_i]->{value};
+            $returned->{$p->{set_value}} =~ s/^_//
+                if $p->{remove_underscore};
           }
           if (defined $p->{set_type}) {
             $returned->{$p->{set_type}} = $input->[$input_i]->{type};

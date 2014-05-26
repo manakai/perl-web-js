@@ -31,7 +31,11 @@ Interface
 
 * _Callback
 
-'callback'=callback? CallbackRestOrInterface
+#'callback' CallbackRestOrInterface
+
+'callback'="definition_type" CallbackRest
+|
+'callback'=callback? Interface
 
 * CallbackRestOrInterface
 
@@ -41,7 +45,7 @@ Interface
 
 * Interface
 
-'interface'="definition_type" identifier="name" Inheritance '{' InterfaceMembers '}' ';'
+'interface'="definition_type" identifier=_"name" Inheritance '{' InterfaceMembers '}' ';'
 
 * Partial
 
@@ -55,7 +59,7 @@ PartialDictionary
 
 * PartialInterface
 
-'interface'="definition_type" identifier="name" '{' InterfaceMembers '}' ';'
+'interface'="definition_type" identifier=_"name" '{' InterfaceMembers '}' ';'
 
 * InterfaceMembers
 
@@ -74,7 +78,7 @@ AttributeOrOperationOrIterator
 
 * Dictionary
 
-'dictionary'="definition_type" identifier="name" Inheritance '{' DictionaryMembers '}' ';'
+'dictionary'="definition_type" identifier=_"name" Inheritance '{' DictionaryMembers '}' ';'
 
 * DictionaryMembers
 
@@ -83,15 +87,16 @@ _DictionaryMember*=members[]
 * _DictionaryMember
 
 +pos
++member_type="dictionary_member"
 ExtendedAttributeList DictionaryMember
 
 * DictionaryMember
 
-Type identifier="name" Default ';'
+Type identifier=_"name" Default ';'
 
 * PartialDictionary
 
-'dictionary'="definition_type" identifier="name" '{' DictionaryMembers '}' ';'
+'dictionary'="definition_type" identifier=_"name" '{' DictionaryMembers '}' ';'
 
 * Default
 
@@ -102,11 +107,11 @@ Type identifier="name" Default ';'
 
 ConstValue
 |
-string=value_string
+string="value_string"
 
 * Exception
 
-'exception'="definition_type" identifier="name" Inheritance '{' ExceptionMembers '}' ';'
+'exception'="definition_type" identifier=_"name" Inheritance '{' ExceptionMembers '}' ';'
 
 * ExceptionMembers
 
@@ -124,11 +129,11 @@ ExtendedAttributeList ExceptionMember
 
 * Enum
 
-'enum'="definition_type" identifier="name" '{' EnumValueList '}' ';'
+'enum'="definition_type" identifier=_"name" '{' EnumValueList '}' ';'
 
 * EnumValueList
 
-string="string_values"[] EnumValueListComma
+string="value_strings"[] EnumValueListComma
 
 * EnumValueListComma
 
@@ -137,16 +142,16 @@ string="string_values"[] EnumValueListComma
 
 * EnumValueListString
 
-string="string_values"[] EnumValueListComma
+string="value_strings"[] EnumValueListComma
 ?
 
 * CallbackRest
 
-identifier="name" '=' ReturnType '(' ArgumentList ')' ';'
+identifier=_"name" '=' ReturnType '(' ArgumentList ')' ';'
 
 * Typedef
 
-'typedef'="definition_type" Type identifier="name" ';'
+'typedef'="definition_type" Type identifier=_"name" ';'
 
 * ImplementsStatement
 
@@ -154,7 +159,7 @@ identifier="name" 'implements'="definition_type" identifier="super_name" ';'
 
 * Const
 
-'const'="member_type" ConstType identifier="name" '=' ConstValue ';'
+'const'="member_type" ConstType identifier=_"name" '=' ConstValue ';'
 
 * ConstValue
 
@@ -257,7 +262,7 @@ Inherit AttributeRest
 
 * AttributeRest
 
-ReadOnly 'attribute'="member_type" Type Identifier ';'
+ReadOnly 'attribute'="member_type" Type identifier=_"name" ';'
 
 * Inherit
 
@@ -319,15 +324,17 @@ OptionalIteratorInterface
 
 * OperationRest
 
++member_type="operation"
 OptionalIdentifier '(' ArgumentList ')' ';'
 
 * OptionalIdentifier
 
-identifier="name"
+identifier=_"name"
 ?
 
 * ArgumentList
 
++arguments[]
 Argument=arguments[] Arguments
 ?
 
@@ -351,7 +358,7 @@ Type Ellipsis ArgumentName
 
 ArgumentNameKeyword
 |
-identifier="name"
+identifier=_"name"
 
 * Ellipsis
 
@@ -366,7 +373,8 @@ ExceptionField
 
 * ExceptionField
 
-Type identifier="name" ';'
++member_type="field"
+Type identifier=_"name" ';'
 
 * ExtendedAttributeList
 

@@ -17,6 +17,7 @@ $Web::IDL::_Defs = {
                                        },
                          "ArgumentList" => {
                                              "can_be_empty" => 1,
+                                             "ensure_arrayref" => "arguments",
                                              "patterns" => [
                                                              [
                                                                {
@@ -41,12 +42,137 @@ $Web::IDL::_Defs = {
                                                              ],
                                                              [
                                                                {
+                                                                 "remove_underscore" => 1,
                                                                  "set_value" => "name",
                                                                  "type" => "identifier"
                                                                }
                                                              ]
                                                            ]
                                            },
+                         "ArgumentNameKeyword" => {
+                                                    "patterns" => [
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "creator"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "static"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "attribute"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "typedef"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "interface"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "dictionary"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "deleter"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "legacycaller"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "serializer"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "const"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "callback"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "inherit"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "partial"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "getter"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "unrestricted"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "enum"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "stringifier"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "implements"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "exception"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "setter"
+                                                                      }
+                                                                    ]
+                                                                  ]
+                                                  },
                          "Arguments" => {
                                           "can_be_empty" => 1,
                                           "patterns" => [
@@ -130,8 +256,9 @@ $Web::IDL::_Defs = {
                                                                   "value" => "Type"
                                                                 },
                                                                 {
-                                                                  "type" => "rule",
-                                                                  "value" => "Identifier"
+                                                                  "remove_underscore" => 1,
+                                                                  "set_value" => "name",
+                                                                  "type" => "identifier"
                                                                 },
                                                                 {
                                                                   "type" => ";"
@@ -175,6 +302,7 @@ $Web::IDL::_Defs = {
                                              "patterns" => [
                                                              [
                                                                {
+                                                                 "remove_underscore" => 1,
                                                                  "set_value" => "name",
                                                                  "type" => "identifier"
                                                                },
@@ -229,6 +357,7 @@ $Web::IDL::_Defs = {
                                                           "value" => "ConstType"
                                                         },
                                                         {
+                                                          "remove_underscore" => 1,
                                                           "set_value" => "name",
                                                           "type" => "identifier"
                                                         },
@@ -321,7 +450,7 @@ $Web::IDL::_Defs = {
                                                              ],
                                                              [
                                                                {
-                                                                 "set" => "value_string",
+                                                                 "set_value" => "value_string",
                                                                  "type" => "string"
                                                                }
                                                              ]
@@ -393,6 +522,7 @@ $Web::IDL::_Defs = {
                                                                "type" => "dictionary"
                                                              },
                                                              {
+                                                               "remove_underscore" => 1,
                                                                "set_value" => "name",
                                                                "type" => "identifier"
                                                              },
@@ -424,6 +554,7 @@ $Web::IDL::_Defs = {
                                                                      "value" => "Type"
                                                                    },
                                                                    {
+                                                                     "remove_underscore" => 1,
                                                                      "set_value" => "name",
                                                                      "type" => "identifier"
                                                                    },
@@ -468,6 +599,7 @@ $Web::IDL::_Defs = {
                                                          "type" => "enum"
                                                        },
                                                        {
+                                                         "remove_underscore" => 1,
                                                          "set_value" => "name",
                                                          "type" => "identifier"
                                                        },
@@ -491,7 +623,7 @@ $Web::IDL::_Defs = {
                                               "patterns" => [
                                                               [
                                                                 {
-                                                                  "append_value" => "string_values",
+                                                                  "append_value" => "value_strings",
                                                                   "type" => "string"
                                                                 },
                                                                 {
@@ -520,7 +652,7 @@ $Web::IDL::_Defs = {
                                                     "patterns" => [
                                                                     [
                                                                       {
-                                                                        "append_value" => "string_values",
+                                                                        "append_value" => "value_strings",
                                                                         "type" => "string"
                                                                       },
                                                                       {
@@ -538,6 +670,7 @@ $Web::IDL::_Defs = {
                                                               "type" => "exception"
                                                             },
                                                             {
+                                                              "remove_underscore" => 1,
                                                               "set_value" => "name",
                                                               "type" => "identifier"
                                                             },
@@ -569,6 +702,7 @@ $Web::IDL::_Defs = {
                                                                    "value" => "Type"
                                                                  },
                                                                  {
+                                                                   "remove_underscore" => 1,
                                                                    "set_value" => "name",
                                                                    "type" => "identifier"
                                                                  },
@@ -576,7 +710,11 @@ $Web::IDL::_Defs = {
                                                                    "type" => ";"
                                                                  }
                                                                ]
-                                                             ]
+                                                             ],
+                                               "set" => [
+                                                          "member_type",
+                                                          "field"
+                                                        ]
                                              },
                          "ExceptionMember" => {
                                                 "patterns" => [
@@ -1052,6 +1190,7 @@ $Web::IDL::_Defs = {
                                                               "type" => "interface"
                                                             },
                                                             {
+                                                              "remove_underscore" => 1,
                                                               "set_value" => "name",
                                                               "type" => "identifier"
                                                             },
@@ -1298,13 +1437,18 @@ $Web::IDL::_Defs = {
                                                                   "type" => ";"
                                                                 }
                                                               ]
-                                                            ]
+                                                            ],
+                                              "set" => [
+                                                         "member_type",
+                                                         "operation"
+                                                       ]
                                             },
                          "OptionalIdentifier" => {
                                                    "can_be_empty" => 1,
                                                    "patterns" => [
                                                                    [
                                                                      {
+                                                                       "remove_underscore" => 1,
                                                                        "set_value" => "name",
                                                                        "type" => "identifier"
                                                                      }
@@ -1410,6 +1554,7 @@ $Web::IDL::_Defs = {
                                                                       "type" => "dictionary"
                                                                     },
                                                                     {
+                                                                      "remove_underscore" => 1,
                                                                       "set_value" => "name",
                                                                       "type" => "identifier"
                                                                     },
@@ -1437,6 +1582,7 @@ $Web::IDL::_Defs = {
                                                                      "type" => "interface"
                                                                    },
                                                                    {
+                                                                     "remove_underscore" => 1,
                                                                      "set_value" => "name",
                                                                      "type" => "identifier"
                                                                    },
@@ -1879,6 +2025,7 @@ $Web::IDL::_Defs = {
                                                             "value" => "Type"
                                                           },
                                                           {
+                                                            "remove_underscore" => 1,
                                                             "set_value" => "name",
                                                             "type" => "identifier"
                                                           },
@@ -2016,12 +2163,22 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                           [
                                                             {
+                                                              "set_type" => "definition_type",
+                                                              "type" => "callback"
+                                                            },
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "CallbackRest"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
                                                               "set_true" => "callback",
                                                               "type" => "callback"
                                                             },
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "CallbackRestOrInterface"
+                                                              "value" => "Interface"
                                                             }
                                                           ]
                                                         ]
@@ -2054,6 +2211,10 @@ $Web::IDL::_Defs = {
                                                                     }
                                                                   ]
                                                                 ],
+                                                  "set" => [
+                                                             "member_type",
+                                                             "dictionary_member"
+                                                           ],
                                                   "set_index" => 1
                                                 },
                          "_ExceptionMember" => {
@@ -2088,51 +2249,91 @@ $Web::IDL::_Defs = {
                                                }
                        },
           "keyword_tokens" => {
-                                "ByteString" => 1,
-                                "DOMString" => 1,
-                                "Date" => 1,
-                                "Infinity" => 1,
-                                "NaN" => 1,
-                                "RegExp" => 1,
-                                "any" => 1,
-                                "attribute" => 1,
-                                "boolean" => 1,
-                                "byte" => 1,
-                                "callback" => 1,
-                                "const" => 1,
-                                "creator" => 1,
-                                "deleter" => 1,
-                                "dictionary" => 1,
-                                "double" => 1,
-                                "enum" => 1,
-                                "exception" => 1,
-                                "false" => 1,
-                                "float" => 1,
-                                "getter" => 1,
-                                "implements" => 1,
-                                "inherit" => 1,
-                                "interface" => 1,
-                                "iterator" => 1,
-                                "legacycaller" => 1,
-                                "long" => 1,
-                                "null" => 1,
-                                "object" => 1,
-                                "octet" => 1,
-                                "optional" => 1,
-                                "or" => 1,
-                                "partial" => 1,
-                                "readonly" => 1,
-                                "sequence" => 1,
-                                "serializer" => 1,
-                                "setter" => 1,
-                                "short" => 1,
-                                "static" => 1,
-                                "stringifier" => 1,
-                                "true" => 1,
-                                "typedef" => 1,
-                                "unrestricted" => 1,
-                                "unsigned" => 1,
-                                "void" => 1
+                                "ByteString" => {},
+                                "DOMString" => {},
+                                "Date" => {},
+                                "Infinity" => {},
+                                "NaN" => {},
+                                "RegExp" => {},
+                                "any" => {},
+                                "attribute" => {
+                                                 "argument_name" => 1
+                                               },
+                                "boolean" => {},
+                                "byte" => {},
+                                "callback" => {
+                                                "argument_name" => 1
+                                              },
+                                "const" => {
+                                             "argument_name" => 1
+                                           },
+                                "creator" => {
+                                               "argument_name" => 1
+                                             },
+                                "deleter" => {
+                                               "argument_name" => 1
+                                             },
+                                "dictionary" => {
+                                                  "argument_name" => 1
+                                                },
+                                "double" => {},
+                                "enum" => {
+                                            "argument_name" => 1
+                                          },
+                                "exception" => {
+                                                 "argument_name" => 1
+                                               },
+                                "false" => {},
+                                "float" => {},
+                                "getter" => {
+                                              "argument_name" => 1
+                                            },
+                                "implements" => {
+                                                  "argument_name" => 1
+                                                },
+                                "inherit" => {
+                                               "argument_name" => 1
+                                             },
+                                "interface" => {
+                                                 "argument_name" => 1
+                                               },
+                                "iterator" => {},
+                                "legacycaller" => {
+                                                    "argument_name" => 1
+                                                  },
+                                "long" => {},
+                                "null" => {},
+                                "object" => {},
+                                "octet" => {},
+                                "optional" => {},
+                                "or" => {},
+                                "partial" => {
+                                               "argument_name" => 1
+                                             },
+                                "readonly" => {},
+                                "sequence" => {},
+                                "serializer" => {
+                                                  "argument_name" => 1
+                                                },
+                                "setter" => {
+                                              "argument_name" => 1
+                                            },
+                                "short" => {},
+                                "static" => {
+                                              "argument_name" => 1
+                                            },
+                                "stringifier" => {
+                                                   "argument_name" => 1
+                                                 },
+                                "true" => {},
+                                "typedef" => {
+                                               "argument_name" => 1
+                                             },
+                                "unrestricted" => {
+                                                    "argument_name" => 1
+                                                  },
+                                "unsigned" => {},
+                                "void" => {}
                               },
           "other_tokens" => {
                               "(" => 1,

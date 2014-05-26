@@ -24,6 +24,10 @@ for (split /\x0D?\x0A/, $grammer_path->slurp_utf8) {
     $Data->{rules}->{$rule_name}->{can_be_empty} = 1;
   } elsif (defined $rule_name and /^\+pos$/) {
     $Data->{rules}->{$rule_name}->{set_index} = 1;
+  } elsif (defined $rule_name and /^\+(\w+)\[\]$/) {
+    $Data->{rules}->{$rule_name}->{ensure_arrayref} = $1;
+  } elsif (defined $rule_name and /^\+(\w+)="([^"]+)"$/) {
+    $Data->{rules}->{$rule_name}->{set} = [$1, $2];
   } elsif (defined $rule_name and /\S/) {
     for (split / /, $_) {
       my $set_name;
@@ -36,6 +40,9 @@ for (split /\x0D?\x0A/, $grammer_path->slurp_utf8) {
 
       if (s/="(\w+)"$//) {
         $pattern->{set_value} = $1;
+      } elsif (s/=_"(\w+)"$//) {
+        $pattern->{set_value} = $1;
+        $pattern->{remove_underscore} = 1;
       } elsif (s/=(\w+)\?$//) {
         $pattern->{set_true} = $1;
       } elsif (s/\*=(\w+)\[\]$//) {

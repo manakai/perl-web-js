@@ -1,6 +1,7 @@
 all: deps json-ps lib/Web/IDL/_Defs.pm
 
 clean: clean-json-ps
+	rm -fr local/*.json
 
 updatenightly: local/bin/pmbp.pl clean all
 	curl https://gist.githubusercontent.com/wakaba/34a71d3137a52abb562d/raw/gistfile1.txt | sh
