@@ -71,16 +71,53 @@ for the definition appears.
 
 =item definition_name
 
-Type of the definition: C<interface>.
+Type of the definition: C<interface>, C<exception>, C<dictionary>,
+C<enum>, or C<callback>.
+
+Note that the C<definition_name> for a C<callback interface> is
+C<interface>.
+
+=item partial
+
+Whether the definition has the C<partial> keyword or not.
+
+=item callback
+
+Whether the definition is an interface and it has the C<callback>
+keyword or not.  Note that for a non-interface callback, this value is
+false.
 
 =item name
 
 The name of the defined construct.
 
+=item super_name
+
+The name of the member from which the member inherits, if any.
+
 =item members
 
 The array reference containing the members of the definition, if
 applicable.
+
+=item type
+
+The builtin Web IDL type associated with the definition, if
+applicable.
+
+=item type_name
+
+The name of the Web IDL type associated with the definition, if
+applicable.
+
+=item value_strings
+
+The allowed string values associated with the definition, if
+applicable.
+
+=item arguments
+
+The array reference of the arguments, if applicable.
 
 =back
 
@@ -91,11 +128,12 @@ A member is a hash reference with following key/value pairs:
 =item index
 
 The index in the input character string at which the first character
-for the definition appears.
+for the member appears.
 
 =item member_type
 
-The type of the member: C<const>.
+The type of the member: C<attribute>, C<operation>, C<const>,
+C<field>, or C<dictionary_member>.
 
 =item name
 
@@ -103,11 +141,43 @@ The name of the member, if applicable.
 
 =item type
 
-The Web IDL type associated with the member, if applicable.
+The builtin Web IDL type associated with the member, if applicable.
+
+=item type_name
+
+The name of the Web IDL type associated with the member, if
+applicable.
 
 =item value_float
 
 The value associated with the member, in float, if applicable.
+
+=item arguments
+
+The array reference of the arguments, if applicable.
+
+=back
+
+An argument is a hash reference with following key/value pairs:
+
+=over 4
+
+=item index
+
+The index in the input character string at which the first character
+for the argument appears.
+
+=item name
+
+The name of the argument.
+
+=item type
+
+The builtin Web IDL type associated with the argument, if any.
+
+=item type_name
+
+The name of the Web IDL type associated with the argument, if any.
 
 =back
 

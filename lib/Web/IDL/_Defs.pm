@@ -17,6 +17,7 @@ $Web::IDL::_Defs = {
                                        },
                          "ArgumentList" => {
                                              "can_be_empty" => 1,
+                                             "ensure_arrayref" => "arguments",
                                              "patterns" => [
                                                              [
                                                                {
@@ -41,19 +42,143 @@ $Web::IDL::_Defs = {
                                                              ],
                                                              [
                                                                {
+                                                                 "remove_underscore" => 1,
                                                                  "set_value" => "name",
                                                                  "type" => "identifier"
                                                                }
                                                              ]
                                                            ]
                                            },
+                         "ArgumentNameKeyword" => {
+                                                    "patterns" => [
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "creator"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "static"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "attribute"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "typedef"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "interface"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "dictionary"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "deleter"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "legacycaller"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "serializer"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "const"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "callback"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "inherit"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "partial"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "getter"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "unrestricted"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "enum"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "stringifier"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "implements"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "exception"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "setter"
+                                                                      }
+                                                                    ]
+                                                                  ]
+                                                  },
                          "Arguments" => {
                                           "can_be_empty" => 1,
                                           "patterns" => [
                                                           [
                                                             {
-                                                              "type" => "other",
-                                                              "value" => ","
+                                                              "type" => ","
                                                             },
                                                             {
                                                               "append" => "arguments",
@@ -123,21 +248,20 @@ $Web::IDL::_Defs = {
                                                                   "value" => "ReadOnly"
                                                                 },
                                                                 {
-                                                                  "set_value" => "member_type",
-                                                                  "type" => "identifier",
-                                                                  "value" => "attribute"
+                                                                  "set_type" => "member_type",
+                                                                  "type" => "attribute"
                                                                 },
                                                                 {
                                                                   "type" => "rule",
                                                                   "value" => "Type"
                                                                 },
                                                                 {
-                                                                  "type" => "rule",
-                                                                  "value" => "Identifier"
+                                                                  "remove_underscore" => 1,
+                                                                  "set_value" => "name",
+                                                                  "type" => "identifier"
                                                                 },
                                                                 {
-                                                                  "type" => "other",
-                                                                  "value" => ";"
+                                                                  "type" => ";"
                                                                 }
                                                               ]
                                                             ]
@@ -147,15 +271,13 @@ $Web::IDL::_Defs = {
                                                                [
                                                                  {
                                                                    "set_true" => "value_true",
-                                                                   "type" => "identifier",
-                                                                   "value" => "true"
+                                                                   "type" => "true"
                                                                  }
                                                                ],
                                                                [
                                                                  {
                                                                    "set_true" => "value_false",
-                                                                   "type" => "identifier",
-                                                                   "value" => "false"
+                                                                   "type" => "false"
                                                                  }
                                                                ]
                                                              ]
@@ -180,32 +302,29 @@ $Web::IDL::_Defs = {
                                              "patterns" => [
                                                              [
                                                                {
+                                                                 "remove_underscore" => 1,
                                                                  "set_value" => "name",
                                                                  "type" => "identifier"
                                                                },
                                                                {
-                                                                 "type" => "other",
-                                                                 "value" => "="
+                                                                 "type" => "="
                                                                },
                                                                {
                                                                  "type" => "rule",
                                                                  "value" => "ReturnType"
                                                                },
                                                                {
-                                                                 "type" => "other",
-                                                                 "value" => "("
+                                                                 "type" => "("
                                                                },
                                                                {
                                                                  "type" => "rule",
                                                                  "value" => "ArgumentList"
                                                                },
                                                                {
-                                                                 "type" => "other",
-                                                                 "value" => ")"
+                                                                 "type" => ")"
                                                                },
                                                                {
-                                                                 "type" => "other",
-                                                                 "value" => ";"
+                                                                 "type" => ";"
                                                                }
                                                              ]
                                                            ]
@@ -230,29 +349,27 @@ $Web::IDL::_Defs = {
                                       "patterns" => [
                                                       [
                                                         {
-                                                          "set_value" => "member_type",
-                                                          "type" => "identifier",
-                                                          "value" => "const"
+                                                          "set_type" => "member_type",
+                                                          "type" => "const"
                                                         },
                                                         {
                                                           "type" => "rule",
                                                           "value" => "ConstType"
                                                         },
                                                         {
+                                                          "remove_underscore" => 1,
                                                           "set_value" => "name",
                                                           "type" => "identifier"
                                                         },
                                                         {
-                                                          "type" => "other",
-                                                          "value" => "="
+                                                          "type" => "="
                                                         },
                                                         {
                                                           "type" => "rule",
                                                           "value" => "ConstValue"
                                                         },
                                                         {
-                                                          "type" => "other",
-                                                          "value" => ";"
+                                                          "type" => ";"
                                                         }
                                                       ]
                                                     ]
@@ -304,8 +421,7 @@ $Web::IDL::_Defs = {
                                                            [
                                                              {
                                                                "set_true" => "value_null",
-                                                               "type" => "identifier",
-                                                               "value" => "null"
+                                                               "type" => "null"
                                                              }
                                                            ]
                                                          ]
@@ -315,8 +431,7 @@ $Web::IDL::_Defs = {
                                         "patterns" => [
                                                         [
                                                           {
-                                                            "type" => "other",
-                                                            "value" => "="
+                                                            "type" => "="
                                                           },
                                                           {
                                                             "type" => "rule",
@@ -335,7 +450,7 @@ $Web::IDL::_Defs = {
                                                              ],
                                                              [
                                                                {
-                                                                 "set" => "value_string",
+                                                                 "set_value" => "value_string",
                                                                  "type" => "string"
                                                                }
                                                              ]
@@ -403,11 +518,11 @@ $Web::IDL::_Defs = {
                                            "patterns" => [
                                                            [
                                                              {
-                                                               "set_value" => "definition_type",
-                                                               "type" => "identifier",
-                                                               "value" => "dictionary"
+                                                               "set_type" => "definition_type",
+                                                               "type" => "dictionary"
                                                              },
                                                              {
+                                                               "remove_underscore" => 1,
                                                                "set_value" => "name",
                                                                "type" => "identifier"
                                                              },
@@ -416,20 +531,17 @@ $Web::IDL::_Defs = {
                                                                "value" => "Inheritance"
                                                              },
                                                              {
-                                                               "type" => "other",
-                                                               "value" => "{"
+                                                               "type" => "{"
                                                              },
                                                              {
                                                                "type" => "rule",
                                                                "value" => "DictionaryMembers"
                                                              },
                                                              {
-                                                               "type" => "other",
-                                                               "value" => "}"
+                                                               "type" => "}"
                                                              },
                                                              {
-                                                               "type" => "other",
-                                                               "value" => ";"
+                                                               "type" => ";"
                                                              }
                                                            ]
                                                          ]
@@ -442,6 +554,7 @@ $Web::IDL::_Defs = {
                                                                      "value" => "Type"
                                                                    },
                                                                    {
+                                                                     "remove_underscore" => 1,
                                                                      "set_value" => "name",
                                                                      "type" => "identifier"
                                                                    },
@@ -450,8 +563,7 @@ $Web::IDL::_Defs = {
                                                                      "value" => "Default"
                                                                    },
                                                                    {
-                                                                     "type" => "other",
-                                                                     "value" => ";"
+                                                                     "type" => ";"
                                                                    }
                                                                  ]
                                                                ]
@@ -474,8 +586,7 @@ $Web::IDL::_Defs = {
                                                          [
                                                            {
                                                              "set_true" => "more",
-                                                             "type" => "other",
-                                                             "value" => "..."
+                                                             "type" => "..."
                                                            }
                                                          ]
                                                        ]
@@ -484,29 +595,26 @@ $Web::IDL::_Defs = {
                                      "patterns" => [
                                                      [
                                                        {
-                                                         "set_value" => "definition_type",
-                                                         "type" => "identifier",
-                                                         "value" => "enum"
+                                                         "set_type" => "definition_type",
+                                                         "type" => "enum"
                                                        },
                                                        {
+                                                         "remove_underscore" => 1,
                                                          "set_value" => "name",
                                                          "type" => "identifier"
                                                        },
                                                        {
-                                                         "type" => "other",
-                                                         "value" => "{"
+                                                         "type" => "{"
                                                        },
                                                        {
                                                          "type" => "rule",
                                                          "value" => "EnumValueList"
                                                        },
                                                        {
-                                                         "type" => "other",
-                                                         "value" => "}"
+                                                         "type" => "}"
                                                        },
                                                        {
-                                                         "type" => "other",
-                                                         "value" => ";"
+                                                         "type" => ";"
                                                        }
                                                      ]
                                                    ]
@@ -515,7 +623,7 @@ $Web::IDL::_Defs = {
                                               "patterns" => [
                                                               [
                                                                 {
-                                                                  "append_value" => "string_values",
+                                                                  "append_value" => "value_strings",
                                                                   "type" => "string"
                                                                 },
                                                                 {
@@ -530,8 +638,7 @@ $Web::IDL::_Defs = {
                                                    "patterns" => [
                                                                    [
                                                                      {
-                                                                       "type" => "other",
-                                                                       "value" => ","
+                                                                       "type" => ","
                                                                      },
                                                                      {
                                                                        "type" => "rule",
@@ -545,7 +652,7 @@ $Web::IDL::_Defs = {
                                                     "patterns" => [
                                                                     [
                                                                       {
-                                                                        "append_value" => "string_values",
+                                                                        "append_value" => "value_strings",
                                                                         "type" => "string"
                                                                       },
                                                                       {
@@ -559,11 +666,11 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                           [
                                                             {
-                                                              "set_value" => "definition_type",
-                                                              "type" => "identifier",
-                                                              "value" => "exception"
+                                                              "set_type" => "definition_type",
+                                                              "type" => "exception"
                                                             },
                                                             {
+                                                              "remove_underscore" => 1,
                                                               "set_value" => "name",
                                                               "type" => "identifier"
                                                             },
@@ -572,20 +679,17 @@ $Web::IDL::_Defs = {
                                                               "value" => "Inheritance"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => "{"
+                                                              "type" => "{"
                                                             },
                                                             {
                                                               "type" => "rule",
                                                               "value" => "ExceptionMembers"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => "}"
+                                                              "type" => "}"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => ";"
+                                                              "type" => ";"
                                                             }
                                                           ]
                                                         ]
@@ -598,15 +702,19 @@ $Web::IDL::_Defs = {
                                                                    "value" => "Type"
                                                                  },
                                                                  {
+                                                                   "remove_underscore" => 1,
                                                                    "set_value" => "name",
                                                                    "type" => "identifier"
                                                                  },
                                                                  {
-                                                                   "type" => "other",
-                                                                   "value" => ";"
+                                                                   "type" => ";"
                                                                  }
                                                                ]
-                                                             ]
+                                                             ],
+                                               "set" => [
+                                                          "member_type",
+                                                          "field"
+                                                        ]
                                              },
                          "ExceptionMember" => {
                                                 "patterns" => [
@@ -685,16 +793,14 @@ $Web::IDL::_Defs = {
                                                                              "type" => "identifier"
                                                                            },
                                                                            {
-                                                                             "type" => "other",
-                                                                             "value" => "("
+                                                                             "type" => "("
                                                                            },
                                                                            {
                                                                              "type" => "rule",
                                                                              "value" => "ArgumentList"
                                                                            },
                                                                            {
-                                                                             "type" => "other",
-                                                                             "value" => ")"
+                                                                             "type" => ")"
                                                                            }
                                                                          ]
                                                                        ]
@@ -707,8 +813,7 @@ $Web::IDL::_Defs = {
                                                                            "type" => "identifier"
                                                                          },
                                                                          {
-                                                                           "type" => "other",
-                                                                           "value" => "="
+                                                                           "type" => "="
                                                                          },
                                                                          {
                                                                            "next_is_not" => {
@@ -729,8 +834,7 @@ $Web::IDL::_Defs = {
                                                                                "type" => "identifier"
                                                                              },
                                                                              {
-                                                                               "type" => "other",
-                                                                               "value" => "="
+                                                                               "type" => "="
                                                                              },
                                                                              {
                                                                                "type" => "rule",
@@ -744,36 +848,15 @@ $Web::IDL::_Defs = {
                                                        "patterns" => [
                                                                        [
                                                                          {
-                                                                           "set_value" => "item_type",
-                                                                           "type" => "other",
-                                                                           "value" => "("
+                                                                           "set_type" => "item_type",
+                                                                           "type" => "("
                                                                          },
                                                                          {
                                                                            "type" => "rule",
                                                                            "value" => "ExtendedAttributeInner"
                                                                          },
                                                                          {
-                                                                           "type" => "other",
-                                                                           "value" => ")"
-                                                                         },
-                                                                         {
-                                                                           "type" => "rule",
-                                                                           "value" => "ExtendedAttributeInner"
-                                                                         }
-                                                                       ],
-                                                                       [
-                                                                         {
-                                                                           "set_value" => "item_type",
-                                                                           "type" => "other",
-                                                                           "value" => "["
-                                                                         },
-                                                                         {
-                                                                           "type" => "rule",
-                                                                           "value" => "ExtendedAttributeInner"
-                                                                         },
-                                                                         {
-                                                                           "type" => "other",
-                                                                           "value" => "]"
+                                                                           "type" => ")"
                                                                          },
                                                                          {
                                                                            "type" => "rule",
@@ -782,17 +865,32 @@ $Web::IDL::_Defs = {
                                                                        ],
                                                                        [
                                                                          {
-                                                                           "set_value" => "item_type",
-                                                                           "type" => "other",
-                                                                           "value" => "{"
+                                                                           "set_type" => "item_type",
+                                                                           "type" => "["
                                                                          },
                                                                          {
                                                                            "type" => "rule",
                                                                            "value" => "ExtendedAttributeInner"
                                                                          },
                                                                          {
-                                                                           "type" => "other",
-                                                                           "value" => "}"
+                                                                           "type" => "]"
+                                                                         },
+                                                                         {
+                                                                           "type" => "rule",
+                                                                           "value" => "ExtendedAttributeInner"
+                                                                         }
+                                                                       ],
+                                                                       [
+                                                                         {
+                                                                           "set_type" => "item_type",
+                                                                           "type" => "{"
+                                                                         },
+                                                                         {
+                                                                           "type" => "rule",
+                                                                           "value" => "ExtendedAttributeInner"
+                                                                         },
+                                                                         {
+                                                                           "type" => "}"
                                                                          },
                                                                          {
                                                                            "type" => "rule",
@@ -816,8 +914,7 @@ $Web::IDL::_Defs = {
                                                       "patterns" => [
                                                                       [
                                                                         {
-                                                                          "type" => "other",
-                                                                          "value" => "["
+                                                                          "type" => "["
                                                                         },
                                                                         {
                                                                           "append" => "extended_attributes",
@@ -829,8 +926,7 @@ $Web::IDL::_Defs = {
                                                                           "value" => "ExtendedAttributes"
                                                                         },
                                                                         {
-                                                                          "type" => "other",
-                                                                          "value" => "]"
+                                                                          "type" => "]"
                                                                         }
                                                                       ]
                                                                     ]
@@ -843,24 +939,21 @@ $Web::IDL::_Defs = {
                                                                                   "type" => "identifier"
                                                                                 },
                                                                                 {
-                                                                                  "type" => "other",
-                                                                                  "value" => "="
+                                                                                  "type" => "="
                                                                                 },
                                                                                 {
                                                                                   "set_value" => "value_name",
                                                                                   "type" => "identifier"
                                                                                 },
                                                                                 {
-                                                                                  "type" => "other",
-                                                                                  "value" => "("
+                                                                                  "type" => "("
                                                                                 },
                                                                                 {
                                                                                   "type" => "rule",
                                                                                   "value" => "ArgumentList"
                                                                                 },
                                                                                 {
-                                                                                  "type" => "other",
-                                                                                  "value" => ")"
+                                                                                  "type" => ")"
                                                                                 }
                                                                               ]
                                                                             ]
@@ -899,8 +992,7 @@ $Web::IDL::_Defs = {
                                                                               "type" => "identifier"
                                                                             },
                                                                             {
-                                                                              "type" => "other",
-                                                                              "value" => "("
+                                                                              "type" => "("
                                                                             },
                                                                             {
                                                                               "append" => "value_types",
@@ -908,8 +1000,7 @@ $Web::IDL::_Defs = {
                                                                               "value" => "Type"
                                                                             },
                                                                             {
-                                                                              "type" => "other",
-                                                                              "value" => ","
+                                                                              "type" => ","
                                                                             },
                                                                             {
                                                                               "append" => "value_types",
@@ -917,8 +1008,7 @@ $Web::IDL::_Defs = {
                                                                               "value" => "Type"
                                                                             },
                                                                             {
-                                                                              "type" => "other",
-                                                                              "value" => ")"
+                                                                              "type" => ")"
                                                                             }
                                                                           ]
                                                                         ]
@@ -928,8 +1018,7 @@ $Web::IDL::_Defs = {
                                                    "patterns" => [
                                                                    [
                                                                      {
-                                                                       "type" => "other",
-                                                                       "value" => ","
+                                                                       "type" => ","
                                                                      },
                                                                      {
                                                                        "append" => "extended_attributes",
@@ -954,22 +1043,19 @@ $Web::IDL::_Defs = {
                                                              [
                                                                {
                                                                  "set_true" => "value_n_infinity",
-                                                                 "type" => "identifier",
-                                                                 "value" => "-Infinity"
+                                                                 "type" => "-Infinity"
                                                                }
                                                              ],
                                                              [
                                                                {
                                                                  "set_true" => "value_inifinity",
-                                                                 "type" => "identifier",
-                                                                 "value" => "Infinity"
+                                                                 "type" => "Infinity"
                                                                }
                                                              ],
                                                              [
                                                                {
                                                                  "set_true" => "value_nan",
-                                                                 "type" => "identifier",
-                                                                 "value" => "NaN"
+                                                                 "type" => "NaN"
                                                                }
                                                              ]
                                                            ]
@@ -978,16 +1064,14 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                           [
                                                             {
-                                                              "set_value" => "type",
-                                                              "type" => "identifier",
-                                                              "value" => "float"
+                                                              "set_type" => "type",
+                                                              "type" => "float"
                                                             }
                                                           ],
                                                           [
                                                             {
-                                                              "set_value" => "type",
-                                                              "type" => "identifier",
-                                                              "value" => "double"
+                                                              "set_type" => "type",
+                                                              "type" => "double"
                                                             }
                                                           ]
                                                         ]
@@ -1015,8 +1099,7 @@ $Web::IDL::_Defs = {
                                             "patterns" => [
                                                             [
                                                               {
-                                                                "type" => "other",
-                                                                "value" => ","
+                                                                "type" => ","
                                                               },
                                                               {
                                                                 "append_value" => "value_names",
@@ -1041,17 +1124,15 @@ $Web::IDL::_Defs = {
                                                                         "type" => "identifier"
                                                                       },
                                                                       {
-                                                                        "set_value" => "definition_type",
-                                                                        "type" => "identifier",
-                                                                        "value" => "implements"
+                                                                        "set_type" => "definition_type",
+                                                                        "type" => "implements"
                                                                       },
                                                                       {
                                                                         "set_value" => "super_name",
                                                                         "type" => "identifier"
                                                                       },
                                                                       {
-                                                                        "type" => "other",
-                                                                        "value" => ";"
+                                                                        "type" => ";"
                                                                       }
                                                                     ]
                                                                   ]
@@ -1062,8 +1143,7 @@ $Web::IDL::_Defs = {
                                                         [
                                                           {
                                                             "set_true" => "inherit",
-                                                            "type" => "identifier",
-                                                            "value" => "inherit"
+                                                            "type" => "inherit"
                                                           }
                                                         ]
                                                       ]
@@ -1073,8 +1153,7 @@ $Web::IDL::_Defs = {
                                             "patterns" => [
                                                             [
                                                               {
-                                                                "type" => "other",
-                                                                "value" => ":"
+                                                                "type" => ":"
                                                               },
                                                               {
                                                                 "set_value" => "super_name",
@@ -1087,16 +1166,14 @@ $Web::IDL::_Defs = {
                                             "patterns" => [
                                                             [
                                                               {
-                                                                "set_value" => "type",
-                                                                "type" => "identifier",
-                                                                "value" => "short"
+                                                                "set_type" => "type",
+                                                                "type" => "short"
                                                               }
                                                             ],
                                                             [
                                                               {
-                                                                "set_value" => "type",
-                                                                "type" => "identifier",
-                                                                "value" => "long"
+                                                                "set_type" => "type",
+                                                                "type" => "long"
                                                               },
                                                               {
                                                                 "type" => "rule",
@@ -1109,11 +1186,11 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                           [
                                                             {
-                                                              "set_value" => "definition_type",
-                                                              "type" => "identifier",
-                                                              "value" => "interface"
+                                                              "set_type" => "definition_type",
+                                                              "type" => "interface"
                                                             },
                                                             {
+                                                              "remove_underscore" => 1,
                                                               "set_value" => "name",
                                                               "type" => "identifier"
                                                             },
@@ -1122,20 +1199,17 @@ $Web::IDL::_Defs = {
                                                               "value" => "Inheritance"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => "{"
+                                                              "type" => "{"
                                                             },
                                                             {
                                                               "type" => "rule",
                                                               "value" => "InterfaceMembers"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => "}"
+                                                              "type" => "}"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => ";"
+                                                              "type" => ";"
                                                             }
                                                           ]
                                                         ]
@@ -1173,16 +1247,14 @@ $Web::IDL::_Defs = {
                                                              [
                                                                {
                                                                  "set_true" => "iterator",
-                                                                 "type" => "identifier",
-                                                                 "value" => "iterator"
+                                                                 "type" => "iterator"
                                                                },
                                                                {
                                                                  "type" => "rule",
                                                                  "value" => "OperationIteratorInterfaceOrObject"
                                                                },
                                                                {
-                                                                 "type" => "other",
-                                                                 "value" => ";"
+                                                                 "type" => ";"
                                                                }
                                                              ]
                                                            ]
@@ -1201,9 +1273,8 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_value" => "type",
-                                                               "type" => "identifier",
-                                                               "value" => "ByteString"
+                                                               "set_type" => "type",
+                                                               "type" => "ByteString"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1212,9 +1283,8 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_value" => "type",
-                                                               "type" => "identifier",
-                                                               "value" => "DOMString"
+                                                               "set_type" => "type",
+                                                               "type" => "DOMString"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1233,12 +1303,10 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "type" => "identifier",
-                                                               "value" => "sequence"
+                                                               "type" => "sequence"
                                                              },
                                                              {
-                                                               "type" => "other",
-                                                               "value" => "<"
+                                                               "type" => "<"
                                                              },
                                                              {
                                                                "set" => "type_suffix",
@@ -1246,8 +1314,7 @@ $Web::IDL::_Defs = {
                                                                "value" => "Type"
                                                              },
                                                              {
-                                                               "type" => "other",
-                                                               "value" => ">"
+                                                               "type" => ">"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1256,9 +1323,8 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_value" => "type",
-                                                               "type" => "identifier",
-                                                               "value" => "object"
+                                                               "set_type" => "type",
+                                                               "type" => "object"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1267,9 +1333,8 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_value" => "type",
-                                                               "type" => "identifier",
-                                                               "value" => "Date"
+                                                               "set_type" => "type",
+                                                               "type" => "Date"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1278,9 +1343,8 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_value" => "type",
-                                                               "type" => "identifier",
-                                                               "value" => "RegExp"
+                                                               "set_type" => "type",
+                                                               "type" => "RegExp"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1295,8 +1359,7 @@ $Web::IDL::_Defs = {
                                                      [
                                                        {
                                                          "set_true" => "type_nullable",
-                                                         "type" => "other",
-                                                         "value" => "?"
+                                                         "type" => "?"
                                                        }
                                                      ]
                                                    ]
@@ -1312,8 +1375,7 @@ $Web::IDL::_Defs = {
                                                                                    [
                                                                                      {
                                                                                        "set_true" => "object",
-                                                                                       "type" => "identifier",
-                                                                                       "value" => "object"
+                                                                                       "type" => "object"
                                                                                      }
                                                                                    ]
                                                                                  ]
@@ -1362,29 +1424,31 @@ $Web::IDL::_Defs = {
                                                                   "value" => "OptionalIdentifier"
                                                                 },
                                                                 {
-                                                                  "type" => "other",
-                                                                  "value" => "("
+                                                                  "type" => "("
                                                                 },
                                                                 {
                                                                   "type" => "rule",
                                                                   "value" => "ArgumentList"
                                                                 },
                                                                 {
-                                                                  "type" => "other",
-                                                                  "value" => ")"
+                                                                  "type" => ")"
                                                                 },
                                                                 {
-                                                                  "type" => "other",
-                                                                  "value" => ";"
+                                                                  "type" => ";"
                                                                 }
                                                               ]
-                                                            ]
+                                                            ],
+                                              "set" => [
+                                                         "member_type",
+                                                         "operation"
+                                                       ]
                                             },
                          "OptionalIdentifier" => {
                                                    "can_be_empty" => 1,
                                                    "patterns" => [
                                                                    [
                                                                      {
+                                                                       "remove_underscore" => 1,
                                                                        "set_value" => "name",
                                                                        "type" => "identifier"
                                                                      }
@@ -1396,8 +1460,7 @@ $Web::IDL::_Defs = {
                                                           "patterns" => [
                                                                           [
                                                                             {
-                                                                              "type" => "other",
-                                                                              "value" => "="
+                                                                              "type" => "="
                                                                             },
                                                                             {
                                                                               "set_value" => "value_name",
@@ -1411,9 +1474,8 @@ $Web::IDL::_Defs = {
                                              "patterns" => [
                                                              [
                                                                {
-                                                                 "set_value" => "type2",
-                                                                 "type" => "identifier",
-                                                                 "value" => "long"
+                                                                 "set_type" => "type2",
+                                                                 "type" => "long"
                                                                }
                                                              ]
                                                            ]
@@ -1423,8 +1485,7 @@ $Web::IDL::_Defs = {
                                                                            [
                                                                              {
                                                                                "set_true" => "optional",
-                                                                               "type" => "identifier",
-                                                                               "value" => "optional"
+                                                                               "type" => "optional"
                                                                              },
                                                                              {
                                                                                "type" => "rule",
@@ -1460,8 +1521,7 @@ $Web::IDL::_Defs = {
                                                         [
                                                           {
                                                             "set_true" => "partial",
-                                                            "type" => "identifier",
-                                                            "value" => "partial"
+                                                            "type" => "partial"
                                                           },
                                                           {
                                                             "type" => "rule",
@@ -1490,29 +1550,26 @@ $Web::IDL::_Defs = {
                                                   "patterns" => [
                                                                   [
                                                                     {
-                                                                      "set_value" => "definition_type",
-                                                                      "type" => "identifier",
-                                                                      "value" => "dictionary"
+                                                                      "set_type" => "definition_type",
+                                                                      "type" => "dictionary"
                                                                     },
                                                                     {
+                                                                      "remove_underscore" => 1,
                                                                       "set_value" => "name",
                                                                       "type" => "identifier"
                                                                     },
                                                                     {
-                                                                      "type" => "other",
-                                                                      "value" => "{"
+                                                                      "type" => "{"
                                                                     },
                                                                     {
                                                                       "type" => "rule",
                                                                       "value" => "DictionaryMembers"
                                                                     },
                                                                     {
-                                                                      "type" => "other",
-                                                                      "value" => "}"
+                                                                      "type" => "}"
                                                                     },
                                                                     {
-                                                                      "type" => "other",
-                                                                      "value" => ";"
+                                                                      "type" => ";"
                                                                     }
                                                                   ]
                                                                 ]
@@ -1521,29 +1578,26 @@ $Web::IDL::_Defs = {
                                                  "patterns" => [
                                                                  [
                                                                    {
-                                                                     "set_value" => "definition_type",
-                                                                     "type" => "identifier",
-                                                                     "value" => "interface"
+                                                                     "set_type" => "definition_type",
+                                                                     "type" => "interface"
                                                                    },
                                                                    {
+                                                                     "remove_underscore" => 1,
                                                                      "set_value" => "name",
                                                                      "type" => "identifier"
                                                                    },
                                                                    {
-                                                                     "type" => "other",
-                                                                     "value" => "{"
+                                                                     "type" => "{"
                                                                    },
                                                                    {
                                                                      "type" => "rule",
                                                                      "value" => "InterfaceMembers"
                                                                    },
                                                                    {
-                                                                     "type" => "other",
-                                                                     "value" => "}"
+                                                                     "type" => "}"
                                                                    },
                                                                    {
-                                                                     "type" => "other",
-                                                                     "value" => ";"
+                                                                     "type" => ";"
                                                                    }
                                                                  ]
                                                                ]
@@ -1564,23 +1618,20 @@ $Web::IDL::_Defs = {
                                                               ],
                                                               [
                                                                 {
-                                                                  "set_value" => "type",
-                                                                  "type" => "identifier",
-                                                                  "value" => "boolean"
+                                                                  "set_type" => "type",
+                                                                  "type" => "boolean"
                                                                 }
                                                               ],
                                                               [
                                                                 {
-                                                                  "set_value" => "type",
-                                                                  "type" => "identifier",
-                                                                  "value" => "byte"
+                                                                  "set_type" => "type",
+                                                                  "type" => "byte"
                                                                 }
                                                               ],
                                                               [
                                                                 {
-                                                                  "set_value" => "type",
-                                                                  "type" => "identifier",
-                                                                  "value" => "octet"
+                                                                  "set_type" => "type",
+                                                                  "type" => "octet"
                                                                 }
                                                               ]
                                                             ]
@@ -1591,8 +1642,7 @@ $Web::IDL::_Defs = {
                                                          [
                                                            {
                                                              "set_true" => "readonly",
-                                                             "type" => "identifier",
-                                                             "value" => "readonly"
+                                                             "type" => "readonly"
                                                            }
                                                          ]
                                                        ]
@@ -1607,9 +1657,8 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_value" => "type",
-                                                               "type" => "identifier",
-                                                               "value" => "void"
+                                                               "set_type" => "type",
+                                                               "type" => "void"
                                                              }
                                                            ]
                                                          ]
@@ -1618,8 +1667,7 @@ $Web::IDL::_Defs = {
                                                      "patterns" => [
                                                                      [
                                                                        {
-                                                                         "type" => "other",
-                                                                         "value" => "{"
+                                                                         "type" => "{"
                                                                        },
                                                                        {
                                                                          "set" => "value_map",
@@ -1627,14 +1675,12 @@ $Web::IDL::_Defs = {
                                                                          "value" => "SerializationPatternMap"
                                                                        },
                                                                        {
-                                                                         "type" => "other",
-                                                                         "value" => "}"
+                                                                         "type" => "}"
                                                                        }
                                                                      ],
                                                                      [
                                                                        {
-                                                                         "type" => "other",
-                                                                         "value" => "["
+                                                                         "type" => "["
                                                                        },
                                                                        {
                                                                          "set" => "value_list",
@@ -1642,8 +1688,7 @@ $Web::IDL::_Defs = {
                                                                          "value" => "SerializationPatternList"
                                                                        },
                                                                        {
-                                                                         "type" => "other",
-                                                                         "value" => "]"
+                                                                         "type" => "]"
                                                                        }
                                                                      ],
                                                                      [
@@ -1660,8 +1705,7 @@ $Web::IDL::_Defs = {
                                                                          [
                                                                            {
                                                                              "set_true" => "getter",
-                                                                             "type" => "identifier",
-                                                                             "value" => "getter"
+                                                                             "type" => "getter"
                                                                            }
                                                                          ],
                                                                          [
@@ -1682,15 +1726,13 @@ $Web::IDL::_Defs = {
                                                                         [
                                                                           {
                                                                             "set_true" => "getter",
-                                                                            "type" => "identifier",
-                                                                            "value" => "getter"
+                                                                            "type" => "getter"
                                                                           }
                                                                         ],
                                                                         [
                                                                           {
                                                                             "set_true" => "inherit",
-                                                                            "type" => "identifier",
-                                                                            "value" => "inherit"
+                                                                            "type" => "inherit"
                                                                           },
                                                                           {
                                                                             "type" => "rule",
@@ -1714,8 +1756,7 @@ $Web::IDL::_Defs = {
                                                            [
                                                              {
                                                                "set_true" => "serializer",
-                                                               "type" => "identifier",
-                                                               "value" => "serializer"
+                                                               "type" => "serializer"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1735,8 +1776,7 @@ $Web::IDL::_Defs = {
                                                                ],
                                                                [
                                                                  {
-                                                                   "type" => "other",
-                                                                   "value" => "="
+                                                                   "type" => "="
                                                                  },
                                                                  {
                                                                    "type" => "rule",
@@ -1756,8 +1796,7 @@ $Web::IDL::_Defs = {
                                                            [
                                                              {
                                                                "set_true" => "type_any",
-                                                               "type" => "identifier",
-                                                               "value" => "any"
+                                                               "type" => "any"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1771,36 +1810,31 @@ $Web::IDL::_Defs = {
                                                         [
                                                           {
                                                             "set_true" => "getter",
-                                                            "type" => "identifier",
-                                                            "value" => "getter"
+                                                            "type" => "getter"
                                                           }
                                                         ],
                                                         [
                                                           {
                                                             "set_true" => "setter",
-                                                            "type" => "identifier",
-                                                            "value" => "setter"
+                                                            "type" => "setter"
                                                           }
                                                         ],
                                                         [
                                                           {
                                                             "set_true" => "creator",
-                                                            "type" => "identifier",
-                                                            "value" => "creator"
+                                                            "type" => "creator"
                                                           }
                                                         ],
                                                         [
                                                           {
                                                             "set_true" => "deleter",
-                                                            "type" => "identifier",
-                                                            "value" => "deleter"
+                                                            "type" => "deleter"
                                                           }
                                                         ],
                                                         [
                                                           {
                                                             "set_true" => "legacycaller",
-                                                            "type" => "identifier",
-                                                            "value" => "legacycaller"
+                                                            "type" => "legacycaller"
                                                           }
                                                         ]
                                                       ]
@@ -1847,8 +1881,7 @@ $Web::IDL::_Defs = {
                                                              [
                                                                {
                                                                  "set_true" => "static",
-                                                                 "type" => "identifier",
-                                                                 "value" => "static"
+                                                                 "type" => "static"
                                                                },
                                                                {
                                                                  "type" => "rule",
@@ -1882,8 +1915,7 @@ $Web::IDL::_Defs = {
                                                             [
                                                               {
                                                                 "set_true" => "stringifier",
-                                                                "type" => "identifier",
-                                                                "value" => "stringifier"
+                                                                "type" => "stringifier"
                                                               },
                                                               {
                                                                 "type" => "rule",
@@ -1912,8 +1944,7 @@ $Web::IDL::_Defs = {
                                                                 ],
                                                                 [
                                                                   {
-                                                                    "type" => "other",
-                                                                    "value" => ";"
+                                                                    "type" => ";"
                                                                   }
                                                                 ]
                                                               ]
@@ -1943,12 +1974,10 @@ $Web::IDL::_Defs = {
                                            "patterns" => [
                                                            [
                                                              {
-                                                               "type" => "other",
-                                                               "value" => "["
+                                                               "type" => "["
                                                              },
                                                              {
-                                                               "type" => "other",
-                                                               "value" => "]"
+                                                               "type" => "]"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1958,8 +1987,7 @@ $Web::IDL::_Defs = {
                                                            [
                                                              {
                                                                "set_true" => "type_null",
-                                                               "type" => "other",
-                                                               "value" => "?"
+                                                               "type" => "?"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -1973,12 +2001,10 @@ $Web::IDL::_Defs = {
                                                             "patterns" => [
                                                                             [
                                                                               {
-                                                                                "type" => "other",
-                                                                                "value" => "["
+                                                                                "type" => "["
                                                                               },
                                                                               {
-                                                                                "type" => "other",
-                                                                                "value" => "]"
+                                                                                "type" => "]"
                                                                               },
                                                                               {
                                                                                 "type" => "rule",
@@ -1991,21 +2017,20 @@ $Web::IDL::_Defs = {
                                         "patterns" => [
                                                         [
                                                           {
-                                                            "set_value" => "definition_type",
-                                                            "type" => "identifier",
-                                                            "value" => "typedef"
+                                                            "set_type" => "definition_type",
+                                                            "type" => "typedef"
                                                           },
                                                           {
                                                             "type" => "rule",
                                                             "value" => "Type"
                                                           },
                                                           {
+                                                            "remove_underscore" => 1,
                                                             "set_value" => "name",
                                                             "type" => "identifier"
                                                           },
                                                           {
-                                                            "type" => "other",
-                                                            "value" => ";"
+                                                            "type" => ";"
                                                           }
                                                         ]
                                                       ]
@@ -2031,16 +2056,13 @@ $Web::IDL::_Defs = {
                                                                 [
                                                                   {
                                                                     "set_true" => "type_any",
-                                                                    "type" => "identifier",
-                                                                    "value" => "any"
+                                                                    "type" => "any"
                                                                   },
                                                                   {
-                                                                    "type" => "other",
-                                                                    "value" => "["
+                                                                    "type" => "["
                                                                   },
                                                                   {
-                                                                    "type" => "other",
-                                                                    "value" => "]"
+                                                                    "type" => "]"
                                                                   },
                                                                   {
                                                                     "type" => "rule",
@@ -2054,8 +2076,7 @@ $Web::IDL::_Defs = {
                                                  "patterns" => [
                                                                  [
                                                                    {
-                                                                     "type" => "identifier",
-                                                                     "value" => "or"
+                                                                     "type" => "or"
                                                                    },
                                                                    {
                                                                      "append" => "type_union",
@@ -2073,8 +2094,7 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                           [
                                                             {
-                                                              "type" => "other",
-                                                              "value" => "("
+                                                              "type" => "("
                                                             },
                                                             {
                                                               "append" => "type_union",
@@ -2082,8 +2102,7 @@ $Web::IDL::_Defs = {
                                                               "value" => "UnionMemberType"
                                                             },
                                                             {
-                                                              "type" => "identifier",
-                                                              "value" => "or"
+                                                              "type" => "or"
                                                             },
                                                             {
                                                               "append" => "type_union",
@@ -2095,8 +2114,7 @@ $Web::IDL::_Defs = {
                                                               "value" => "UnionMemberTypes"
                                                             },
                                                             {
-                                                              "type" => "other",
-                                                              "value" => ")"
+                                                              "type" => ")"
                                                             }
                                                           ]
                                                         ]
@@ -2106,8 +2124,7 @@ $Web::IDL::_Defs = {
                                                                       [
                                                                         {
                                                                           "set_true" => "unrestricted",
-                                                                          "type" => "identifier",
-                                                                          "value" => "unrestricted"
+                                                                          "type" => "unrestricted"
                                                                         },
                                                                         {
                                                                           "type" => "rule",
@@ -2127,8 +2144,7 @@ $Web::IDL::_Defs = {
                                                                     [
                                                                       {
                                                                         "set_true" => "unsigned",
-                                                                        "type" => "identifier",
-                                                                        "value" => "unsigned"
+                                                                        "type" => "unsigned"
                                                                       },
                                                                       {
                                                                         "type" => "rule",
@@ -2147,13 +2163,22 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                           [
                                                             {
-                                                              "set_true" => "callback",
-                                                              "type" => "identifier",
-                                                              "value" => "callback"
+                                                              "set_type" => "definition_type",
+                                                              "type" => "callback"
                                                             },
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "CallbackRestOrInterface"
+                                                              "value" => "CallbackRest"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "set_true" => "callback",
+                                                              "type" => "callback"
+                                                            },
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "Interface"
                                                             }
                                                           ]
                                                         ]
@@ -2186,6 +2211,10 @@ $Web::IDL::_Defs = {
                                                                     }
                                                                   ]
                                                                 ],
+                                                  "set" => [
+                                                             "member_type",
+                                                             "dictionary_member"
+                                                           ],
                                                   "set_index" => 1
                                                 },
                          "_ExceptionMember" => {
@@ -2218,6 +2247,110 @@ $Web::IDL::_Defs = {
                                                                ],
                                                  "set_index" => 1
                                                }
-                       }
+                       },
+          "keyword_tokens" => {
+                                "ByteString" => {},
+                                "DOMString" => {},
+                                "Date" => {},
+                                "Infinity" => {},
+                                "NaN" => {},
+                                "RegExp" => {},
+                                "any" => {},
+                                "attribute" => {
+                                                 "argument_name" => 1
+                                               },
+                                "boolean" => {},
+                                "byte" => {},
+                                "callback" => {
+                                                "argument_name" => 1
+                                              },
+                                "const" => {
+                                             "argument_name" => 1
+                                           },
+                                "creator" => {
+                                               "argument_name" => 1
+                                             },
+                                "deleter" => {
+                                               "argument_name" => 1
+                                             },
+                                "dictionary" => {
+                                                  "argument_name" => 1
+                                                },
+                                "double" => {},
+                                "enum" => {
+                                            "argument_name" => 1
+                                          },
+                                "exception" => {
+                                                 "argument_name" => 1
+                                               },
+                                "false" => {},
+                                "float" => {},
+                                "getter" => {
+                                              "argument_name" => 1
+                                            },
+                                "implements" => {
+                                                  "argument_name" => 1
+                                                },
+                                "inherit" => {
+                                               "argument_name" => 1
+                                             },
+                                "interface" => {
+                                                 "argument_name" => 1
+                                               },
+                                "iterator" => {},
+                                "legacycaller" => {
+                                                    "argument_name" => 1
+                                                  },
+                                "long" => {},
+                                "null" => {},
+                                "object" => {},
+                                "octet" => {},
+                                "optional" => {},
+                                "or" => {},
+                                "partial" => {
+                                               "argument_name" => 1
+                                             },
+                                "readonly" => {},
+                                "sequence" => {},
+                                "serializer" => {
+                                                  "argument_name" => 1
+                                                },
+                                "setter" => {
+                                              "argument_name" => 1
+                                            },
+                                "short" => {},
+                                "static" => {
+                                              "argument_name" => 1
+                                            },
+                                "stringifier" => {
+                                                   "argument_name" => 1
+                                                 },
+                                "true" => {},
+                                "typedef" => {
+                                               "argument_name" => 1
+                                             },
+                                "unrestricted" => {
+                                                    "argument_name" => 1
+                                                  },
+                                "unsigned" => {},
+                                "void" => {}
+                              },
+          "other_tokens" => {
+                              "(" => 1,
+                              ")" => 1,
+                              "," => 1,
+                              "-" => 1,
+                              "." => 1,
+                              ":" => 1,
+                              ";" => 1,
+                              "<" => 1,
+                              "=" => 1,
+                              ">" => 1,
+                              "?" => 1,
+                              "[" => 1,
+                              "]" => 1,
+                              "{" => 1,
+                              "}" => 1
+                            }
         };
 

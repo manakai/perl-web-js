@@ -1,6 +1,7 @@
 all: deps json-ps lib/Web/IDL/_Defs.pm
 
 clean: clean-json-ps
+	rm -fr local/*.json
 
 updatenightly: local/bin/pmbp.pl clean all
 	curl https://gist.githubusercontent.com/wakaba/34a71d3137a52abb562d/raw/gistfile1.txt | sh
@@ -40,12 +41,16 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 
 ## ------ Build ------
 
-lib/Web/IDL/_Defs.pm: bin/generate-webidl-defs.pl local/webidl-grammer.json
+lib/Web/IDL/_Defs.pm: bin/generate-webidl-defs.pl local/webidl-grammer.json \
+    local/webidl.json
 	$(PERL) bin/generate-webidl-defs.pl > $@
 	$(PERL) -c $@
 
 local/webidl-grammer.json: bin/parse-grammer.pl src/webidl-grammer.txt
 	$(PERL) bin/parse-grammer.pl > $@
+
+local/webidl.json: 
+	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/webidl.json
 
 ## ------ Tests ------
 
