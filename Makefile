@@ -1,11 +1,12 @@
-# -*- Makefile -*-
+all: deps json-ps lib/Web/IDL/_Defs.pm
 
-all:
+clean: clean-json-ps
 
 ## ------ Setup ------
 
 WGET = wget
 GIT = git
+PERL = ./perl
 
 deps: git-submodules pmbp-install
 
@@ -24,6 +25,22 @@ pmbp-install: pmbp-upgrade
             --create-perl-command-shortcut perl \
             --create-perl-command-shortcut prove
 
+json-ps: local/perl-latest/pm/lib/perl5/JSON/PS.pm
+clean-json-ps:
+	rm -fr local/perl-latest/pm/lib/perl5/JSON/PS.pm
+local/perl-latest/pm/lib/perl5/JSON/PS.pm:
+	mkdir -p local/perl-latest/pm/lib/perl5/JSON
+	$(WGET) -O $@ https://raw.githubusercontent.com/wakaba/perl-json-ps/master/lib/JSON/PS.pm
+
+## ------ Build ------
+
+lib/Web/IDL/_Defs.pm: bin/generate-webidl-defs.pl local/webidl-grammer.json
+	$(PERL) bin/generate-webidl-defs.pl > $@
+	$(PERL) -c $@
+
+local/webidl-grammer.json: bin/parse-grammer.pl src/webidl-grammer.txt
+	$(PERL) bin/parse-grammer.pl > $@
+
 ## ------ Tests ------
 
 PROVE = ./prove
@@ -33,4 +50,4 @@ test: test-deps test-main
 test-deps: deps
 
 test-main:
-	$(PROVE) t/modules/*.t
+	$(PROVE) t/modules/*.t t/parsing/*.t

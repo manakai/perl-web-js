@@ -1,0 +1,573 @@
+* Definitions
+
+_Definition*=definitions[]
+
+* _Definition
+
++pos
+ExtendedAttributeList Definition
+
+* Definition
+
+CallbackOrInterface
+|
+Partial
+|
+Dictionary
+|
+Exception
+|
+Enum
+|
+Typedef
+|
+ImplementsStatement
+
+* CallbackOrInterface
+
+_Callback
+|
+Interface
+
+* _Callback
+
+'callback'=callback? CallbackRestOrInterface
+
+* CallbackRestOrInterface
+
+CallbackRest
+|
+Interface
+
+* Interface
+
+'interface'="definition_type" identifier="name" Inheritance '{' InterfaceMembers '}' ';'
+
+* Partial
+
+'partial'=partial? PartialDefinition
+
+* PartialDefinition
+
+PartialInterface
+|
+PartialDictionary
+
+* PartialInterface
+
+'interface'="definition_type" identifier="name" '{' InterfaceMembers '}' ';'
+
+* InterfaceMembers
+
+_InterfaceMember*=members[]
+
+* _InterfaceMember
+
++pos
+ExtendedAttributeList InterfaceMember
+
+* InterfaceMember
+
+Const
+|
+AttributeOrOperationOrIterator
+
+* Dictionary
+
+'dictionary'="definition_type" identifier="name" Inheritance '{' DictionaryMembers '}' ';'
+
+* DictionaryMembers
+
+_DictionaryMember*=members[]
+
+* _DictionaryMember
+
++pos
+ExtendedAttributeList DictionaryMember
+
+* DictionaryMember
+
+Type identifier="name" Default ';'
+
+* PartialDictionary
+
+'dictionary'="definition_type" identifier="name" '{' DictionaryMembers '}' ';'
+
+* Default
+
+'=' DefaultValue
+?
+
+* DefaultValue
+
+ConstValue
+|
+string=value_string
+
+* Exception
+
+'exception'="definition_type" identifier="name" Inheritance '{' ExceptionMembers '}' ';'
+
+* ExceptionMembers
+
+_ExceptionMember*=members[]
+
+* _ExceptionMember
+
++pos
+ExtendedAttributeList ExceptionMember
+
+* Inheritance
+
+':' identifier="super_name"
+?
+
+* Enum
+
+'enum'="definition_type" identifier="name" '{' EnumValueList '}' ';'
+
+* EnumValueList
+
+string="string_values"[] EnumValueListComma
+
+* EnumValueListComma
+
+',' EnumValueListString
+?
+
+* EnumValueListString
+
+string="string_values"[] EnumValueListComma
+?
+
+* CallbackRest
+
+identifier="name" '=' ReturnType '(' ArgumentList ')' ';'
+
+* Typedef
+
+'typedef'="definition_type" Type identifier="name" ';'
+
+* ImplementsStatement
+
+identifier="name" 'implements'="definition_type" identifier="super_name" ';'
+
+* Const
+
+'const'="member_type" ConstType identifier="name" '=' ConstValue ';'
+
+* ConstValue
+
+BooleanLiteral
+|
+FloatLiteral
+|
+integer="value_integer"
+|
+'null'=value_null?
+
+* BooleanLiteral
+
+'true'=value_true?
+|
+'false'=value_false?
+
+* FloatLiteral
+
+float="value_float"
+|
+'-Infinity'=value_n_infinity?
+|
+'Infinity'=value_inifinity?
+|
+'NaN'=value_nan?
+
+* AttributeOrOperationOrIterator
+
+Serializer
+|
+Stringifier
+|
+StaticMember
+|
+Attribute
+|
+OperationOrIterator
+
+* Serializer
+
+'serializer'=serializer? SerializerRest
+
+* SerializerRest
+
+OperationRest
+|
+'=' SerializationPattern
+?
+
+* SerializationPattern
+
+'{' SerializationPatternMap=value_map '}'
+|
+'[' SerializationPatternList=value_list ']'
+|
+identifier="value_name"
+
+* SerializationPatternMap
+
+'getter'=getter?
+|
+'inherit'=inherit? Identifiers
+|
+identifier="value_names"[] Identifiers
+?
+
+* SerializationPatternList
+
+'getter'=getter?
+|
+identifier="value_names"[] Identifiers
+?
+
+* Stringifier
+
+'stringifier'=stringifier? StringifierRest
+
+* StringifierRest
+
+AttributeRest
+|
+ReturnType OperationRest
+|
+';'
+
+* StaticMember
+
+'static'=static? StaticMemberRest
+
+* StaticMemberRest
+
+AttributeRest
+|
+ReturnType OperationRest
+
+* Attribute
+
+Inherit AttributeRest
+
+* AttributeRest
+
+ReadOnly 'attribute'="member_type" Type Identifier ';'
+
+* Inherit
+
+'inherit'=inherit?
+?
+
+* ReadOnly
+
+'readonly'=readonly?
+?
+
+* OperationOrIterator
+
+ReturnType OperationOrIteratorRest
+|
+SpecialOperation
+
+* SpecialOperation
+
+Special Specials ReturnType OperationRest
+
+* Specials
+
+Special Specials
+?
+
+* Special
+
+'getter'=getter?
+|
+'setter'=setter?
+|
+'creator'=creator?
+|
+'deleter'=deleter?
+|
+'legacycaller'=legacycaller?
+
+* OperationOrIteratorRest
+
+IteratorRest
+|
+OperationRest
+
+* IteratorRest
+
+'iterator'=iterator? OperationIteratorInterfaceOrObject ';'
+
+* OperationIteratorInterfaceOrObject
+
+OptionalIteratorInterface
+|
+'object'=object?
+
+* OptionalIteratorInterface
+
+'=' identifier="value_name"
+?
+
+* OperationRest
+
+OptionalIdentifier '(' ArgumentList ')' ';'
+
+* OptionalIdentifier
+
+identifier="name"
+?
+
+* ArgumentList
+
+Argument=arguments[] Arguments
+?
+
+* Arguments
+
+',' Argument=arguments[] Arguments
+?
+
+* Argument
+
++pos
+ExtendedAttributeList OptionalOrRequiredArgument
+
+* OptionalOrRequiredArgument
+
+'optional'=optional? Type ArgumentName Default
+|
+Type Ellipsis ArgumentName
+
+* ArgumentName
+
+ArgumentNameKeyword
+|
+identifier="name"
+
+* Ellipsis
+
+'...'=more?
+?
+
+* ExceptionMember
+
+Const
+|
+ExceptionField
+
+* ExceptionField
+
+Type identifier="name" ';'
+
+* ExtendedAttributeList
+
+'[' ExtendedAttribute=extended_attributes[] ExtendedAttributes ']'
+?
+
+* ExtendedAttributes
+
+',' ExtendedAttribute=extended_attributes[] ExtendedAttributes
+?
+
+* ExtendedAttribute
+
++pos
+
+#'('="item_type" ExtendedAttributeInner ')' ExtendedAttributeRest
+#|
+#'['="item_type" ExtendedAttributeInner ']' ExtendedAttributeRest
+#|
+#'{'="item_type" ExtendedAttributeInner '}' ExtendedAttributeRest
+#|
+#Other ExtendedAttributeRest
+
+ExtendedAttributeArgList
+|
+ExtendedAttributeTypePair
+|
+ExtendedAttributeIdentList
+|
+ExtendedAttributeIdent
+|
+ExtendedAttributeNameArgList
+|
+ExtendedAttributeNoArgs
+
+* ExtendedAttributeRest
+
+ExtendedAttribute=extended_attributes[]
+?
+
+* ExtendedAttributeInner
+
+'('="item_type" ExtendedAttributeInner ')' ExtendedAttributeInner
+|
+'['="item_type" ExtendedAttributeInner ']' ExtendedAttributeInner
+|
+'{'="item_type" ExtendedAttributeInner '}' ExtendedAttributeInner
+|
+OtherOrComma ExtendedAttributeInner
+?
+
+* Type
+
+SingleType
+|
+UnionType TypeSuffix
+
+* SingleType
+
+NonAnyType
+|
+'any'=type_any? TypeSuffixStartingWithArray
+
+* UnionType
+
+'(' UnionMemberType=type_union[] 'or' UnionMemberType=type_union[] UnionMemberTypes ')'
+
+* UnionMemberType
+
+NonAnyType
+|
+UnionType TypeSuffix
+|
+                # XXX
+'any'=type_any? '[' ']' TypeSuffix
+
+* UnionMemberTypes
+
+'or' UnionMemberType=type_union[] UnionMemberTypes
+?
+
+* NonAnyType
+
+PrimitiveType TypeSuffix
+|
+'ByteString'="type" TypeSuffix
+|
+'DOMString'="type" TypeSuffix
+|
+identifier="type_name" TypeSuffix
+|
+'sequence' '<' Type=type_suffix '>' Null
+|
+'object'="type" TypeSuffix
+|
+'Date'="type" TypeSuffix
+|
+'RegExp'="type" TypeSuffix
+
+* ConstType
+
+PrimitiveType Null
+|
+identifier="type_name" Null
+
+* PrimitiveType
+
+UnsignedIntegerType
+|
+UnrestrictedFloatType
+|
+'boolean'="type"
+|
+'byte'="type"
+|
+'octet'="type"
+
+* UnrestrictedFloatType
+
+'unrestricted'=unrestricted? FloatType
+|
+FloatType
+
+* FloatType
+
+'float'="type"
+|
+'double'="type"
+
+* UnsignedIntegerType
+
+'unsigned'=unsigned? IntegerType
+|
+IntegerType
+
+* IntegerType
+
+'short'="type"
+|
+'long'="type" OptionalLong
+
+* OptionalLong
+
+'long'="type2"
+?
+
+* TypeSuffix
+
+# XXX
+'[' ']' TypeSuffix
+|
+#XXX
+'?'=type_null? TypeSuffixStartingWithArray
+?
+
+* TypeSuffixStartingWithArray
+
+# XXX
+'[' ']' TypeSuffix
+?
+
+* Null
+
+'?'=type_nullable?
+?
+
+* ReturnType
+
+Type
+|
+'void'="type"
+
+* IdentifierList
+
+identifier="value_names"[]!'='!'(' Identifiers
+
+* Identifiers
+
+',' identifier="value_names"[]!'='!'(' Identifiers
+?
+
+* ExtendedAttributeNoArgs
+
+identifier="name1"!'('!'='
+
+* ExtendedAttributeArgList
+
+identifier="name" '(' ArgumentList ')'
+
+* ExtendedAttributeIdent
+
+identifier="name" '=' identifier="value_name"!'='!'('
+
+* ExtendedAttributeIdentList
+
+identifier="name" '=' IdentifierList
+
+* ExtendedAttributeNamedArgList
+
+identifier="name" '=' identifier="value_name" '(' ArgumentList ')'
+
+* ExtendedAttributeTypePair
+
+identifier="name" '(' Type=value_types[] ',' Type=value_types[] ')'
