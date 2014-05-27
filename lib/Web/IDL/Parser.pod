@@ -100,24 +100,6 @@ The name of the member from which the member inherits, if any.
 The array reference containing the members of the definition, if
 applicable.
 
-=item type
-
-The builtin Web IDL type associated with the definition, if
-applicable.
-
-=item type_unrestricted, type_unsigned
-
-The modifier for the C<type>, if any.
-
-=item type_name
-
-The name of the Web IDL type associated with the definition, if
-applicable.
-
-=item type_nullable
-
-Whether the type is nullable or not.
-
 =item value_strings
 
 The allowed string values associated with the definition, if
@@ -125,9 +107,18 @@ applicable.
 
 =item arguments
 
-The array reference of the arguments, if applicable.
+The array reference of the arguments for the definition, if
+applicable.
+
+=item extended_attributes
+
+The array reference of the extended attributes for the definition, if
+any.
 
 =back
+
+In addition, the type key/value pairs whose target is the definition
+are also available if applicable.
 
 A member is a hash reference with following key/value pairs:
 
@@ -152,23 +143,6 @@ The name of the member, if applicable.
 =item creator, getter, setter, deleter, stringifier, serializer
 
 Whether the keyword is set to the member or not.
-
-=item type
-
-The builtin Web IDL type associated with the member, if applicable.
-
-=item type_unrestricted, type_unsigned
-
-The modifier for the C<type>, if any.
-
-=item type_name
-
-The name of the Web IDL type associated with the member, if
-applicable.
-
-=item type_nullable
-
-Whether the type is nullable or not.
 
 =item value
 
@@ -201,9 +175,16 @@ The serialization pattern (list) of the member, if applicable.
 
 =item arguments
 
-The array reference of the arguments, if applicable.
+The array reference of the arguments for the member, if applicable.
+
+=item extended_attributes
+
+The array reference of the extended attributes for the member, if any.
 
 =back
+
+In addition, the type key/value pairs whose target is the member are
+also available if applicable.
 
 An argument is a hash reference with following key/value pairs:
 
@@ -217,22 +198,6 @@ for the argument appears.
 =item name
 
 The name of the argument.
-
-=item type
-
-The builtin Web IDL type associated with the argument, if any.
-
-=item type_unrestricted, type_unsigned
-
-The modifier for the C<type>, if any.
-
-=item type_name
-
-The name of the Web IDL type associated with the argument, if any.
-
-=item type_nullable
-
-Whether the type is nullable or not.
 
 =item optional
 
@@ -259,7 +224,15 @@ The value associated with the argument, as a string, if any.
 
 Whether there is the C<...> token or not.
 
+=item extended_attributes
+
+The array reference of the extended attributes for the argument, if
+any.
+
 =back
+
+In addition, the type key/value pairs whose target is the argument are
+also available if applicable.
 
 A serialization pattern (either map or list) is a hash reference with
 following key/value pairss:
@@ -273,6 +246,82 @@ The array reference containing the values in the pattern.
 =item inherit, attribute, getter
 
 Whether the keyword is specified for the serialization pattern or not.
+
+=back
+
+An extended attribute is a hash reference with following key/value
+pairs:
+
+=over 4
+
+=item index
+
+The index in the input character string at which the first character
+for the extended attribute appears.
+
+=item name
+
+The name of the extended attribute.
+
+=item arguments
+
+The array reference of the arguments for the extended attribute, if
+any.
+
+=item value_names
+
+The array reference of the argument identifiers for the extended
+attribute, if any.
+
+=back
+
+The type key/value pairs are as follows:
+
+=over 4
+
+=item type
+
+The Web IDL builtin type associated with the target, such as C<long>,
+C<any>, C<void>, C<unsigned long>, C<unrestricted double> (where
+spaces are represented by a U+0020 character), if any.
+
+=item type_name
+
+The name of the Web IDL type associated with the target, if any.
+
+=item type_nullable
+
+Whether the Web IDL type associated with the target is nullable or
+not.
+
+=item type_array
+
+A hash reference if the Web IDL type associated with the target is an
+array whose item type is represented by the other type key/value
+pairs.  The hash reference can contain the type key/value pairs, which
+represents that the array type is in fact an inner type of another
+type.
+
+For example, a Web IDL type C< T[]?[] > is represented as:
+
+  {
+    "type_name": "T",
+    "type_array": {
+      "type_nullable": 1,
+      "type_array": {}
+    }
+  }
+
+=item type_parameterized
+
+The hash reference representing the prameterized Web IDL type of the
+target, if any.
+
+=item type_outer
+
+The type of the parameterized type, such as C<sequence>, if the hash
+reference containing the key/value pair represents a parameterized Web
+IDL type of the target.
 
 =back
 

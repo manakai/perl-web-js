@@ -763,19 +763,13 @@ $Web::IDL::_Defs = {
                                                                   [
                                                                     {
                                                                       "type" => "rule",
+                                                                      "value" => "ExtendedAttributeNamedArgList"
+                                                                    }
+                                                                  ],
+                                                                  [
+                                                                    {
+                                                                      "type" => "rule",
                                                                       "value" => "ExtendedAttributeIdentList"
-                                                                    }
-                                                                  ],
-                                                                  [
-                                                                    {
-                                                                      "type" => "rule",
-                                                                      "value" => "ExtendedAttributeIdent"
-                                                                    }
-                                                                  ],
-                                                                  [
-                                                                    {
-                                                                      "type" => "rule",
-                                                                      "value" => "ExtendedAttributeNameArgList"
                                                                     }
                                                                   ],
                                                                   [
@@ -839,6 +833,10 @@ $Web::IDL::_Defs = {
                                                                                "type" => "="
                                                                              },
                                                                              {
+                                                                               "next_is_not" => {
+                                                                                                  "(" => 1,
+                                                                                                  "=" => 1
+                                                                                                },
                                                                                "type" => "rule",
                                                                                "value" => "IdentifierList"
                                                                              }
@@ -944,7 +942,7 @@ $Web::IDL::_Defs = {
                                                                                   "type" => "="
                                                                                 },
                                                                                 {
-                                                                                  "set_value" => "value_name",
+                                                                                  "append_value" => "value_names",
                                                                                   "type" => "identifier"
                                                                                 },
                                                                                 {
@@ -968,7 +966,7 @@ $Web::IDL::_Defs = {
                                                                                                "(" => 1,
                                                                                                "=" => 1
                                                                                              },
-                                                                            "set_value" => "name1",
+                                                                            "set_value" => "name",
                                                                             "type" => "identifier"
                                                                           }
                                                                         ]
@@ -1174,12 +1172,14 @@ $Web::IDL::_Defs = {
                                                             ],
                                                             [
                                                               {
-                                                                "set_type" => "type",
-                                                                "type" => "long"
-                                                              },
+                                                                "type" => "rule",
+                                                                "value" => "_LongLong"
+                                                              }
+                                                            ],
+                                                            [
                                                               {
                                                                 "type" => "rule",
-                                                                "value" => "OptionalLong"
+                                                                "value" => "_Long"
                                                               }
                                                             ]
                                                           ]
@@ -1311,22 +1311,9 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "type" => "sequence"
-                                                             },
-                                                             {
-                                                               "type" => "<"
-                                                             },
-                                                             {
-                                                               "set" => "type_suffix",
+                                                               "set" => "type_parameterized",
                                                                "type" => "rule",
-                                                               "value" => "Type"
-                                                             },
-                                                             {
-                                                               "type" => ">"
-                                                             },
-                                                             {
-                                                               "type" => "rule",
-                                                               "value" => "Null"
+                                                               "value" => "_SequenceType"
                                                              }
                                                            ],
                                                            [
@@ -1484,7 +1471,6 @@ $Web::IDL::_Defs = {
                                              "patterns" => [
                                                              [
                                                                {
-                                                                 "set_type" => "type2",
                                                                  "type" => "long"
                                                                }
                                                              ]
@@ -1855,7 +1841,7 @@ $Web::IDL::_Defs = {
                                                            ],
                                                            [
                                                              {
-                                                               "set_true" => "type_any",
+                                                               "set_type" => "type",
                                                                "type" => "any"
                                                              },
                                                              {
@@ -2035,19 +2021,14 @@ $Web::IDL::_Defs = {
                                            "patterns" => [
                                                            [
                                                              {
-                                                               "type" => "["
-                                                             },
-                                                             {
-                                                               "type" => "]"
-                                                             },
-                                                             {
+                                                               "set" => "type_array",
                                                                "type" => "rule",
-                                                               "value" => "TypeSuffix"
+                                                               "value" => "_TypeArray"
                                                              }
                                                            ],
                                                            [
                                                              {
-                                                               "set_true" => "type_null",
+                                                               "set_true" => "type_nullable",
                                                                "type" => "?"
                                                              },
                                                              {
@@ -2062,14 +2043,9 @@ $Web::IDL::_Defs = {
                                                             "patterns" => [
                                                                             [
                                                                               {
-                                                                                "type" => "["
-                                                                              },
-                                                                              {
-                                                                                "type" => "]"
-                                                                              },
-                                                                              {
+                                                                                "set" => "type_array",
                                                                                 "type" => "rule",
-                                                                                "value" => "TypeSuffix"
+                                                                                "value" => "_TypeArray"
                                                                               }
                                                                             ]
                                                                           ]
@@ -2116,18 +2092,13 @@ $Web::IDL::_Defs = {
                                                                 ],
                                                                 [
                                                                   {
-                                                                    "set_true" => "type_any",
+                                                                    "set_type" => "type",
                                                                     "type" => "any"
                                                                   },
                                                                   {
-                                                                    "type" => "["
-                                                                  },
-                                                                  {
-                                                                    "type" => "]"
-                                                                  },
-                                                                  {
+                                                                    "set" => "type_array",
                                                                     "type" => "rule",
-                                                                    "value" => "TypeSuffix"
+                                                                    "value" => "_TypeArray"
                                                                   }
                                                                 ]
                                                               ]
@@ -2184,12 +2155,14 @@ $Web::IDL::_Defs = {
                                                       "patterns" => [
                                                                       [
                                                                         {
-                                                                          "set_true" => "unrestricted",
-                                                                          "type" => "unrestricted"
-                                                                        },
+                                                                          "type" => "rule",
+                                                                          "value" => "_UnrestrictedFloat"
+                                                                        }
+                                                                      ],
+                                                                      [
                                                                         {
                                                                           "type" => "rule",
-                                                                          "value" => "FloatType"
+                                                                          "value" => "_UnrestrictedDouble"
                                                                         }
                                                                       ],
                                                                       [
@@ -2204,12 +2177,20 @@ $Web::IDL::_Defs = {
                                                     "patterns" => [
                                                                     [
                                                                       {
-                                                                        "set_true" => "unsigned",
-                                                                        "type" => "unsigned"
-                                                                      },
+                                                                        "type" => "rule",
+                                                                        "value" => "_UnsignedShort"
+                                                                      }
+                                                                    ],
+                                                                    [
                                                                       {
                                                                         "type" => "rule",
-                                                                        "value" => "IntegerType"
+                                                                        "value" => "_UnsignedLongLong"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "type" => "rule",
+                                                                        "value" => "_UnsignedLong"
                                                                       }
                                                                     ],
                                                                     [
@@ -2331,6 +2312,58 @@ $Web::IDL::_Defs = {
                                                                   ]
                                                                 ]
                                               },
+                         "_Long" => {
+                                      "patterns" => [
+                                                      [
+                                                        {
+                                                          "set_type" => "type",
+                                                          "type" => "long"
+                                                        }
+                                                      ]
+                                                    ]
+                                    },
+                         "_LongLong" => {
+                                          "patterns" => [
+                                                          [
+                                                            {
+                                                              "type" => "long"
+                                                            },
+                                                            {
+                                                              "type" => "long"
+                                                            }
+                                                          ]
+                                                        ],
+                                          "set_fields" => [
+                                                            [
+                                                              "type",
+                                                              "long long"
+                                                            ]
+                                                          ]
+                                        },
+                         "_SequenceType" => {
+                                              "patterns" => [
+                                                              [
+                                                                {
+                                                                  "set_type" => "type_outer",
+                                                                  "type" => "sequence"
+                                                                },
+                                                                {
+                                                                  "type" => "<"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Type"
+                                                                },
+                                                                {
+                                                                  "type" => ">"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ]
+                                                            ]
+                                            },
                          "_SerializerEnd" => {
                                                "ensure_arrayref" => "arguments",
                                                "patterns" => [
@@ -2370,7 +2403,116 @@ $Web::IDL::_Defs = {
                                                                     "DOMString"
                                                                   ]
                                                                 ]
-                                              }
+                                              },
+                         "_TypeArray" => {
+                                           "patterns" => [
+                                                           [
+                                                             {
+                                                               "type" => "["
+                                                             },
+                                                             {
+                                                               "type" => "]"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "TypeSuffix"
+                                                             }
+                                                           ]
+                                                         ]
+                                         },
+                         "_UnrestrictedDouble" => {
+                                                    "patterns" => [
+                                                                    [
+                                                                      {
+                                                                        "type" => "unrestricted"
+                                                                      },
+                                                                      {
+                                                                        "type" => "double"
+                                                                      }
+                                                                    ]
+                                                                  ],
+                                                    "set_fields" => [
+                                                                      [
+                                                                        "type",
+                                                                        "unrestricted double"
+                                                                      ]
+                                                                    ]
+                                                  },
+                         "_UnrestrictedFloat" => {
+                                                   "patterns" => [
+                                                                   [
+                                                                     {
+                                                                       "type" => "unrestricted"
+                                                                     },
+                                                                     {
+                                                                       "type" => "float"
+                                                                     }
+                                                                   ]
+                                                                 ],
+                                                   "set_fields" => [
+                                                                     [
+                                                                       "type",
+                                                                       "unrestricted float"
+                                                                     ]
+                                                                   ]
+                                                 },
+                         "_UnsignedLong" => {
+                                              "patterns" => [
+                                                              [
+                                                                {
+                                                                  "type" => "unsigned"
+                                                                },
+                                                                {
+                                                                  "type" => "long"
+                                                                }
+                                                              ]
+                                                            ],
+                                              "set_fields" => [
+                                                                [
+                                                                  "type",
+                                                                  "unsigned long"
+                                                                ]
+                                                              ]
+                                            },
+                         "_UnsignedLongLong" => {
+                                                  "patterns" => [
+                                                                  [
+                                                                    {
+                                                                      "type" => "unsigned"
+                                                                    },
+                                                                    {
+                                                                      "type" => "long"
+                                                                    },
+                                                                    {
+                                                                      "type" => "long"
+                                                                    }
+                                                                  ]
+                                                                ],
+                                                  "set_fields" => [
+                                                                    [
+                                                                      "type",
+                                                                      "unsigned long long"
+                                                                    ]
+                                                                  ]
+                                                },
+                         "_UnsignedShort" => {
+                                               "patterns" => [
+                                                               [
+                                                                 {
+                                                                   "type" => "unsigned"
+                                                                 },
+                                                                 {
+                                                                   "type" => "short"
+                                                                 }
+                                                               ]
+                                                             ],
+                                               "set_fields" => [
+                                                                 [
+                                                                   "type",
+                                                                   "unsigned short"
+                                                                 ]
+                                                               ]
+                                             }
                        },
           "keyword_tokens" => {
                                 "ByteString" => {},

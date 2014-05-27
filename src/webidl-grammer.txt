@@ -448,11 +448,11 @@ ExtendedAttributeArgList
 |
 ExtendedAttributeTypePair
 |
+#ExtendedAttributeIdent
+#|
+ExtendedAttributeNamedArgList
+|
 ExtendedAttributeIdentList
-|
-ExtendedAttributeIdent
-|
-ExtendedAttributeNameArgList
 |
 ExtendedAttributeNoArgs
 
@@ -482,7 +482,7 @@ UnionType TypeSuffix
 
 NonAnyType
 |
-'any'=type_any? TypeSuffixStartingWithArray
+'any'="type" TypeSuffixStartingWithArray
 
 * UnionType
 
@@ -494,8 +494,7 @@ NonAnyType
 |
 UnionType TypeSuffix
 |
-                # XXX
-'any'=type_any? '[' ']' TypeSuffix
+'any'="type" _TypeArray=type_array
 
 * UnionMemberTypes
 
@@ -512,13 +511,17 @@ PrimitiveType TypeSuffix
 |
 identifier="type_name" TypeSuffix
 |
-'sequence' '<' Type=type_suffix '>' Null
+_SequenceType=type_parameterized
 |
 'object'="type" TypeSuffix
 |
 'Date'="type" TypeSuffix
 |
 'RegExp'="type" TypeSuffix
+
+* _SequenceType
+
+'sequence'="type_outer" '<' Type '>' Null
 
 * ConstType
 
@@ -540,7 +543,11 @@ UnrestrictedFloatType
 
 * UnrestrictedFloatType
 
-'unrestricted'=type_unrestricted? FloatType
+#'unrestricted' FloatType
+_UnrestrictedFloat
+|
+_UnrestrictedDouble
+
 |
 FloatType
 
@@ -550,9 +557,25 @@ FloatType
 |
 'double'="type"
 
+* _UnrestrictedFloat
+
++type="unrestricted float"
+'unrestricted' 'float'
+
+* _UnrestrictedDouble
+
++type="unrestricted double"
+'unrestricted' 'double'
+
 * UnsignedIntegerType
 
-'unsigned'=type_unsigned? IntegerType
+#'unsigned' IntegerType
+_UnsignedShort
+|
+_UnsignedLongLong
+|
+_UnsignedLong
+
 |
 IntegerType
 
@@ -560,28 +583,55 @@ IntegerType
 
 'short'="type"
 |
-'long'="type" OptionalLong
+#'long'="type" OptionalLong
+_LongLong
+|
+_Long
 
 * OptionalLong
 
-# XXX
-'long'="type2"
+'long'
 ?
+
+* _Long
+
+'long'="type"
+
+* _LongLong
+
++type="long long"
+'long' 'long'
+
+* _UnsignedShort
+
++type="unsigned short"
+'unsigned' 'short'
+
+* _UnsignedLong
+
++type="unsigned long"
+'unsigned' 'long'
+
+* _UnsignedLongLong
+
++type="unsigned long long"
+'unsigned' 'long' 'long'
 
 * TypeSuffix
 
-# XXX
-'[' ']' TypeSuffix
+_TypeArray=type_array
 |
-#XXX
-'?'=type_null? TypeSuffixStartingWithArray
+'?'=type_nullable? TypeSuffixStartingWithArray
 ?
 
 * TypeSuffixStartingWithArray
 
-# XXX
-'[' ']' TypeSuffix
+_TypeArray=type_array
 ?
+
+* _TypeArray
+
+'[' ']' TypeSuffix
 
 * Null
 
@@ -605,7 +655,7 @@ identifier="value_names"[]!'='!'(' Identifiers
 
 * ExtendedAttributeNoArgs
 
-identifier="name1"!'('!'='
+identifier="name"!'('!'='
 
 * ExtendedAttributeArgList
 
@@ -613,15 +663,16 @@ identifier="name" '(' ArgumentList ')'
 
 * ExtendedAttributeIdent
 
+## Unused (-> ExtendedAttributeIdentList)
 identifier="name" '=' identifier="value_name"!'='!'('
 
 * ExtendedAttributeIdentList
 
-identifier="name" '=' IdentifierList
+identifier="name" '=' IdentifierList!'='!'('
 
 * ExtendedAttributeNamedArgList
 
-identifier="name" '=' identifier="value_name" '(' ArgumentList ')'
+identifier="name" '=' identifier="value_names"[] '(' ArgumentList ')'
 
 * ExtendedAttributeTypePair
 
