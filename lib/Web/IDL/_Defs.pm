@@ -102,6 +102,12 @@ $Web::IDL::_Defs = {
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
+                                                                        "type" => "extends"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
                                                                         "type" => "serializer"
                                                                       }
                                                                     ],
@@ -115,6 +121,12 @@ $Web::IDL::_Defs = {
                                                                       {
                                                                         "set_type" => "name",
                                                                         "type" => "callback"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "class"
                                                                       }
                                                                     ],
                                                                     [
@@ -498,6 +510,12 @@ $Web::IDL::_Defs = {
                                                              {
                                                                "type" => "rule",
                                                                "value" => "ImplementsStatement"
+                                                             }
+                                                           ],
+                                                           [
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "_Class"
                                                              }
                                                            ]
                                                          ]
@@ -1340,6 +1358,23 @@ $Web::IDL::_Defs = {
                                                              {
                                                                "set_type" => "type",
                                                                "type" => "RegExp"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "TypeSuffix"
+                                                             }
+                                                           ],
+                                                           [
+                                                             {
+                                                               "set" => "type_parameterized",
+                                                               "type" => "rule",
+                                                               "value" => "_PromiseType"
+                                                             }
+                                                           ],
+                                                           [
+                                                             {
+                                                               "set_type" => "type",
+                                                               "type" => "Promise"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -2225,6 +2260,52 @@ $Web::IDL::_Defs = {
                                                           ]
                                                         ]
                                         },
+                         "_Class" => {
+                                       "patterns" => [
+                                                       [
+                                                         {
+                                                           "set_type" => "definition_type",
+                                                           "type" => "class"
+                                                         },
+                                                         {
+                                                           "remove_underscore" => 1,
+                                                           "set_value" => "name",
+                                                           "type" => "identifier"
+                                                         },
+                                                         {
+                                                           "type" => "rule",
+                                                           "value" => "_ClassInheritance"
+                                                         },
+                                                         {
+                                                           "type" => "{"
+                                                         },
+                                                         {
+                                                           "type" => "rule",
+                                                           "value" => "InterfaceMembers"
+                                                         },
+                                                         {
+                                                           "type" => "}"
+                                                         },
+                                                         {
+                                                           "type" => ";"
+                                                         }
+                                                       ]
+                                                     ]
+                                     },
+                         "_ClassInheritance" => {
+                                                  "can_be_empty" => 1,
+                                                  "patterns" => [
+                                                                  [
+                                                                    {
+                                                                      "type" => "extends"
+                                                                    },
+                                                                    {
+                                                                      "set_value" => "super_name",
+                                                                      "type" => "identifier"
+                                                                    }
+                                                                  ]
+                                                                ]
+                                                },
                          "_Definition" => {
                                             "patterns" => [
                                                             [
@@ -2340,6 +2421,30 @@ $Web::IDL::_Defs = {
                                                             ]
                                                           ]
                                         },
+                         "_PromiseType" => {
+                                             "patterns" => [
+                                                             [
+                                                               {
+                                                                 "set_type" => "type_outer",
+                                                                 "type" => "Promise"
+                                                               },
+                                                               {
+                                                                 "type" => "<"
+                                                               },
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "Type"
+                                                               },
+                                                               {
+                                                                 "type" => ">"
+                                                               },
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "Null"
+                                                               }
+                                                             ]
+                                                           ]
+                                           },
                          "_SequenceType" => {
                                               "patterns" => [
                                                               [
@@ -2520,6 +2625,7 @@ $Web::IDL::_Defs = {
                                 "Date" => {},
                                 "Infinity" => {},
                                 "NaN" => {},
+                                "Promise" => {},
                                 "RegExp" => {},
                                 "any" => {},
                                 "attribute" => {
@@ -2530,6 +2636,9 @@ $Web::IDL::_Defs = {
                                 "callback" => {
                                                 "argument_name" => 1
                                               },
+                                "class" => {
+                                             "argument_name" => 1
+                                           },
                                 "const" => {
                                              "argument_name" => 1
                                            },
@@ -2549,6 +2658,9 @@ $Web::IDL::_Defs = {
                                 "exception" => {
                                                  "argument_name" => 1
                                                },
+                                "extends" => {
+                                               "argument_name" => 1
+                                             },
                                 "false" => {},
                                 "float" => {},
                                 "getter" => {

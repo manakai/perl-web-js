@@ -71,8 +71,8 @@ for the definition appears.
 
 =item definition_name
 
-Type of the definition: C<interface>, C<exception>, C<dictionary>,
-C<enum>, or C<callback>.
+Type of the definition: C<interface>, C<class>, C<exception>,
+C<dictionary>, C<enum>, or C<callback>.
 
 Note that the C<definition_name> for a C<callback interface> is
 C<interface>.
@@ -319,19 +319,26 @@ target, if any.
 
 =item type_outer
 
-The type of the parameterized type, such as C<sequence>, if the hash
-reference containing the key/value pair represents a parameterized Web
-IDL type of the target.
+The type of the parameterized type, such as C<sequence> and
+C<Promise>, if the hash reference containing the key/value pair
+represents a parameterized Web IDL type of the target.
 
 =back
 
-=head1 SPECIFICATION
+=head1 SPECIFICATIONS
 
 =over 4
 
 =item WEBIDL
 
 Web IDL <http://heycam.github.io/webidl/>.
+
+Web IDL "Promise<T>"
+<https://www.w3.org/Bugs/Public/show_bug.cgi?id=24291>.
+
+Web IDL "class"
+<https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
+<http://dom.spec.whatwg.org/#elements>.
 
 =back
 

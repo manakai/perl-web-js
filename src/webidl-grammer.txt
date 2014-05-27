@@ -23,6 +23,10 @@ Typedef
 |
 ImplementsStatement
 
+## Not in spec
+|
+_Class
+
 * CallbackOrInterface
 
 _Callback
@@ -46,6 +50,13 @@ Interface
 * Interface
 
 'interface'="definition_type" identifier=_"name" Inheritance '{' InterfaceMembers '}' ';'
+
+* _Class
+
+## Not in spec
+## <http://dom.spec.whatwg.org/#elements>
+## <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>
+'class'="definition_type" identifier=_"name" _ClassInheritance '{' InterfaceMembers '}' ';'
 
 * Partial
 
@@ -125,6 +136,12 @@ ExtendedAttributeList ExceptionMember
 * Inheritance
 
 ':' identifier="super_name"
+?
+
+* _ClassInheritance
+
+## Not in spec
+'extends' identifier="super_name"
 ?
 
 * Enum
@@ -519,9 +536,19 @@ _SequenceType=type_parameterized
 |
 'RegExp'="type" TypeSuffix
 
+|
+## Not in spec
+_PromiseType=type_parameterized
+|
+'Promise'="type" TypeSuffix
+
 * _SequenceType
 
 'sequence'="type_outer" '<' Type '>' Null
+
+* _PromiseType
+
+'Promise'="type_outer" '<' Type '>' Null
 
 * ConstType
 
