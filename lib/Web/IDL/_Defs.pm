@@ -1332,6 +1332,10 @@ $Web::IDL::_Defs = {
                                                                "set" => "type_parameterized",
                                                                "type" => "rule",
                                                                "value" => "_SequenceType"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "Null"
                                                              }
                                                            ],
                                                            [
@@ -1369,6 +1373,10 @@ $Web::IDL::_Defs = {
                                                                "set" => "type_parameterized",
                                                                "type" => "rule",
                                                                "value" => "_PromiseType"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "Null"
                                                              }
                                                            ],
                                                            [
@@ -2437,10 +2445,6 @@ $Web::IDL::_Defs = {
                                                                },
                                                                {
                                                                  "type" => ">"
-                                                               },
-                                                               {
-                                                                 "type" => "rule",
-                                                                 "value" => "Null"
                                                                }
                                                              ]
                                                            ]
@@ -2461,10 +2465,6 @@ $Web::IDL::_Defs = {
                                                                 },
                                                                 {
                                                                   "type" => ">"
-                                                                },
-                                                                {
-                                                                  "type" => "rule",
-                                                                  "value" => "Null"
                                                                 }
                                                               ]
                                                             ]

@@ -528,7 +528,7 @@ PrimitiveType TypeSuffix
 |
 identifier="type_name" TypeSuffix
 |
-_SequenceType=type_parameterized
+_SequenceType=type_parameterized Null
 |
 'object'="type" TypeSuffix
 |
@@ -538,17 +538,17 @@ _SequenceType=type_parameterized
 
 |
 ## Not in spec
-_PromiseType=type_parameterized
+_PromiseType=type_parameterized Null
 |
 'Promise'="type" TypeSuffix
 
 * _SequenceType
 
-'sequence'="type_outer" '<' Type '>' Null
+'sequence'="type_outer" '<' Type '>'
 
 * _PromiseType
 
-'Promise'="type_outer" '<' Type '>' Null
+'Promise'="type_outer" '<' Type '>'
 
 * ConstType
 
