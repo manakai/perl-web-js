@@ -76,6 +76,11 @@ sub process_parsed_struct ($$$) {
         # XXX callback interface MUST NOT inherit from non-callback interface
         # XXX non-callback interface MUST NOT inherit from callback interface
         # XXX callback interface MUST NOT have consequential interface
+        # XXX warn if an object implements multiple interfaces with a special operation
+
+        # XXX If there is named*, there MUST be namedGetter
+        # XXX If there is indexed*, there MUST be indexedGetter
+        # XXX no special operation on callback interface
 
         if ($def->{definition_type} eq 'typedef') {
           $props->{type} = $self->_type ($di, $def);
@@ -115,6 +120,39 @@ sub process_parsed_struct ($$$) {
             push @key, 'legacycaller' if $mem->{legacycaller};
             push @key, 'stringifier' if $mem->{stringifier};
             push @key, 'serializer' if $mem->{serializer};
+            if ($mem->{getter} or $mem->{setter} or
+                $mem->{creator} or $mem->{deleter}) {
+              if (@{$mem->{arguments} or []} and
+                  defined $mem->{arguments}->[0]->{type}) {
+                if ($mem->{arguments}->[0]->{type} eq 'unsigned long' and
+                    not $mem->{arguments}->[0]->{type_nullable} and
+                    not defined $mem->{arguments}->[0]->{type_array}) {
+                  push @key, 'indexedGetter' if $mem->{getter};
+                  push @key, 'indexedSetter' if $mem->{setter};
+                  push @key, 'indexedCreator' if $mem->{creator};
+                  push @key, 'indexedDeleter' if $mem->{deleter};
+                } elsif ($mem->{arguments}->[0]->{type} eq 'DOMString' and
+                         not $mem->{arguments}->[0]->{type_nullable} and
+                         not defined $mem->{arguments}->[0]->{type_array}) {
+                  push @key, 'namedGetter' if $mem->{getter};
+                  push @key, 'namedSetter' if $mem->{setter};
+                  push @key, 'namedCreator' if $mem->{creator};
+                  push @key, 'namedDeleter' if $mem->{deleter};
+                } else {
+                  $self->onerror->(type => 'webidl:bad args',
+                                   di => $di,
+                                   index => $mem->{index},
+                                   value => $mem->{name},
+                                   level => 'm');
+                }
+              } else {
+                $self->onerror->(type => 'webidl:bad args',
+                                 di => $di,
+                                 index => $mem->{index},
+                                 value => $mem->{name},
+                                 level => 'm');
+              }
+            }
             push @key, $; . $mem->{name} if defined $mem->{name};
             unless (@key) {
               $self->onerror->(type => 'webidl:no name operation',
@@ -139,13 +177,6 @@ sub process_parsed_struct ($$$) {
               push @{$op{$key} ||= []}, $mem;
             } # $key
           } # $mem
-
-          # XXX no multiple string/index getter/setter/creator/deleter
-          # XXX If setter,creator,deleter, there MUST be getter of same variety
-          # XXX warn if non-string non-index getter,setter,creator,deleter
-          # XXX special operations MUST NOT have variadic/optional arg
-          # XXX no special operation on callback interface
-          # XXX warn if an object implements multiple interfaces with a special operation
 
           for my $key (keys %op) {
             my $mem = {member_type => 'operation',
@@ -486,6 +517,14 @@ sub _overload_set ($$$;%) {
       } else {
         $args->[$i]->{optionality} = $_->{arguments}->[$i]->{optional} ? 'optional' : 'required';
       }
+      if (defined $args{special} and
+          not $args->[$i]->{optionality} eq 'required') {
+        $self->onerror->(type => 'webidl:bad optionality',
+                         di => $di,
+                         index => $_->{arguments}->[$i]->{index},
+                         value => $name,
+                         level => 'm');
+      }
 
       $args->[$i]->{value} = $self->_value
           ($di, $_->{arguments}->[$i], optional => 1);
@@ -502,6 +541,7 @@ sub _overload_set ($$$;%) {
 
     my $type = $self->_type ($di, $_);
     # XXX type restrictions
+    my $expected_length;
     if (not defined $args{special}) {
       #
     } elsif ($args{special} eq 'legacycaller') {
@@ -525,23 +565,24 @@ sub _overload_set ($$$;%) {
                          value => $self->_serialize_type ($type),
                          level => 'm');
       }
-      unless ($n == 0) {
-        $self->onerror->(type => 'webidl:bad args',
-                         di => $di,
-                         index => $_->{index},
-                         value => $args{special},
-                         level => 'm');
-      }
+      $expected_length = 0;
     } elsif ($args{special} eq 'serializer') {
       # XXX MUST be serializable type
-      unless ($n == 0) {
-        $self->onerror->(type => 'webidl:bad args',
-                         di => $di,
-                         index => $_->{index},
-                         value => $args{special},
-                         level => 'm');
-      }
+      $expected_length = 0;
+    } elsif ($args{special} eq 'getter' or
+             $args{special} eq 'deleter') {
+      $expected_length = 1;
+    } elsif ($args{special} eq 'setter' or
+             $args{special} eq 'creator') {
+      $expected_length = 2;
     } # $args{special}
+    if (defined $expected_length and not $n == $expected_length) {
+      $self->onerror->(type => 'webidl:bad args',
+                       di => $di,
+                       index => $_->{index},
+                       value => $args{special},
+                       level => 'm');
+    }
 
     ## 5.4.
     push @$S, {type => $type, args => $args,
