@@ -218,7 +218,10 @@ OperationOrIterator
 
 * Serializer
 
-'serializer'=serializer? SerializerRest
+#'serializer'=serializer? SerializerRest
+_SerializerOperation
+|
+_Serializer
 
 * SerializerRest
 
@@ -230,28 +233,25 @@ OperationRest
 |
 _SerializerEnd
 
-* _SerializerEnd
+* _SerializerOperation
 
-+member_type="operation"
-+type="DOMString"
-+arguments[]
-';'
+'serializer'=serializer? ReturnType OperationRest
+
+* _Serializer
+
+'serializer'="member_type" '=' SerializationPattern ';'
+|
+'serializer'="member_type" ';'
 
 ## ';' is missing in spec
 
 * SerializationPattern
 
-+member_type="operation"
-+type="DOMString"
-+arguments[]
-
-'{' SerializationPatternMap=value_map '}' ';'
+'{' SerializationPatternMap=value_map '}'
 |
-'[' SerializationPatternList=value_list ']' ';'
+'[' SerializationPatternList=value_list ']'
 |
-identifier="value_name" ';'
-
-## ';' is missing in spec
+identifier="value_name"
 
 * SerializationPatternMap
 

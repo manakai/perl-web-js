@@ -1703,7 +1703,6 @@ $Web::IDL::_Defs = {
                                                          ]
                                          },
                          "SerializationPattern" => {
-                                                     "ensure_arrayref" => "arguments",
                                                      "patterns" => [
                                                                      [
                                                                        {
@@ -1716,9 +1715,6 @@ $Web::IDL::_Defs = {
                                                                        },
                                                                        {
                                                                          "type" => "}"
-                                                                       },
-                                                                       {
-                                                                         "type" => ";"
                                                                        }
                                                                      ],
                                                                      [
@@ -1732,31 +1728,15 @@ $Web::IDL::_Defs = {
                                                                        },
                                                                        {
                                                                          "type" => "]"
-                                                                       },
-                                                                       {
-                                                                         "type" => ";"
                                                                        }
                                                                      ],
                                                                      [
                                                                        {
                                                                          "set_value" => "value_name",
                                                                          "type" => "identifier"
-                                                                       },
-                                                                       {
-                                                                         "type" => ";"
                                                                        }
                                                                      ]
-                                                                   ],
-                                                     "set_fields" => [
-                                                                       [
-                                                                         "member_type",
-                                                                         "operation"
-                                                                       ],
-                                                                       [
-                                                                         "type",
-                                                                         "DOMString"
-                                                                       ]
-                                                                     ]
+                                                                   ]
                                                    },
                          "SerializationPatternList" => {
                                                          "can_be_empty" => 1,
@@ -1835,12 +1815,14 @@ $Web::IDL::_Defs = {
                                            "patterns" => [
                                                            [
                                                              {
-                                                               "set_true" => "serializer",
-                                                               "type" => "serializer"
-                                                             },
+                                                               "type" => "rule",
+                                                               "value" => "_SerializerOperation"
+                                                             }
+                                                           ],
+                                                           [
                                                              {
                                                                "type" => "rule",
-                                                               "value" => "SerializerRest"
+                                                               "value" => "_Serializer"
                                                              }
                                                            ]
                                                          ]
@@ -2469,26 +2451,53 @@ $Web::IDL::_Defs = {
                                                               ]
                                                             ]
                                             },
-                         "_SerializerEnd" => {
-                                               "ensure_arrayref" => "arguments",
-                                               "patterns" => [
-                                                               [
-                                                                 {
-                                                                   "type" => ";"
-                                                                 }
-                                                               ]
-                                                             ],
-                                               "set_fields" => [
-                                                                 [
-                                                                   "member_type",
-                                                                   "operation"
-                                                                 ],
-                                                                 [
-                                                                   "type",
-                                                                   "DOMString"
-                                                                 ]
-                                                               ]
-                                             },
+                         "_Serializer" => {
+                                            "patterns" => [
+                                                            [
+                                                              {
+                                                                "set_type" => "member_type",
+                                                                "type" => "serializer"
+                                                              },
+                                                              {
+                                                                "type" => "="
+                                                              },
+                                                              {
+                                                                "type" => "rule",
+                                                                "value" => "SerializationPattern"
+                                                              },
+                                                              {
+                                                                "type" => ";"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "member_type",
+                                                                "type" => "serializer"
+                                                              },
+                                                              {
+                                                                "type" => ";"
+                                                              }
+                                                            ]
+                                                          ]
+                                          },
+                         "_SerializerOperation" => {
+                                                     "patterns" => [
+                                                                     [
+                                                                       {
+                                                                         "set_true" => "serializer",
+                                                                         "type" => "serializer"
+                                                                       },
+                                                                       {
+                                                                         "type" => "rule",
+                                                                         "value" => "ReturnType"
+                                                                       },
+                                                                       {
+                                                                         "type" => "rule",
+                                                                         "value" => "OperationRest"
+                                                                       }
+                                                                     ]
+                                                                   ]
+                                                   },
                          "_StringifierEnd" => {
                                                 "ensure_arrayref" => "arguments",
                                                 "patterns" => [

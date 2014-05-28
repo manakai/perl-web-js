@@ -111,18 +111,23 @@ sub process_parsed_struct ($$$) {
           my %op;
           for my $mem (@{$def->{members} or []}) {
             next unless $mem->{member_type} eq 'operation';
-            if (not defined $mem->{name}) {
-              # XXX
-              
-              # XXX If no special keyword
+            my @key;
+            push @key, 'legacycaller' if $mem->{legacycaller};
+            push @key, 'stringifier' if $mem->{stringifier};
+            push @key, 'serializer' if $mem->{serializer};
+            push @key, $; . $mem->{name} if defined $mem->{name};
+            unless (@key) {
               $self->onerror->(type => 'webidl:no name operation',
                                di => $di,
                                index => $mem->{index},
                                level => 'm');
-            } else {
-              if (@{$op{$mem->{name}} ||= []}) {
-                if ($mem->{static} and not $op{$mem->{name}}->[0]->{static} or
-                    not $mem->{static} and $op{$mem->{name}}->[0]->{static}) {
+              next;
+            }
+
+            for my $key (@key) {
+              if (@{$op{$key} ||= []}) {
+                if ($mem->{static} and not $op{$key}->[0]->{static} or
+                    not $mem->{static} and $op{$key}->[0]->{static}) {
                   $self->onerror->(type => 'webidl:duplicate',
                                    di => $di,
                                    index => $mem->{index},
@@ -131,49 +136,74 @@ sub process_parsed_struct ($$$) {
                   next;
                 }
               }
-              push @{$op{$mem->{name}} ||= []}, $mem;
-            }
+              push @{$op{$key} ||= []}, $mem;
+            } # $key
           } # $mem
 
-          for my $op_name (keys %op) {
-            push @mem,
-                {member_type => 'operation',
-                 static => $op{$op_name}->[0]->{static},
-                 name => $op_name,
-                 index => $op{$op_name}->[0]->{index},
-                 overloadSet => $self->_overload_set ($di, $op{$op_name})};
+          # XXX no multiple string/index getter/setter/creator/deleter
+          # XXX If setter,creator,deleter, there MUST be getter of same variety
+          # XXX warn if non-string non-index getter,setter,creator,deleter
+          # XXX special operations MUST NOT have variadic/optional arg
+          # XXX no special operation on callback interface
+          # XXX warn if an object implements multiple interfaces with a special operation
+
+          for my $key (keys %op) {
+            my $mem = {member_type => 'operation',
+                       static => $op{$key}->[0]->{static},
+                       special => ($key =~ /$;/o ? undef : $key),
+                       name => $op{$key}->[0]->{name},
+                       index => $op{$key}->[0]->{index}};
+            $mem->{overloadSet} = $self->_overload_set
+                ($di, $op{$key}, special => $mem->{special});
+            push @mem, $mem;
           } # %op
 
           $props->{members} ||= {};
           for my $mem (@mem) {
-            if (not defined $mem->{name}) {
-              # XXX
+            if ($mem->{member_type} eq 'operation') {
+              if (defined $mem->{special}) { ## Special operation
+                if (defined $props->{$mem->{special}}) {
+                  $self->onerror->(type => 'webidl:duplicate',
+                                   value => $mem->{special},
+                                   di => $di,
+                                   index => $mem->{index},
+                                   level => 'm');
+                } else {
+                  $props->{$mem->{special}}->[0] = $mem->{member_type};
+                  my $mem_props = $props->{$mem->{special}}->[1] ||= {};
+                  $mem_props->{overloadSet} = $mem->{overloadSet};
 
-            } elsif ($mem->{member_type} eq 'operation') {
-              if (defined $props->{members}->{$mem->{name}}) {
-                $self->onerror->(type => 'webidl:duplicate',
-                                 value => $mem->{name},
-                                 di => $di,
-                                 index => $mem->{index},
-                                 level => 'm');
-              } else {
-                if ($ReservedIdentifiers->{$mem->{name}} or
-                    $Reserved->{$mem->{member_type}}->{$mem->{name}}) {
-                  $self->onerror->(type => 'webidl:reserved',
+                  if ($mem->{special} eq 'legacycaller') {
+                    # XXX legacycaller SHOULD NOT be used
+                    
+                  }
+                }
+              } else { ## Regular or static operation
+                if (defined $props->{members}->{$mem->{name}}) {
+                  $self->onerror->(type => 'webidl:duplicate',
                                    value => $mem->{name},
                                    di => $di,
                                    index => $mem->{index},
                                    level => 'm');
-                }
-
-                if ($mem->{member_type} eq 'operation' and $mem->{static}) {
-                  $props->{members}->{$mem->{name}}->[0] = 'static operation';
                 } else {
-                  $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
-                }
-                my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
+                  if ($ReservedIdentifiers->{$mem->{name}} or
+                      $Reserved->{$mem->{member_type}}->{$mem->{name}}) {
+                    $self->onerror->(type => 'webidl:reserved',
+                                     value => $mem->{name},
+                                     di => $di,
+                                     index => $mem->{index},
+                                     level => 'm');
+                  }
 
-                $mem_props->{overloadSet} = $mem->{overloadSet};
+                  if ($mem->{member_type} eq 'operation' and $mem->{static}) {
+                    $props->{members}->{$mem->{name}}->[0] = 'static operation';
+                  } else {
+                    $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
+                  }
+                  my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
+
+                  $mem_props->{overloadSet} = $mem->{overloadSet};
+                }
               }
             } elsif ($mem->{member_type} eq 'const' or
                      $mem->{member_type} eq 'attribute' or
@@ -201,8 +231,6 @@ sub process_parsed_struct ($$$) {
                   $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
                 }
                 my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
-
-                # XXX stringifier
 
                 $mem_props->{type} = $self->_type ($di, $mem);
                 # XXX const: type check
@@ -232,7 +260,29 @@ sub process_parsed_struct ($$$) {
                     $mem_props->{getter} = 1;
                     $mem_props->{setter} = 1;
                   }
-                }
+
+                  if ($mem->{stringifier}) {
+                    if (defined $props->{stringifier}) {
+                      $self->onerror->(type => 'webidl:duplicate',
+                                       value => 'stringifier',
+                                       di => $di,
+                                       index => $mem->{index},
+                                       level => 'm');
+                    } else {
+                      if (not ref $mem_props->{type} and
+                          $mem_props->{type} eq 'DOMString') {
+                        #
+                      } else {
+                        $self->onerror->(type => 'webidl:bad type',
+                                         value => 'stringifier',
+                                         di => $di,
+                                         index => $mem->{index},
+                                         level => 'm');
+                      }
+                      $props->{stringifier} = ['attrref', $mem->{name}];
+                    }
+                  }
+                } # attribute
 
                 if ($mem->{member_type} eq 'const' or
                     $mem->{member_type} eq 'dictionary_member') {
@@ -244,9 +294,28 @@ sub process_parsed_struct ($$$) {
                   # XXX float MUST be in the range
                   # XXX float value or literal MUST be in range
                   # XXX value type MUST be compat with type
-                }
+                } # has value
               }
-            }
+            } elsif ($mem->{member_type} eq 'serializer') {
+              if (defined $props->{serializer}) {
+                $self->onerror->(type => 'webidl:duplicate',
+                                 value => 'serializer',
+                                 di => $di,
+                                 index => $mem->{index},
+                                 level => 'm');
+              } else {
+                $props->{serializer}->[0] = $mem->{member_type};
+                my $mem_props = $props->{serializer}->[1] ||= {};
+                
+                $mem_props->{value} = $self->_value
+                    ($di, $mem, optional => 1);
+                delete $mem_props->{value} unless defined $mem_props->{value};
+              }
+            } else {
+              $self->onerror->(type => 'webidl:unknown',
+                               value => $mem->{member_type},
+                               level => 'u');
+            } # member_type
 
             # XXX extended attributes
           }
@@ -261,7 +330,7 @@ sub process_parsed_struct ($$$) {
       # XXX
 
     } else {
-      $self->onerror->(type => 'webidl:unknown definition',
+      $self->onerror->(type => 'webidl:unknown',
                        value => $def->{definition_type},
                        level => 'u');
     }
@@ -320,24 +389,41 @@ sub _value ($$$;%) {
     return ['float', $obj->{value_float}];
   } elsif (defined $obj->{value_string}) {
     return ['string', $obj->{value_string}];
+  } elsif (defined $obj->{value_name}) {
+    ## An identifier in serialization pattern
+    return ['attrref', $obj->{value_name}];
+    # XXX MUST be an attribute of serializable type
   } elsif (defined $obj->{value}) {
     return $obj->{value};
+  } elsif (defined $obj->{value_map} or defined $obj->{value_list}) {
+    my $o = $obj->{value_map} || $obj->{value_list};
+    my @v = defined $obj->{value_map} ? 'map' : 'list';
+    push @v, 'inherit' if $o->{inherit};
+    # XXX restriction on usage of "inherit"
+    push @v, 'attribute' if $o->{attribute};
+    # XXX expand attribute and inherit
+    push @v, 'getter' if $o->{getter};
+    # XXX requires indexed/named properties and whose type is serializable
+    if (defined $o) {
+      # XXX MUST be attributes whose type is serializable
+      push @v, map { ['attrref', $_] } @{$o->{value_names}};
+    }
+    return \@v;
   } elsif ($args{optional}) {
     return undef;
-  } else {
-    $self->onerror->(type => 'webidl:unknown value',
-                     di => $di,
-                     index => $obj->{index},
-                     level => 'u');
-    return 'null';
   }
+  $self->onerror->(type => 'webidl:unknown value',
+                   di => $di,
+                   index => $obj->{index},
+                   level => 'u');
+  return 'null';
 } # _value
 
 ## <http://heycam.github.io/webidl/#dfn-effective-overload-set> but m
 ## := n
-sub _overload_set ($$$) {
+sub _overload_set ($$$;%) {
   ## 2.
-  my ($self, $di, $F) = @_;
+  my ($self, $di, $F, %args) = @_;
 
   ## 1.
   my $S = [];
@@ -416,6 +502,46 @@ sub _overload_set ($$$) {
 
     my $type = $self->_type ($di, $_);
     # XXX type restrictions
+    if (not defined $args{special}) {
+      #
+    } elsif ($args{special} eq 'legacycaller') {
+      if ((not ref $type and $type eq 'Promise') or
+          (ref $type eq 'ARRAY' and $type->[0] eq 'Promise')) {
+        ## XXX union, nullable, sequence, array of Promise should also
+        ## be disallowed?
+        $self->onerror->(type => 'webidl:bad type',
+                         di => $di,
+                         index => $_->{index},
+                         value => $self->_serialize_type ($type),
+                         level => 'm');
+      }
+    } elsif ($args{special} eq 'stringifier') {
+      if (not ref $type and $type eq 'DOMString') {
+        #
+      } else {
+        $self->onerror->(type => 'webidl:bad type',
+                         di => $di,
+                         index => $_->{index},
+                         value => $self->_serialize_type ($type),
+                         level => 'm');
+      }
+      unless ($n == 0) {
+        $self->onerror->(type => 'webidl:bad args',
+                         di => $di,
+                         index => $_->{index},
+                         value => $args{special},
+                         level => 'm');
+      }
+    } elsif ($args{special} eq 'serializer') {
+      # XXX MUST be serializable type
+      unless ($n == 0) {
+        $self->onerror->(type => 'webidl:bad args',
+                         di => $di,
+                         index => $_->{index},
+                         value => $args{special},
+                         level => 'm');
+      }
+    } # $args{special}
 
     ## 5.4.
     push @$S, {type => $type, args => $args,
