@@ -31,6 +31,10 @@ my $Reserved = {
   const => {prototype => 1},
   attribute => {prototype => 1},
   operation => {prototype => 1},
+  exception => {Error => 1, EvalError => 1, RangeError => 1,
+                ReferenceError => 1, SyntaxError => 1, TypeError => 1,
+                URIError => 1},
+  field => {name => 1, message => 1},
 };
 
 sub process_parsed_struct ($$$) {
@@ -53,7 +57,8 @@ sub process_parsed_struct ($$$) {
         if ($def->{partial}) {
           $self->{state}->{has_ref}->{$def->{name}} ||= [$di, $def->{index}];
         } else {
-          if ($ReservedIdentifiers->{$def->{name}}) {
+          if ($ReservedIdentifiers->{$def->{name}} or
+              $Reserved->{$def->{definition_type}}->{$def->{name}}) {
             $self->onerror->(type => 'webidl:reserved',
                              value => $def->{name},
                              di => $di,
@@ -66,13 +71,22 @@ sub process_parsed_struct ($$$) {
         if ($def->{partial}) {
           $self->{defs}->{$def->{name}}->[0] ||= $def->{definition_type};
         } elsif ($def->{definition_type} eq 'interface' and $def->{callback}) {
-          $self->{defs}->{$def->{name}}->[0] = 'callback interface';
+          $self->{defs}->{$def->{name}}->[0] = 'callback_interface';
         } else {
           $self->{defs}->{$def->{name}}->[0] = $def->{definition_type};
         }
         my $props = $self->{defs}->{$def->{name}}->[1] ||= {};
 
+        # XXX exception SHOULD NOT be used
+
+        # XXX partial interface: it MUST be interface
+        # XXX partial dictionary: it MUST be dictionary
+
         # XXX inherited inteface; inheritance hierarchy MUST NOT have a circle
+        # XXX inherited class
+        # XXX inherited dictionary; inheritance hierarchy MUST NOT have a circle
+        # XXX inherited exception; inheritance hierarchy MUST NOT have a circle
+
         # XXX callback interface MUST NOT inherit from non-callback interface
         # XXX non-callback interface MUST NOT inherit from callback interface
         # XXX callback interface MUST NOT have consequential interface
@@ -81,9 +95,15 @@ sub process_parsed_struct ($$$) {
         # XXX If there is named*, there MUST be namedGetter
         # XXX If there is indexed*, there MUST be indexedGetter
         # XXX no special operation on callback interface
+        # XXX MUST NOT use "next" as an interface member on iterator object interface or its consequential interface
+        # XXX no duplicate iterator amongst consequential interfaces
+        # XXX no duplicate iterator object amongst consequential interfaces
+        # XXX inherited dictionary's member's name MUST NOT be used
+        # XXX there MUST NOT be identifier conflicting member on consequential interfaces
 
         if ($def->{definition_type} eq 'typedef') {
           $props->{type} = $self->_type ($di, $def);
+          # XXX MUST NOT use itself directly or indirectly
         }
 
         if ($def->{definition_type} eq 'callback') {
@@ -91,18 +111,19 @@ sub process_parsed_struct ($$$) {
         }
 
         if ($def->{definition_type} eq 'enum') {
-          $props->{values} ||= {};
+          my $vals = {};
           for (@{$def->{value_strings}}) {
-            if (defined $props->{values}->{$_}) {
+            if (defined $vals->{$_}) {
               $self->onerror->(type => 'webidl:duplicate',
                                value => $_,
                                di => $di,
                                index => $def->{index},
                                level => 'm');
             } else {
-              $props->{values}->{$_} = 1;
+              $vals->{$_} = 1;
             }
           }
+          $props->{value} = ['stringset', $vals];
         } # enum
 
         if ($def->{definition_type} eq 'interface' or
@@ -227,7 +248,14 @@ sub process_parsed_struct ($$$) {
                   }
 
                   if ($mem->{member_type} eq 'operation' and $mem->{static}) {
-                    $props->{members}->{$mem->{name}}->[0] = 'static operation';
+                    $props->{members}->{$mem->{name}}->[0] = 'static_operation';
+                    if ($self->{defs}->{$def->{name}}->[0] eq 'callback_interface') {
+                      $self->onerror->(type => 'webidl:not allowed',
+                                       value => $mem->{name},
+                                       di => $di,
+                                       index => $mem->{index},
+                                       level => 'm');
+                    }
                   } else {
                     $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
                   }
@@ -257,15 +285,26 @@ sub process_parsed_struct ($$$) {
                 }
 
                 if ($mem->{member_type} eq 'attribute' and $mem->{static}) {
-                  $props->{members}->{$mem->{name}}->[0] = 'static attribute';
+                  $props->{members}->{$mem->{name}}->[0] = 'static_attribute';
+                  if ($self->{defs}->{$def->{name}}->[0] eq 'callback_interface') {
+                    $self->onerror->(type => 'webidl:not allowed',
+                                     value => $mem->{name},
+                                     di => $di,
+                                     index => $mem->{index},
+                                     level => 'm');
+                  }
                 } else {
                   $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
                 }
                 my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
+                # XXX const SHOULD NOT be used
+
                 $mem_props->{type} = $self->_type ($di, $mem);
-                # XXX const: type check
-                # XXX attribute: type check
+                # XXX const: type check; MUST NOT use dictionary; MUST NOT use callback function; MUST NOT use sequence
+                # XXX attribute: type check; MUST NOT use dictionary; MUST NOT use sequence
+                # XXX dictionary member: type check
+                # XXX exception field: type check; MUST NOT use dictionary; MUST NOT use sequence
 
                 if ($mem->{member_type} eq 'attribute') {
                   if ($mem->{readonly}) {
@@ -325,6 +364,7 @@ sub process_parsed_struct ($$$) {
                   # XXX float MUST be in the range
                   # XXX float value or literal MUST be in range
                   # XXX value type MUST be compat with type
+                  # XXX string MUST be one of enum
                 } # has value
               }
             } elsif ($mem->{member_type} eq 'serializer') {
@@ -339,8 +379,41 @@ sub process_parsed_struct ($$$) {
                 my $mem_props = $props->{serializer}->[1] ||= {};
                 
                 $mem_props->{value} = $self->_value
-                    ($di, $mem, optional => 1);
+                    ($di, $mem, optional => 1, context => 'serializer');
                 delete $mem_props->{value} unless defined $mem_props->{value};
+              }
+            } elsif ($mem->{member_type} eq 'iterator') {
+              if (defined $props->{iterator}) {
+                $self->onerror->(type => 'webidl:duplicate',
+                                 value => 'iterator',
+                                 di => $di,
+                                 index => $mem->{index},
+                                 level => 'm');
+              } else {
+                $props->{iterator}->[0] = $mem->{member_type};
+                my $mem_props = $props->{iterator}->[1] ||= {};
+
+                $mem_props->{type} = $self->_type ($di, $mem);
+                
+                $mem_props->{value} = $self->_value
+                    ($di, $mem, optional => 1, context => 'iterator');
+                delete $mem_props->{value} unless defined $mem_props->{value};
+
+                # XXX if {value} is not undef, its "iterator object"'s
+                # return type MUST be $self->{type}.
+              }
+            } elsif ($mem->{member_type} eq 'iterator_object') {
+              if (defined $props->{iteratorObject}) {
+                $self->onerror->(type => 'webidl:duplicate',
+                                 value => 'iterator object',
+                                 di => $di,
+                                 index => $mem->{index},
+                                 level => 'm');
+              } else {
+                $props->{iteratorObject}->[0] = $mem->{member_type};
+                my $mem_props = $props->{iteratorObject}->[1] ||= {};
+
+                $mem_props->{type} = $self->_type ($di, $mem);
               }
             } else {
               $self->onerror->(type => 'webidl:unknown',
@@ -358,7 +431,10 @@ sub process_parsed_struct ($$$) {
         # single operation
       }
     } elsif ($def->{definition_type} eq 'implements') {
-      # XXX
+      # XXX left MUST be interface; MUST NOT be callback interface
+      # XXX right MUST be interface; MUST NOT be callback interface
+      # XXX left != right, directly or by inheritance
+      # XXX MUST NOT have circle
 
     } else {
       $self->onerror->(type => 'webidl:unknown',
@@ -372,6 +448,8 @@ sub _type ($$$) {
   my ($self, $di, $def) = @_;
   my $value;
   if (defined $def->{type}) {
+    # XXX warn if float
+    # XXX SHOULD NOT use ByteString
     $value = $def->{type};
   } elsif (defined $def->{type_name}) {
     $self->{state}->{has_ref}->{$def->{type_name}} ||= [$di, $def->{index}];
@@ -380,6 +458,11 @@ sub _type ($$$) {
     $value = [$def->{type_parameterized}->{type_outer},
               $self->_type ($di, {index => $def->{index},
                                   %{$def->{type_parameterized}}})];
+  } elsif (defined $def->{type_union}) {
+    $value = ['union', map { $self->_type ($di, $_) } @{$def->{type_union}}];
+    # XXX MUST be at most one nullable member type
+    # XXX If a nullable member, MUST NOT be dictionary type in flattened member
+    # XXX flattened member types MUST be distinguishable
   } else {
     $self->onerror->(type => 'webidl:unknown type',
                      di => $di,
@@ -391,11 +474,13 @@ sub _type ($$$) {
   NEST: {
     if ($def->{type_nullable}) {
       $value = ['nullable', $value];
+      # XXX check $value
     }
 
     if (defined $def->{type_array}) {
       $def = {index => $def->{index}, %{$def->{type_array}}};
       $value = ['array', $value];
+      # XXX MUST NOT use sequence or dictionary
       redo NEST;
     }
   } # NEST
@@ -420,10 +505,14 @@ sub _value ($$$;%) {
     return ['float', $obj->{value_float}];
   } elsif (defined $obj->{value_string}) {
     return ['string', $obj->{value_string}];
-  } elsif (defined $obj->{value_name}) {
-    ## An identifier in serialization pattern
+  } elsif (defined $obj->{value_name} and
+           defined $args{context} and $args{context} eq 'serializer') {
     return ['attrref', $obj->{value_name}];
     # XXX MUST be an attribute of serializable type
+  } elsif (defined $obj->{value_name} and
+           defined $args{context} and $args{context} eq 'iterator') {
+    return ['interfaceref', $obj->{value_name}];
+    # XXX MUST be an iterator object interface
   } elsif (defined $obj->{value}) {
     return $obj->{value};
   } elsif (defined $obj->{value_map} or defined $obj->{value_list}) {
@@ -633,6 +722,7 @@ sub _overload_set ($$$;%) {
                        level => 'm');
     } else {
       # XXX More distinguishability check
+      # XXX args whose index less than distinguishing argument index MUST have same types and same optionality
       $S{$key} = $_;
 
       delete $_->{index};
