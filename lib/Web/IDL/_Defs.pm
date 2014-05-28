@@ -102,6 +102,12 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
+                                                                  "type" => "extends"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
                                                                   "type" => "serializer"
                                                                 }
                                                               ],
@@ -115,6 +121,12 @@ $Web::IDL::_Defs = {
                                                                 {
                                                                   "set_type" => "name",
                                                                   "type" => "callback"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "class"
                                                                 }
                                                               ],
                                                               [
@@ -2254,6 +2266,7 @@ $Web::IDL::_Defs = {
                               "Date" => {},
                               "Infinity" => {},
                               "NaN" => {},
+                              "Promise" => {},
                               "RegExp" => {},
                               "any" => {},
                               "attribute" => {
@@ -2264,6 +2277,9 @@ $Web::IDL::_Defs = {
                               "callback" => {
                                             "argument_name" => 1
                                           },
+                              "class" => {
+                                         "argument_name" => 1
+                                       },
                               "const" => {
                                          "argument_name" => 1
                                        },
@@ -2283,6 +2299,9 @@ $Web::IDL::_Defs = {
                               "exception" => {
                                              "argument_name" => 1
                                            },
+                              "extends" => {
+                                           "argument_name" => 1
+                                         },
                               "false" => {},
                               "float" => {},
                               "getter" => {
