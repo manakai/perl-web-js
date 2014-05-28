@@ -22,6 +22,17 @@ sub onerror ($;$) {
   };
 } # onerror
 
+# XXX
+## <http://heycam.github.io/webidl/#dfn-reserved-identifier>
+my $ReservedIdentifiers = {
+  constructor => 1, iterator => 1, toString => 1, toJSON => 1,
+};
+my $Reserved = {
+  const => {prototype => 1},
+  attribute => {prototype => 1},
+  operation => {prototype => 1},
+};
+
 sub process_parsed_struct ($$$) {
   my ($self, $di, $in) = @_;
   for my $def (@{$in->{definitions} or []}) {
@@ -42,21 +53,36 @@ sub process_parsed_struct ($$$) {
         if ($def->{partial}) {
           $self->{state}->{has_ref}->{$def->{name}} ||= [$di, $def->{index}];
         } else {
+          if ($ReservedIdentifiers->{$def->{name}}) {
+            $self->onerror->(type => 'webidl:reserved',
+                             value => $def->{name},
+                             di => $di,
+                             index => $def->{index},
+                             level => 'm');
+          }
           $self->{state}->{has_def}->{$def->{name}} = $def->{definition_type};
         }
 
-        my $obj = [$def->{definition_type}, {}];
-        $self->{defs}->{$def->{name}}->[0] = $def->{definition_type};
+        if ($def->{partial}) {
+          $self->{defs}->{$def->{name}}->[0] ||= $def->{definition_type};
+        } elsif ($def->{definition_type} eq 'interface' and $def->{callback}) {
+          $self->{defs}->{$def->{name}}->[0] = 'callback interface';
+        } else {
+          $self->{defs}->{$def->{name}}->[0] = $def->{definition_type};
+        }
         my $props = $self->{defs}->{$def->{name}}->[1] ||= {};
 
-        # XXX super
+        # XXX inherited inteface; inheritance hierarchy MUST NOT have a circle
+        # XXX callback interface MUST NOT inherit from non-callback interface
+        # XXX non-callback interface MUST NOT inherit from callback interface
+        # XXX callback interface MUST NOT have consequential interface
 
         if ($def->{definition_type} eq 'typedef') {
           $props->{type} = $self->_type ($di, $def);
         }
 
         if ($def->{definition_type} eq 'callback') {
-          $props->{overload_set} = $self->_overload_set ($di, [$def]);
+          $props->{overloadSet} = $self->_overload_set ($di, [$def]);
         }
 
         if ($def->{definition_type} eq 'enum') {
@@ -88,7 +114,23 @@ sub process_parsed_struct ($$$) {
             if (not defined $mem->{name}) {
               # XXX
               
+              # XXX If no special keyword
+              $self->onerror->(type => 'webidl:no name operation',
+                               di => $di,
+                               index => $mem->{index},
+                               level => 'm');
             } else {
+              if (@{$op{$mem->{name}} ||= []}) {
+                if ($mem->{static} and not $op{$mem->{name}}->[0]->{static} or
+                    not $mem->{static} and $op{$mem->{name}}->[0]->{static}) {
+                  $self->onerror->(type => 'webidl:duplicate',
+                                   di => $di,
+                                   index => $mem->{index},
+                                   value => $mem->{name},
+                                   level => 'm');
+                  next;
+                }
+              }
               push @{$op{$mem->{name}} ||= []}, $mem;
             }
           } # $mem
@@ -96,9 +138,10 @@ sub process_parsed_struct ($$$) {
           for my $op_name (keys %op) {
             push @mem,
                 {member_type => 'operation',
+                 static => $op{$op_name}->[0]->{static},
                  name => $op_name,
                  index => $op{$op_name}->[0]->{index},
-                 overload_set => $self->_overload_set ($di, $op{$op_name})};
+                 overloadSet => $self->_overload_set ($di, $op{$op_name})};
           } # %op
 
           $props->{members} ||= {};
@@ -114,13 +157,28 @@ sub process_parsed_struct ($$$) {
                                  index => $mem->{index},
                                  level => 'm');
               } else {
-                $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
+                if ($ReservedIdentifiers->{$mem->{name}} or
+                    $Reserved->{$mem->{member_type}}->{$mem->{name}}) {
+                  $self->onerror->(type => 'webidl:reserved',
+                                   value => $mem->{name},
+                                   di => $di,
+                                   index => $mem->{index},
+                                   level => 'm');
+                }
+
+                if ($mem->{member_type} eq 'operation' and $mem->{static}) {
+                  $props->{members}->{$mem->{name}}->[0] = 'static operation';
+                } else {
+                  $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
+                }
                 my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
-                $mem_props->{overload_set} = $mem->{overload_set};
+                $mem_props->{overloadSet} = $mem->{overloadSet};
               }
             } elsif ($mem->{member_type} eq 'const' or
-                     $mem->{member_type} eq 'attribute') {
+                     $mem->{member_type} eq 'attribute' or
+                     $mem->{member_type} eq 'field' or
+                     $mem->{member_type} eq 'dictionary_member') {
               if (defined $props->{members}->{$mem->{name}}) {
                 $self->onerror->(type => 'webidl:duplicate',
                                  value => $mem->{name},
@@ -128,34 +186,76 @@ sub process_parsed_struct ($$$) {
                                  index => $mem->{index},
                                  level => 'm');
               } else {
-                $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
+                if ($ReservedIdentifiers->{$mem->{name}} or
+                    $Reserved->{$mem->{member_type}}->{$mem->{name}}) {
+                  $self->onerror->(type => 'webidl:reserved',
+                                   value => $mem->{name},
+                                   di => $di,
+                                   index => $mem->{index},
+                                   level => 'm');
+                }
+
+                if ($mem->{member_type} eq 'attribute' and $mem->{static}) {
+                  $props->{members}->{$mem->{name}}->[0] = 'static attribute';
+                } else {
+                  $props->{members}->{$mem->{name}}->[0] = $mem->{member_type};
+                }
                 my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
+                # XXX stringifier
+
                 $mem_props->{type} = $self->_type ($di, $mem);
+                # XXX const: type check
+                # XXX attribute: type check
 
                 if ($mem->{member_type} eq 'attribute') {
                   if ($mem->{readonly}) {
+                    if ($mem->{inherit}) {
+                      $self->onerror->(type => 'webidl:not allowed',
+                                       di => $di,
+                                       index => $mem->{index},
+                                       value => 'inherit',
+                                       level => 'm');
+                    }
                     $mem_props->{getter} = 1;
                   } elsif ($mem->{inherit}) {
+                    if ($mem->{static}) {
+                      $self->onerror->(type => 'webidl:not allowed',
+                                       di => $di,
+                                       index => $mem->{index},
+                                       value => 'inherit',
+                                       level => 'm');
+                    }
                     $mem_props->{setter} = 1;
-                    # XXX requires super
+                    # XXX inherited MUST be of the same type
                   } else {
                     $mem_props->{getter} = 1;
                     $mem_props->{setter} = 1;
                   }
                 }
 
-                # XXX
-                
-                if ($mem->{member_type} eq 'const') {
-                  $mem_props->{value} = $self->_value ($di, $mem);
+                if ($mem->{member_type} eq 'const' or
+                    $mem->{member_type} eq 'dictionary_member') {
+                  $mem_props->{value} = $self->_value
+                      ($di, $mem,
+                       optional => $mem->{member_type} eq 'dictionary_member');
+                  delete $mem_props->{value} unless defined $mem_props->{value};
+                  # XXX integer MUST be in the range
+                  # XXX float MUST be in the range
+                  # XXX float value or literal MUST be in range
+                  # XXX value type MUST be compat with type
                 }
               }
             }
-            #XXX
-            
+
+            # XXX extended attributes
           }
         } # has member
+
+        # XXX extended attributes
+
+        # XXX SHOULD NOT define new callback interface with only a
+        # single operation
       }
     } elsif ($def->{definition_type} eq 'implements') {
       # XXX
@@ -212,8 +312,8 @@ sub _serialize_type ($$) {
   }
 } # _serialize_type
 
-sub _value ($$$) {
-  my ($self, $di, $obj) = @_;
+sub _value ($$$;%) {
+  my ($self, $di, $obj, %args) = @_;
   if (defined $obj->{value_integer}) {
     return ['integer', $obj->{value_integer}];
   } elsif (defined $obj->{value_float}) {
@@ -222,6 +322,8 @@ sub _value ($$$) {
     return ['string', $obj->{value_string}];
   } elsif (defined $obj->{value}) {
     return $obj->{value};
+  } elsif ($args{optional}) {
+    return undef;
   } else {
     $self->onerror->(type => 'webidl:unknown value',
                      di => $di,
@@ -257,22 +359,63 @@ sub _overload_set ($$$) {
     my $n = @{$_->{arguments} or []};
 
     my $args = [];
+    my %name;
     for my $i (0..($n-1)) {
       ## 5.2.
       $args->[$i]->{type} = $self->_type ($di, $_->{arguments}->[$i]);
       $args->[$i]->{type_serialized} = $self->_serialize_type
           ($args->[$i]->{type});
+      # XXX type restrictions
+
+      my $name = $args->[$i]->{name} = $_->{arguments}->[$i]->{name};
+      if ($ReservedIdentifiers->{$name}) {
+        $self->onerror->(type => 'webidl:reserved',
+                         value => $name,
+                         di => $di,
+                         index => $_->{index},
+                         level => 'm');
+      }
+      if ($name{$name}) {
+        $self->onerror->(type => 'webidl:duplicate',
+                         value => $name,
+                         di => $di,
+                         index => $_->{index},
+                         level => 'm');
+      } else {
+        $name{$name} = 1;
+      }
 
       ## 5.3.
-      $args->[$i]->{optionality} =
-          $i == $n-1 && $_->{arguments}->[$i]->{variadic} ? 'variadic' :
-          $_->{arguments}->[$i]->{optional} ? 'optional' : 'required';
+      if ($_->{arguments}->[$i]->{variadic}) {
+        if ($i == $n - 1) {
+          $args->[$i]->{optionality} = 'variadic';
+        } else {
+          $self->onerror->(type => 'webidl:bad optionality',
+                           di => $di,
+                           index => $_->{arguments}->[$i]->{index},
+                           value => $name,
+                           level => 'm');
+          $args->[$i]->{optionality} = 'required';
+        }
+      } else {
+        $args->[$i]->{optionality} = $_->{arguments}->[$i]->{optional} ? 'optional' : 'required';
+      }
 
-      $args->[$i]->{name} = $_->{arguments}->[$i]->{name};
+      $args->[$i]->{value} = $self->_value
+          ($di, $_->{arguments}->[$i], optional => 1);
+      delete $args->[$i]->{value} unless defined $args->[$i]->{value};
+      # XXX integer value MUST be in range
+      # XXX float value or literal MUST be in range
+      # XXX value type MUST be compat with type
+      # XXX if type is enumeration, value MUST be one of them
+
+      # XXX If dictionary type and ...
+
       # XXX extended attributes
     }
 
     my $type = $self->_type ($di, $_);
+    # XXX type restrictions
 
     ## 5.4.
     push @$S, {type => $type, args => $args,
@@ -290,7 +433,6 @@ sub _overload_set ($$$) {
       ## 5.5.2.
       # N/A
 
-      ## Not in spec
       $l--;
     }
 

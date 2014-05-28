@@ -23,10 +23,11 @@ for my $path ($data_path->children (qr/\.dat$/)) {
 
       my $parser = Web::IDL::Parser->new;
       my @error;
+      my $default_di;
       $parser->onerror (sub {
         my %args = @_;
         push @error, join ';',
-            $args{di},
+            $args{di} || $default_di,
             $args{index},
             $args{type}, $args{text} || '',
             $args{value} || '',
@@ -37,6 +38,7 @@ for my $path ($data_path->children (qr/\.dat$/)) {
       $processor->onerror ($parser->onerror);
 
       for (0..$#{$test->{data}}) {
+        $default_di = $_ + 1;
         $parser->parse_char_string ($test->{data}->[$_]->[0]);
         $processor->process_parsed_struct ($_+1, $parser->parsed_struct);
       }
