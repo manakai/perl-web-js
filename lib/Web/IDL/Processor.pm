@@ -71,42 +71,52 @@ sub process_parsed_struct ($$$) {
         }
 
         if ($def->{partial}) {
+          if (not defined $self->{defs}->{$def->{name}}->[0] or
+              $self->{defs}->{$def->{name}}->[0] eq $def->{definition_type} or
+              ($self->{defs}->{$def->{name}}->[0] eq 'callback_interface' and
+               $def->{definition_type} eq 'interface')) {
+            #
+          } else {
+            $self->onerror->(type => 'webidl:bad type',
+                             di => $di,
+                             index => $def->{index},
+                             value => $def->{definition_type},
+                             level => 'm');
+            next;
+          }
           $self->{defs}->{$def->{name}}->[0] ||= $def->{definition_type};
         } elsif ($def->{definition_type} eq 'interface' and $def->{callback}) {
           $self->{defs}->{$def->{name}}->[0] = 'callback_interface';
         } else {
+          if (not defined $self->{defs}->{$def->{name}}->[0] or
+              $self->{defs}->{$def->{name}}->[0] eq $def->{definition_type} or
+              ($self->{defs}->{$def->{name}}->[0] eq 'interface' and
+               $def->{definition_type} eq 'callback_interface')) {
+            #
+          } else {
+            $self->onerror->(type => 'webidl:bad type',
+                             di => $di,
+                             index => $def->{index},
+                             value => $def->{definition_type},
+                             level => 'm');
+            $self->{defs}->{$def->{name}}->[1] = {};
+          }
           $self->{defs}->{$def->{name}}->[0] = $def->{definition_type};
         }
         my $props = $self->{defs}->{$def->{name}}->[1] ||= {};
 
         # XXX exception SHOULD NOT be used
 
-        # XXX partial interface: it MUST be interface
-        # XXX partial dictionary: it MUST be dictionary
-
         ## Inheritance
         if ($def->{definition_type} eq 'interface' or
             $def->{definition_type} eq 'class' or
-            $def->{definition_type} eq 'exception') {
+            $def->{definition_type} eq 'exception' or
+            $def->{definition_type} eq 'dictionary') {
           if (defined $def->{super_name}) {
             push @{$self->{state}->{inherits} ||= []},
                 [$def->{name} => $def->{super_name}, $di, $def->{index}];
           }
         }
-
-        # XXX inherited dictionary; inheritance hierarchy MUST NOT have a circle
-
-        # XXX callback interface MUST NOT have consequential interface
-        # XXX warn if an object implements multiple interfaces with a special operation
-
-        # XXX If there is named*, there MUST be namedGetter
-        # XXX If there is indexed*, there MUST be indexedGetter
-        # XXX no special operation on callback interface
-        # XXX MUST NOT use "next" as an interface member on iterator object interface or its consequential interface
-        # XXX no duplicate iterator amongst consequential interfaces
-        # XXX no duplicate iterator object amongst consequential interfaces
-        # XXX inherited dictionary's member's name MUST NOT be used
-        # XXX there MUST NOT be identifier conflicting member on consequential interfaces
 
         if ($def->{definition_type} eq 'typedef') {
           $props->{type} = $self->_type ($di, $def);
@@ -438,12 +448,8 @@ sub process_parsed_struct ($$$) {
         # single operation
       }
     } elsif ($def->{definition_type} eq 'implements') {
-      # XXX left MUST be interface; MUST NOT be callback interface
-      # XXX right MUST be interface; MUST NOT be callback interface
-      # XXX left != right, directly or by inheritance
-      # XXX MUST NOT have circle
-      # XXX supplemental interface is discouraged to implements another
-
+      push @{$self->{state}->{implements} ||= []},
+          [$def->{name} => $def->{super_name}, $di, $def->{index}];
     } else {
       $self->onerror->(type => 'webidl:unknown',
                        value => $def->{definition_type},
@@ -800,6 +806,87 @@ sub end_processing ($) {
       }
     }
   } # inherits
+
+  my $is_supplemental = {};
+  for (@{$self->{state}->{implements} or []}) {
+    my ($sub, $super, $di, $index) = @$_;
+    my $sub_def = $self->{defs}->{$sub} or die;
+    my $super_def = $self->{defs}->{$super};
+    $is_supplemental->{$super} = 1;
+
+    if (not defined $super_def) {
+      $self->onerror->(type => 'webidl:not defined',
+                       di => $di,
+                       index => $index,
+                       value => $super,
+                       level => 'm');
+    } elsif (not $sub_def->[0] eq $super_def->[0] or
+             not $super_def->[0] eq 'interface') {
+      $self->onerror->(type => 'webidl:bad type',
+                       di => $di,
+                       index => $index,
+                       value => $super,
+                       level => 'm');
+    } elsif (($super_def->[1]->{implements} or {})->{$sub} or
+             ($sub_def->[1]->{implements} or {})->{$super} or
+             $sub eq $super) {
+      $self->onerror->(type => 'webidl:cyclic inheritance',
+                       di => $di,
+                       index => $index,
+                       value => $super,
+                       level => 'm');
+    } else {
+      $sub_def->[1]->{implements}->{$super}->{depth} = 1;
+      $sub_def->[1]->{implements}->{$super}->{supplemental} = 1;
+      $sub_def->[1]->{implements}->{$super}->{consequential} = 1;
+      for (keys %{$super_def->[1]->{implements} or {}}) {
+        $sub_def->[1]->{implements}->{$_}->{depth}
+            = 1 + $super_def->[1]->{implements}->{$_}->{depth};
+        $sub_def->[1]->{implements}->{$_}->{supplemental} = 1;
+        $is_supplemental->{$_} = 1;
+        $sub_def->[1]->{implements}->{$_}->{consequential} = 1;
+      }
+
+      for my $n (keys %{$self->{defs}}) {
+        my $n_def = $self->{defs}->{$n};
+        if (($n_def->[1]->{implements} or {})->{$sub}) {
+          die unless $n_def->[0] eq $sub_def->[0];
+          for (keys %{$sub_def->[1]->{implements} or {}}) {
+            $n_def->[1]->{implements}->{$_}->{depth}
+                = $n_def->[1]->{implements}->{$sub}->{depth}
+                + $sub_def->[1]->{implements}->{$_}->{depth};
+            $n_def->[1]->{implements}->{$_}->{supplemental} = 1;
+            $is_supplemental->{$_} = 1;
+            $n_def->[1]->{implements}->{$_}->{consequential} = 1
+                if $n_def->[1]->{implements}->{$sub}->{consequential};
+          }
+        }
+      }
+    }
+  } # implements
+
+  for (@{$self->{state}->{implements} or []}) {
+    my ($sub, $super, $di, $index) = @$_;
+    my $sub_def = $self->{defs}->{$sub} or die;
+    if ($is_supplemental->{$sub}) {
+      $self->onerror->(type => 'webidl:implements implements',
+                       di => $di,
+                       index => $index,
+                       value => $sub,
+                       level => 'w');
+    }
+  }
+
+        # XXX warn if an object implements multiple interfaces with a special operation
+
+        # XXX If there is named*, there MUST be namedGetter
+        # XXX If there is indexed*, there MUST be indexedGetter
+        # XXX no special operation on callback interface
+        # XXX MUST NOT use "next" as an interface member on iterator object interface or its consequential interface
+        # XXX no duplicate iterator amongst consequential interfaces
+        # XXX no duplicate iterator object amongst consequential interfaces
+        # XXX inherited dictionary's member's name MUST NOT be used
+        # XXX there MUST NOT be identifier conflicting member on consequential interfaces
 } # end_processing
 
 sub definitions ($) {
