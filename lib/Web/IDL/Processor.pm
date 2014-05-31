@@ -342,6 +342,7 @@ sub process_parsed_struct ($$$) {
                                        value => 'inherit',
                                        level => 'm');
                     }
+                    $mem_props->{getter} = 'inherit';
                     $mem_props->{setter} = 1;
                     # XXX inherited MUST be of the same type
                   } else {
@@ -476,10 +477,12 @@ sub _type ($$$) {
               $self->_type ($di, {index => $def->{index},
                                   %{$def->{type_parameterized}}})];
   } elsif (defined $def->{type_union}) {
-    $value = ['union', map { $self->_type ($di, $_) } @{$def->{type_union}}];
-    # XXX MUST be at most one nullable member type
-    # XXX If a nullable member, MUST NOT be dictionary type in flattened member
-    # XXX flattened member types MUST be distinguishable
+    $value = ['union', [map { $self->_type ($di, $_) } @{$def->{type_union}}]];
+        # 0 'union'
+        # 1 definition
+        # 2 flattened
+    push @{$self->{state}->{types} ||= []},
+        ['union', $value, $di, $def->{index}];
   } else {
     $self->onerror->(type => 'webidl:unknown type',
                      di => $di,
@@ -509,7 +512,11 @@ sub _type ($$$) {
 sub _serialize_type ($$) {
   my ($self, $type) = @_;
   if (ref $type) {
-    return $type->[0] . '[' . $type->[1] . ']';
+    if ($type->[0] eq 'union') {
+      return $type->[0] . '[' . (join ',', map { $self->_serialize_type ($_) } @{$type->[1]}) . ']';
+    } else {
+      return $type->[0] . '[' . $self->_serialize_type ($type->[1]) . ']';
+    }
   } else {
     return $type;
   }
@@ -782,8 +789,70 @@ sub end_processing ($) {
                          level => 'm');
       }
       # XXX and typedef of dictionary and nullable of dictionary?
+    } elsif ($context eq 'union') {
+      my $flattened = {};
+      my @member = @{$type->[1]};
+      while (@member) {
+        my $t = shift @member;
+        if (ref $t and $t->[0] eq 'union') {
+          for (keys %{$t->[2]}) {
+            if (defined $flattened->{$_}) {
+              $self->onerror->(type => 'webidl:not distinguishable',
+                               value => $_,
+                               di => $di,
+                               index => $index,
+                               level => 'm');
+            } else {
+              $flattened->{$_} = $t->[2]->{$_};
+            }
+          }
+        } elsif (ref $t and $t->[0] eq 'nullable') {
+          if (defined $flattened->{null}) {
+            $self->onerror->(type => 'webidl:not distinguishable',
+                             value => 'null',
+                             di => $di,
+                             index => $index,
+                             level => 'm');
+          } else {
+            $flattened->{null} = 'null';
+          }
+          unshift @member, $t->[1];
+        } else {
+          my $v = $self->_serialize_type ($t);
+          if (defined $flattened->{$v}) {
+            $self->onerror->(type => 'webidl:not distinguishable',
+                             value => $v,
+                             di => $di,
+                             index => $index,
+                             level => 'm');
+          } else {
+            $flattened->{$v} = $t;
+          }
+        }
+      }
+      $type->[2] = $flattened;
+      # XXX and expand typedefs?
+
+      if ($flattened->{null}) {
+        my $dict;
+        for (keys %$flattened) {
+          if (/^ref_dictionary\[/) {
+            $dict = $flattened->{$_};
+            last;
+          }
+        }
+        if ($dict) {
+          $self->onerror->(type => 'webidl:bad type',
+                           di => $di,
+                           index => $index,
+                           value => $self->_serialize_type ($dict),
+                           level => 'm');
+        }
+      }
+
+      # XXX more distinguishability checks
     }
-  }
+  } # types
 
   ## Resolve inheritance
   for (@{$self->{state}->{inherits} || []}) {
