@@ -1,6 +1,8 @@
 package Web::IDL::Processor;
 use strict;
 use warnings;
+no warnings 'utf8';
+use warnings FATAL => 'recursion';
 our $VERSION = '1.0';
 
 sub new ($) {
@@ -107,7 +109,7 @@ sub process_parsed_struct ($$$) {
         }
 
         if ($def->{definition_type} eq 'callback') {
-          $props->{overloadSet} = $self->_overload_set ($di, [$def]);
+          $props->{overload_set} = $self->_overload_set ($di, [$def]);
         }
 
         if ($def->{definition_type} eq 'enum') {
@@ -148,17 +150,17 @@ sub process_parsed_struct ($$$) {
                 if ($mem->{arguments}->[0]->{type} eq 'unsigned long' and
                     not $mem->{arguments}->[0]->{type_nullable} and
                     not defined $mem->{arguments}->[0]->{type_array}) {
-                  push @key, 'indexedGetter' if $mem->{getter};
-                  push @key, 'indexedSetter' if $mem->{setter};
-                  push @key, 'indexedCreator' if $mem->{creator};
-                  push @key, 'indexedDeleter' if $mem->{deleter};
+                  push @key, 'indexed_getter' if $mem->{getter};
+                  push @key, 'indexed_setter' if $mem->{setter};
+                  push @key, 'indexed_creator' if $mem->{creator};
+                  push @key, 'indexed_deleter' if $mem->{deleter};
                 } elsif ($mem->{arguments}->[0]->{type} eq 'DOMString' and
                          not $mem->{arguments}->[0]->{type_nullable} and
                          not defined $mem->{arguments}->[0]->{type_array}) {
-                  push @key, 'namedGetter' if $mem->{getter};
-                  push @key, 'namedSetter' if $mem->{setter};
-                  push @key, 'namedCreator' if $mem->{creator};
-                  push @key, 'namedDeleter' if $mem->{deleter};
+                  push @key, 'named_getter' if $mem->{getter};
+                  push @key, 'named_setter' if $mem->{setter};
+                  push @key, 'named_creator' if $mem->{creator};
+                  push @key, 'named_deleter' if $mem->{deleter};
                 } else {
                   $self->onerror->(type => 'webidl:bad args',
                                    di => $di,
@@ -205,7 +207,7 @@ sub process_parsed_struct ($$$) {
                        special => ($key =~ /$;/o ? undef : $key),
                        name => $op{$key}->[0]->{name},
                        index => $op{$key}->[0]->{index}};
-            $mem->{overloadSet} = $self->_overload_set
+            $mem->{overload_set} = $self->_overload_set
                 ($di, $op{$key}, special => $mem->{special});
             push @mem, $mem;
           } # %op
@@ -223,7 +225,7 @@ sub process_parsed_struct ($$$) {
                 } else {
                   $props->{$mem->{special}}->[0] = $mem->{member_type};
                   my $mem_props = $props->{$mem->{special}}->[1] ||= {};
-                  $mem_props->{overloadSet} = $mem->{overloadSet};
+                  $mem_props->{overload_set} = $mem->{overload_set};
 
                   if ($mem->{special} eq 'legacycaller') {
                     # XXX legacycaller SHOULD NOT be used
@@ -261,7 +263,7 @@ sub process_parsed_struct ($$$) {
                   }
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
-                  $mem_props->{overloadSet} = $mem->{overloadSet};
+                  $mem_props->{overload_set} = $mem->{overload_set};
                 }
               }
             } elsif ($mem->{member_type} eq 'const' or
@@ -403,15 +405,15 @@ sub process_parsed_struct ($$$) {
                 # return type MUST be $self->{type}.
               }
             } elsif ($mem->{member_type} eq 'iterator_object') {
-              if (defined $props->{iteratorObject}) {
+              if (defined $props->{iterator_object}) {
                 $self->onerror->(type => 'webidl:duplicate',
                                  value => 'iterator object',
                                  di => $di,
                                  index => $mem->{index},
                                  level => 'm');
               } else {
-                $props->{iteratorObject}->[0] = $mem->{member_type};
-                my $mem_props = $props->{iteratorObject}->[1] ||= {};
+                $props->{iterator_object}->[0] = $mem->{member_type};
+                my $mem_props = $props->{iterator_object}->[1] ||= {};
 
                 $mem_props->{type} = $self->_type ($di, $mem);
               }
@@ -435,6 +437,7 @@ sub process_parsed_struct ($$$) {
       # XXX right MUST be interface; MUST NOT be callback interface
       # XXX left != right, directly or by inheritance
       # XXX MUST NOT have circle
+      # XXX supplemental interface is discouraged to implements another
 
     } else {
       $self->onerror->(type => 'webidl:unknown',
