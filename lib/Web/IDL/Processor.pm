@@ -57,7 +57,8 @@ sub process_parsed_struct ($$$) {
                          level => 'm');
       } else {
         if ($def->{partial}) {
-          $self->{state}->{has_ref}->{$def->{name}} ||= [$di, $def->{index}];
+          $self->{state}->{has_ref}->{$def->{name}}
+              ||= [['ref', $def->{name}], $di, $def->{index}];
         } else {
           if ($ReservedIdentifiers->{$def->{name}} or
               $Reserved->{$def->{definition_type}}->{$def->{name}}) {
@@ -466,8 +467,10 @@ sub _type ($$$) {
     # XXX SHOULD NOT use ByteString
     $value = $def->{type};
   } elsif (defined $def->{type_name}) {
-    $self->{state}->{has_ref}->{$def->{type_name}} ||= [$di, $def->{index}];
-    $value = ['ref', $def->{type_name}];
+    $self->{state}->{has_ref}->{$def->{type_name}}
+        ||= [undef, $di, $def->{index}];
+    $value = $self->{state}->{has_ref}->{$def->{type_name}}->[0]
+        ||= ['ref', $def->{type_name}];
   } elsif (defined $def->{type_parameterized}) {
     $value = [$def->{type_parameterized}->{type_outer},
               $self->_type ($di, {index => $def->{index},
@@ -493,8 +496,9 @@ sub _type ($$$) {
 
     if (defined $def->{type_array}) {
       $def = {index => $def->{index}, %{$def->{type_array}}};
+      push @{$self->{state}->{types} ||= []},
+          ['array', $value, $di, $def->{index}];
       $value = ['array', $value];
-      # XXX MUST NOT use sequence or dictionary
       redo NEST;
     }
   } # NEST
@@ -751,14 +755,34 @@ sub _overload_set ($$$;%) {
 
 sub end_processing ($) {
   my $self = $_[0];
+
+  ## Resolve type names
   for my $name (keys %{$self->{state}->{has_ref} or {}}) {
-    next if $self->{state}->{has_def}->{$name};
-    $self->onerror->(type => 'webidl:not defined',
-                     value => $name,
-                     di => $self->{state}->{has_ref}->{$name}->[0],
-                     index => $self->{state}->{has_ref}->{$name}->[1],
-                     level => 'm');
-    # XXX type mismatch check
+    if (defined $self->{defs}->{$name}) {
+      $self->{state}->{has_ref}->{$name}->[0]->[0]
+          = 'ref_' . $self->{defs}->{$name}->[0];
+    }
+    unless ($self->{state}->{has_def}->{$name}) {
+      $self->onerror->(type => 'webidl:not defined',
+                       value => $name,
+                       di => $self->{state}->{has_ref}->{$name}->[1],
+                       index => $self->{state}->{has_ref}->{$name}->[2],
+                       level => 'm');
+    }
+  } # has_ref
+
+  for (@{$self->{state}->{types} or []}) {
+    my ($context, $type, $di, $index) = @$_;
+    if ($context eq 'array') {
+      if (ref $type and $type->[0] eq 'ref_dictionary') {
+        $self->onerror->(type => 'webidl:bad type',
+                         di => $di,
+                         index => $index,
+                         value => $self->_serialize_type ($type),
+                         level => 'm');
+      }
+      # XXX and typedef of dictionary and nullable of dictionary?
+    }
   }
 
   ## Resolve inheritance
