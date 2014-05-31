@@ -84,13 +84,18 @@ sub process_parsed_struct ($$$) {
         # XXX partial interface: it MUST be interface
         # XXX partial dictionary: it MUST be dictionary
 
-        # XXX inherited inteface; inheritance hierarchy MUST NOT have a circle
-        # XXX inherited class
-        # XXX inherited dictionary; inheritance hierarchy MUST NOT have a circle
-        # XXX inherited exception; inheritance hierarchy MUST NOT have a circle
+        ## Inheritance
+        if ($def->{definition_type} eq 'interface' or
+            $def->{definition_type} eq 'class' or
+            $def->{definition_type} eq 'exception') {
+          if (defined $def->{super_name}) {
+            push @{$self->{state}->{inherits} ||= []},
+                [$def->{name} => $def->{super_name}, $di, $def->{index}];
+          }
+        }
 
-        # XXX callback interface MUST NOT inherit from non-callback interface
-        # XXX non-callback interface MUST NOT inherit from callback interface
+        # XXX inherited dictionary; inheritance hierarchy MUST NOT have a circle
+
         # XXX callback interface MUST NOT have consequential interface
         # XXX warn if an object implements multiple interfaces with a special operation
 
@@ -444,7 +449,7 @@ sub process_parsed_struct ($$$) {
                        value => $def->{definition_type},
                        level => 'u');
     }
-  }
+  } # definitions
 } # process_parsed_struct
 
 sub _type ($$$) {
@@ -749,6 +754,52 @@ sub end_processing ($) {
                      level => 'm');
     # XXX type mismatch check
   }
+
+  ## Resolve inheritance
+  for (@{$self->{state}->{inherits} || []}) {
+    my ($sub, $super, $di, $index) = @$_;
+    my $sub_def = $self->{defs}->{$sub} or die;
+    my $super_def = $self->{defs}->{$super};
+
+    if (not defined $super_def) {
+      $self->onerror->(type => 'webidl:not defined',
+                       di => $di,
+                       index => $index,
+                       value => $super,
+                       level => 'm');
+    } elsif (not $sub_def->[0] eq $super_def->[0]) {
+      $self->onerror->(type => 'webidl:bad type',
+                       di => $di,
+                       index => $index,
+                       value => $super,
+                       level => 'm');
+    } elsif (($super_def->[1]->{implements} or {})->{$sub} or
+             $sub eq $super) {
+      $self->onerror->(type => 'webidl:cyclic inheritance',
+                       di => $di,
+                       index => $index,
+                       value => $super,
+                       level => 'm');
+    } else {
+      $sub_def->[1]->{implements}->{$super}->{depth} = 1;
+      for (keys %{$super_def->[1]->{implements} or {}}) {
+        $sub_def->[1]->{implements}->{$_}->{depth}
+            = 1 + $super_def->[1]->{implements}->{$_}->{depth};
+      }
+
+      for my $n (keys %{$self->{defs}}) {
+        my $n_def = $self->{defs}->{$n};
+        if (($n_def->[1]->{implements} or {})->{$sub}) {
+          die unless $n_def->[0] eq $sub_def->[0];
+          for (keys %{$sub_def->[1]->{implements} or {}}) {
+            $n_def->[1]->{implements}->{$_}->{depth}
+                = $n_def->[1]->{implements}->{$sub}->{depth}
+                + $sub_def->[1]->{implements}->{$_}->{depth};
+          }
+        }
+      }
+    }
+  } # inherits
 } # end_processing
 
 sub definitions ($) {
