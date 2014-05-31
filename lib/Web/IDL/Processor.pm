@@ -477,10 +477,7 @@ sub _type ($$$) {
               $self->_type ($di, {index => $def->{index},
                                   %{$def->{type_parameterized}}})];
   } elsif (defined $def->{type_union}) {
-    $value = ['union', [map { $self->_type ($di, $_) } @{$def->{type_union}}]];
-        # 0 'union'
-        # 1 definition
-        # 2 flattened
+    $value = ['union', {def => [map { $self->_type ($di, {index => $def->{index}, %$_}) } @{$def->{type_union}}]}];
     push @{$self->{state}->{types} ||= []},
         ['union', $value, $di, $def->{index}];
   } else {
@@ -513,7 +510,7 @@ sub _serialize_type ($$) {
   my ($self, $type) = @_;
   if (ref $type) {
     if ($type->[0] eq 'union') {
-      return $type->[0] . '[' . (join ',', map { $self->_serialize_type ($_) } @{$type->[1]}) . ']';
+      return $type->[0] . '[' . (join ',', map { $self->_serialize_type ($_) } @{$type->[1]->{def}}) . ']';
     } else {
       return $type->[0] . '[' . $self->_serialize_type ($type->[1]) . ']';
     }
@@ -648,11 +645,10 @@ sub _overload_set ($$$;%) {
       # XXX value type MUST be compat with type
       # XXX if type is enumeration, value MUST be one of them
 
-      # XXX If dictionary type and ...
-
       # XXX extended attributes
     }
 
+    ## Return type
     my $type = $self->_type ($di, $_);
     # XXX type restrictions
     my $expected_length;
@@ -701,6 +697,8 @@ sub _overload_set ($$$;%) {
     ## 5.4.
     push @$S, {type => $type, args => $args,
                index => $_->{index}};
+
+    push @{$self->{state}->{args} ||= []}, [$args, $di, $_->{index}];
 
     ## 5.6.
     my $l = $n - 1;
@@ -754,9 +752,6 @@ sub _overload_set ($$$;%) {
     }
   } # @$S
 
-  for (values %S) {
-    delete $_->{index}, delete $_->{type_serialized} for @{$_->{args}};
-  }
   return \%S;
 } # _overload_set
 
@@ -791,11 +786,11 @@ sub end_processing ($) {
       # XXX and typedef of dictionary and nullable of dictionary?
     } elsif ($context eq 'union') {
       my $flattened = {};
-      my @member = @{$type->[1]};
+      my @member = @{$type->[1]->{def}};
       while (@member) {
         my $t = shift @member;
         if (ref $t and $t->[0] eq 'union') {
-          for (keys %{$t->[2]}) {
+          for (keys %{$t->[1]->{flattened}}) {
             if (defined $flattened->{$_}) {
               $self->onerror->(type => 'webidl:not distinguishable',
                                value => $_,
@@ -803,7 +798,7 @@ sub end_processing ($) {
                                index => $index,
                                level => 'm');
             } else {
-              $flattened->{$_} = $t->[2]->{$_};
+              $flattened->{$_} = $t->[1]->{flattened}->{$_};
             }
           }
         } elsif (ref $t and $t->[0] eq 'nullable') {
@@ -830,18 +825,19 @@ sub end_processing ($) {
           }
         }
       }
-      $type->[2] = $flattened;
+      $type->[1]->{flattened} = $flattened;
       # XXX and expand typedefs?
 
-      if ($flattened->{null}) {
-        my $dict;
-        for (keys %$flattened) {
-          if (/^ref_dictionary\[/) {
-            $dict = $flattened->{$_};
-            last;
-          }
+      my $dict;
+      for (keys %$flattened) {
+        if (/^ref_dictionary\[/) {
+          $dict = $flattened->{$_};
+          last;
         }
-        if ($dict) {
+      }
+      if (defined $dict) {
+        $type->[1]->{has_dictionary} = 1;
+        if ($flattened->{null}) {
           $self->onerror->(type => 'webidl:bad type',
                            di => $di,
                            index => $index,
@@ -968,6 +964,30 @@ sub end_processing ($) {
                        value => $sub,
                        level => 'w');
     }
+  }
+
+  ## Argument optionality
+  for (@{$self->{state}->{args} or []}) {
+    my ($args, $di, $index) = @$_;
+
+    for (reverse @$args) {
+      if (ref $_->{type} and
+          ($_->{type}->[0] eq 'ref_dictionary' or
+           ($_->{type}->[0] eq 'union' and
+            $_->{type}->[1]->{has_dictionary}))) {
+        if ($_->{optionality} eq 'required') {
+          $self->onerror->(type => 'webidl:bad optionality',
+                           di => $di,
+                           index => $index,
+                           value => $_->{name},
+                           level => 'm');
+        }
+        $_->{value} = ['dictionary_value', {}] unless defined $_->{value};
+      }
+      last if $_->{optionality} eq 'required';
+    }
+
+    delete $_->{index}, delete $_->{type_serialized} for @$args;
   }
 
         # XXX warn if an object implements multiple interfaces with a special operation
