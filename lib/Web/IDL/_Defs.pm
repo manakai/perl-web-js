@@ -282,13 +282,13 @@ $Web::IDL::_Defs = {
                                            "patterns" => [
                                                          [
                                                            {
-                                                             "set_true" => "value_true",
+                                                             "set_type" => "value",
                                                              "type" => "true"
                                                            }
                                                          ],
                                                          [
                                                            {
-                                                             "set_true" => "value_false",
+                                                             "set_type" => "value",
                                                              "type" => "false"
                                                            }
                                                          ]
@@ -432,7 +432,7 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
-                                                         "set_true" => "value_null",
+                                                         "set_type" => "value",
                                                          "type" => "null"
                                                        }
                                                      ]
@@ -510,6 +510,12 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "type" => "rule",
                                                          "value" => "ImplementsStatement"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "_Class"
                                                        }
                                                      ]
                                                    ]
@@ -597,7 +603,7 @@ $Web::IDL::_Defs = {
                                      "patterns" => [
                                                    [
                                                      {
-                                                       "set_true" => "more",
+                                                       "set_true" => "variadic",
                                                        "type" => "..."
                                                      }
                                                    ]
@@ -723,10 +729,12 @@ $Web::IDL::_Defs = {
                                                            }
                                                          ]
                                                        ],
-                                           "set" => [
-                                                    "member_type",
-                                                    "field"
-                                                  ]
+                                           "set_fields" => [
+                                                           [
+                                                             "member_type",
+                                                             "field"
+                                                           ]
+                                                         ]
                                          },
                        "ExceptionMember" => {
                                             "patterns" => [
@@ -773,19 +781,13 @@ $Web::IDL::_Defs = {
                                                             [
                                                               {
                                                                 "type" => "rule",
+                                                                "value" => "ExtendedAttributeNamedArgList"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "type" => "rule",
                                                                 "value" => "ExtendedAttributeIdentList"
-                                                              }
-                                                            ],
-                                                            [
-                                                              {
-                                                                "type" => "rule",
-                                                                "value" => "ExtendedAttributeIdent"
-                                                              }
-                                                            ],
-                                                            [
-                                                              {
-                                                                "type" => "rule",
-                                                                "value" => "ExtendedAttributeNameArgList"
                                                               }
                                                             ],
                                                             [
@@ -849,6 +851,10 @@ $Web::IDL::_Defs = {
                                                                          "type" => "="
                                                                        },
                                                                        {
+                                                                         "next_is_not" => {
+                                                                                          "(" => 1,
+                                                                                          "=" => 1
+                                                                                        },
                                                                          "type" => "rule",
                                                                          "value" => "IdentifierList"
                                                                        }
@@ -954,7 +960,7 @@ $Web::IDL::_Defs = {
                                                                             "type" => "="
                                                                           },
                                                                           {
-                                                                            "set_value" => "value_name",
+                                                                            "append_value" => "value_names",
                                                                             "type" => "identifier"
                                                                           },
                                                                           {
@@ -978,7 +984,7 @@ $Web::IDL::_Defs = {
                                                                                        "(" => 1,
                                                                                        "=" => 1
                                                                                      },
-                                                                      "set_value" => "name1",
+                                                                      "set_value" => "name",
                                                                       "type" => "identifier"
                                                                     }
                                                                   ]
@@ -1054,19 +1060,19 @@ $Web::IDL::_Defs = {
                                                        ],
                                                        [
                                                          {
-                                                           "set_true" => "value_n_infinity",
+                                                           "set_type" => "value",
                                                            "type" => "-Infinity"
                                                          }
                                                        ],
                                                        [
                                                          {
-                                                           "set_true" => "value_inifinity",
+                                                           "set_type" => "value",
                                                            "type" => "Infinity"
                                                          }
                                                        ],
                                                        [
                                                          {
-                                                           "set_true" => "value_nan",
+                                                           "set_type" => "value",
                                                            "type" => "NaN"
                                                          }
                                                        ]
@@ -1184,12 +1190,14 @@ $Web::IDL::_Defs = {
                                                       ],
                                                       [
                                                         {
-                                                          "set_type" => "type",
-                                                          "type" => "long"
-                                                        },
+                                                          "type" => "rule",
+                                                          "value" => "_LongLong"
+                                                        }
+                                                      ],
+                                                      [
                                                         {
                                                           "type" => "rule",
-                                                          "value" => "OptionalLong"
+                                                          "value" => "_Long"
                                                         }
                                                       ]
                                                     ]
@@ -1258,15 +1266,21 @@ $Web::IDL::_Defs = {
                                          "patterns" => [
                                                        [
                                                          {
-                                                           "set_true" => "iterator",
+                                                           "set_type" => "member_type",
                                                            "type" => "iterator"
                                                          },
                                                          {
                                                            "type" => "rule",
-                                                           "value" => "OperationIteratorInterfaceOrObject"
+                                                           "value" => "OptionalIteratorInterface"
                                                          },
                                                          {
                                                            "type" => ";"
+                                                         }
+                                                       ],
+                                                       [
+                                                         {
+                                                           "type" => "rule",
+                                                           "value" => "_IteratorObject"
                                                          }
                                                        ]
                                                      ]
@@ -1315,18 +1329,9 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
-                                                         "type" => "sequence"
-                                                       },
-                                                       {
-                                                         "type" => "<"
-                                                       },
-                                                       {
-                                                         "set" => "type_suffix",
+                                                         "set" => "type_parameterized",
                                                          "type" => "rule",
-                                                         "value" => "Type"
-                                                       },
-                                                       {
-                                                         "type" => ">"
+                                                         "value" => "_SequenceType"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -1357,6 +1362,27 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "set_type" => "type",
                                                          "type" => "RegExp"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "TypeSuffix"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set" => "type_parameterized",
+                                                         "type" => "rule",
+                                                         "value" => "_PromiseType"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "Null"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set_type" => "type",
+                                                         "type" => "Promise"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -1450,10 +1476,12 @@ $Web::IDL::_Defs = {
                                                           }
                                                         ]
                                                       ],
-                                          "set" => [
-                                                   "member_type",
-                                                   "operation"
-                                                 ]
+                                          "set_fields" => [
+                                                          [
+                                                            "member_type",
+                                                            "operation"
+                                                          ]
+                                                        ]
                                         },
                        "OptionalIdentifier" => {
                                                "can_be_empty" => 1,
@@ -1486,7 +1514,6 @@ $Web::IDL::_Defs = {
                                          "patterns" => [
                                                        [
                                                          {
-                                                           "set_type" => "type2",
                                                            "type" => "long"
                                                          }
                                                        ]
@@ -1713,6 +1740,7 @@ $Web::IDL::_Defs = {
                                                },
                        "SerializationPatternList" => {
                                                      "can_be_empty" => 1,
+                                                     "ensure_arrayref" => "value_names",
                                                      "patterns" => [
                                                                    [
                                                                      {
@@ -1734,11 +1762,31 @@ $Web::IDL::_Defs = {
                                                    },
                        "SerializationPatternMap" => {
                                                     "can_be_empty" => 1,
+                                                    "ensure_arrayref" => "value_names",
                                                     "patterns" => [
                                                                   [
                                                                     {
                                                                       "set_true" => "getter",
                                                                       "type" => "getter"
+                                                                    }
+                                                                  ],
+                                                                  [
+                                                                    {
+                                                                      "set_true" => "attribute",
+                                                                      "type" => "attribute"
+                                                                    }
+                                                                  ],
+                                                                  [
+                                                                    {
+                                                                      "set_true" => "inherit",
+                                                                      "type" => "inherit"
+                                                                    },
+                                                                    {
+                                                                      "type" => ","
+                                                                    },
+                                                                    {
+                                                                      "set_true" => "attribute",
+                                                                      "type" => "attribute"
                                                                     }
                                                                   ],
                                                                   [
@@ -1767,20 +1815,25 @@ $Web::IDL::_Defs = {
                                        "patterns" => [
                                                      [
                                                        {
-                                                         "set_true" => "serializer",
-                                                         "type" => "serializer"
-                                                       },
+                                                         "type" => "rule",
+                                                         "value" => "_SerializerOperation"
+                                                       }
+                                                     ],
+                                                     [
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "SerializerRest"
+                                                         "value" => "_Serializer"
                                                        }
                                                      ]
                                                    ]
                                      },
                        "SerializerRest" => {
-                                           "can_be_empty" => 1,
                                            "patterns" => [
                                                          [
+                                                           {
+                                                             "type" => "rule",
+                                                             "value" => "ReturnType"
+                                                           },
                                                            {
                                                              "type" => "rule",
                                                              "value" => "OperationRest"
@@ -1793,6 +1846,12 @@ $Web::IDL::_Defs = {
                                                            {
                                                              "type" => "rule",
                                                              "value" => "SerializationPattern"
+                                                           }
+                                                         ],
+                                                         [
+                                                           {
+                                                             "type" => "rule",
+                                                             "value" => "_SerializerEnd"
                                                            }
                                                          ]
                                                        ]
@@ -1807,7 +1866,7 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
-                                                         "set_true" => "type_any",
+                                                         "set_type" => "type",
                                                          "type" => "any"
                                                        },
                                                        {
@@ -1956,7 +2015,8 @@ $Web::IDL::_Defs = {
                                                           ],
                                                           [
                                                             {
-                                                              "type" => ";"
+                                                              "type" => "rule",
+                                                              "value" => "_StringifierEnd"
                                                             }
                                                           ]
                                                         ]
@@ -1986,19 +2046,14 @@ $Web::IDL::_Defs = {
                                        "patterns" => [
                                                      [
                                                        {
-                                                         "type" => "["
-                                                       },
-                                                       {
-                                                         "type" => "]"
-                                                       },
-                                                       {
+                                                         "set" => "type_array",
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "_TypeArray"
                                                        }
                                                      ],
                                                      [
                                                        {
-                                                         "set_true" => "type_null",
+                                                         "set_true" => "type_nullable",
                                                          "type" => "?"
                                                        },
                                                        {
@@ -2013,14 +2068,9 @@ $Web::IDL::_Defs = {
                                                         "patterns" => [
                                                                       [
                                                                         {
-                                                                          "type" => "["
-                                                                        },
-                                                                        {
-                                                                          "type" => "]"
-                                                                        },
-                                                                        {
+                                                                          "set" => "type_array",
                                                                           "type" => "rule",
-                                                                          "value" => "TypeSuffix"
+                                                                          "value" => "_TypeArray"
                                                                         }
                                                                       ]
                                                                     ]
@@ -2067,18 +2117,13 @@ $Web::IDL::_Defs = {
                                                           ],
                                                           [
                                                             {
-                                                              "set_true" => "type_any",
+                                                              "set_type" => "type",
                                                               "type" => "any"
                                                             },
                                                             {
-                                                              "type" => "["
-                                                            },
-                                                            {
-                                                              "type" => "]"
-                                                            },
-                                                            {
+                                                              "set" => "type_array",
                                                               "type" => "rule",
-                                                              "value" => "TypeSuffix"
+                                                              "value" => "_TypeArray"
                                                             }
                                                           ]
                                                         ]
@@ -2135,12 +2180,14 @@ $Web::IDL::_Defs = {
                                                   "patterns" => [
                                                                 [
                                                                   {
-                                                                    "set_true" => "unrestricted",
-                                                                    "type" => "unrestricted"
-                                                                  },
+                                                                    "type" => "rule",
+                                                                    "value" => "_UnrestrictedFloat"
+                                                                  }
+                                                                ],
+                                                                [
                                                                   {
                                                                     "type" => "rule",
-                                                                    "value" => "FloatType"
+                                                                    "value" => "_UnrestrictedDouble"
                                                                   }
                                                                 ],
                                                                 [
@@ -2155,12 +2202,20 @@ $Web::IDL::_Defs = {
                                                 "patterns" => [
                                                               [
                                                                 {
-                                                                  "set_true" => "unsigned",
-                                                                  "type" => "unsigned"
-                                                                },
+                                                                  "type" => "rule",
+                                                                  "value" => "_UnsignedShort"
+                                                                }
+                                                              ],
+                                                              [
                                                                 {
                                                                   "type" => "rule",
-                                                                  "value" => "IntegerType"
+                                                                  "value" => "_UnsignedLongLong"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "_UnsignedLong"
                                                                 }
                                                               ],
                                                               [
@@ -2195,6 +2250,52 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "_Class" => {
+                                   "patterns" => [
+                                                 [
+                                                   {
+                                                     "set_type" => "definition_type",
+                                                     "type" => "class"
+                                                   },
+                                                   {
+                                                     "remove_underscore" => 1,
+                                                     "set_value" => "name",
+                                                     "type" => "identifier"
+                                                   },
+                                                   {
+                                                     "type" => "rule",
+                                                     "value" => "_ClassInheritance"
+                                                   },
+                                                   {
+                                                     "type" => "{"
+                                                   },
+                                                   {
+                                                     "type" => "rule",
+                                                     "value" => "InterfaceMembers"
+                                                   },
+                                                   {
+                                                     "type" => "}"
+                                                   },
+                                                   {
+                                                     "type" => ";"
+                                                   }
+                                                 ]
+                                               ]
+                                 },
+                       "_ClassInheritance" => {
+                                              "can_be_empty" => 1,
+                                              "patterns" => [
+                                                            [
+                                                              {
+                                                                "type" => "extends"
+                                                              },
+                                                              {
+                                                                "set_value" => "super_name",
+                                                                "type" => "identifier"
+                                                              }
+                                                            ]
+                                                          ]
+                                            },
                        "_Definition" => {
                                         "patterns" => [
                                                       [
@@ -2223,10 +2324,12 @@ $Web::IDL::_Defs = {
                                                               }
                                                             ]
                                                           ],
-                                              "set" => [
-                                                       "member_type",
-                                                       "dictionary_member"
-                                                     ],
+                                              "set_fields" => [
+                                                              [
+                                                                "member_type",
+                                                                "dictionary_member"
+                                                              ]
+                                                            ],
                                               "set_index" => 1
                                             },
                        "_ExceptionMember" => {
@@ -2258,7 +2361,272 @@ $Web::IDL::_Defs = {
                                                            ]
                                                          ],
                                              "set_index" => 1
-                                           }
+                                           },
+                       "_IteratorObject" => {
+                                            "patterns" => [
+                                                          [
+                                                            {
+                                                              "type" => "iterator"
+                                                            },
+                                                            {
+                                                              "type" => "object"
+                                                            },
+                                                            {
+                                                              "type" => ";"
+                                                            }
+                                                          ]
+                                                        ],
+                                            "set_fields" => [
+                                                            [
+                                                              "member_type",
+                                                              "iterator_object"
+                                                            ]
+                                                          ]
+                                          },
+                       "_Long" => {
+                                  "patterns" => [
+                                                [
+                                                  {
+                                                    "set_type" => "type",
+                                                    "type" => "long"
+                                                  }
+                                                ]
+                                              ]
+                                },
+                       "_LongLong" => {
+                                      "patterns" => [
+                                                    [
+                                                      {
+                                                        "type" => "long"
+                                                      },
+                                                      {
+                                                        "type" => "long"
+                                                      }
+                                                    ]
+                                                  ],
+                                      "set_fields" => [
+                                                      [
+                                                        "type",
+                                                        "long long"
+                                                      ]
+                                                    ]
+                                    },
+                       "_PromiseType" => {
+                                         "patterns" => [
+                                                       [
+                                                         {
+                                                           "set_type" => "type_outer",
+                                                           "type" => "Promise"
+                                                         },
+                                                         {
+                                                           "type" => "<"
+                                                         },
+                                                         {
+                                                           "type" => "rule",
+                                                           "value" => "Type"
+                                                         },
+                                                         {
+                                                           "type" => ">"
+                                                         }
+                                                       ]
+                                                     ]
+                                       },
+                       "_SequenceType" => {
+                                          "patterns" => [
+                                                        [
+                                                          {
+                                                            "set_type" => "type_outer",
+                                                            "type" => "sequence"
+                                                          },
+                                                          {
+                                                            "type" => "<"
+                                                          },
+                                                          {
+                                                            "type" => "rule",
+                                                            "value" => "Type"
+                                                          },
+                                                          {
+                                                            "type" => ">"
+                                                          }
+                                                        ]
+                                                      ]
+                                        },
+                       "_Serializer" => {
+                                        "patterns" => [
+                                                      [
+                                                        {
+                                                          "set_type" => "member_type",
+                                                          "type" => "serializer"
+                                                        },
+                                                        {
+                                                          "type" => "="
+                                                        },
+                                                        {
+                                                          "type" => "rule",
+                                                          "value" => "SerializationPattern"
+                                                        },
+                                                        {
+                                                          "type" => ";"
+                                                        }
+                                                      ],
+                                                      [
+                                                        {
+                                                          "set_type" => "member_type",
+                                                          "type" => "serializer"
+                                                        },
+                                                        {
+                                                          "type" => ";"
+                                                        }
+                                                      ]
+                                                    ]
+                                      },
+                       "_SerializerOperation" => {
+                                                 "patterns" => [
+                                                               [
+                                                                 {
+                                                                   "set_true" => "serializer",
+                                                                   "type" => "serializer"
+                                                                 },
+                                                                 {
+                                                                   "type" => "rule",
+                                                                   "value" => "ReturnType"
+                                                                 },
+                                                                 {
+                                                                   "type" => "rule",
+                                                                   "value" => "OperationRest"
+                                                                 }
+                                                               ]
+                                                             ]
+                                               },
+                       "_StringifierEnd" => {
+                                            "ensure_arrayref" => "arguments",
+                                            "patterns" => [
+                                                          [
+                                                            {
+                                                              "type" => ";"
+                                                            }
+                                                          ]
+                                                        ],
+                                            "set_fields" => [
+                                                            [
+                                                              "member_type",
+                                                              "operation"
+                                                            ],
+                                                            [
+                                                              "type",
+                                                              "DOMString"
+                                                            ]
+                                                          ]
+                                          },
+                       "_TypeArray" => {
+                                       "patterns" => [
+                                                     [
+                                                       {
+                                                         "type" => "["
+                                                       },
+                                                       {
+                                                         "type" => "]"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "TypeSuffix"
+                                                       }
+                                                     ]
+                                                   ]
+                                     },
+                       "_UnrestrictedDouble" => {
+                                                "patterns" => [
+                                                              [
+                                                                {
+                                                                  "type" => "unrestricted"
+                                                                },
+                                                                {
+                                                                  "type" => "double"
+                                                                }
+                                                              ]
+                                                            ],
+                                                "set_fields" => [
+                                                                [
+                                                                  "type",
+                                                                  "unrestricted double"
+                                                                ]
+                                                              ]
+                                              },
+                       "_UnrestrictedFloat" => {
+                                               "patterns" => [
+                                                             [
+                                                               {
+                                                                 "type" => "unrestricted"
+                                                               },
+                                                               {
+                                                                 "type" => "float"
+                                                               }
+                                                             ]
+                                                           ],
+                                               "set_fields" => [
+                                                               [
+                                                                 "type",
+                                                                 "unrestricted float"
+                                                               ]
+                                                             ]
+                                             },
+                       "_UnsignedLong" => {
+                                          "patterns" => [
+                                                        [
+                                                          {
+                                                            "type" => "unsigned"
+                                                          },
+                                                          {
+                                                            "type" => "long"
+                                                          }
+                                                        ]
+                                                      ],
+                                          "set_fields" => [
+                                                          [
+                                                            "type",
+                                                            "unsigned long"
+                                                          ]
+                                                        ]
+                                        },
+                       "_UnsignedLongLong" => {
+                                              "patterns" => [
+                                                            [
+                                                              {
+                                                                "type" => "unsigned"
+                                                              },
+                                                              {
+                                                                "type" => "long"
+                                                              },
+                                                              {
+                                                                "type" => "long"
+                                                              }
+                                                            ]
+                                                          ],
+                                              "set_fields" => [
+                                                              [
+                                                                "type",
+                                                                "unsigned long long"
+                                                              ]
+                                                            ]
+                                            },
+                       "_UnsignedShort" => {
+                                           "patterns" => [
+                                                         [
+                                                           {
+                                                             "type" => "unsigned"
+                                                           },
+                                                           {
+                                                             "type" => "short"
+                                                           }
+                                                         ]
+                                                       ],
+                                           "set_fields" => [
+                                                           [
+                                                             "type",
+                                                             "unsigned short"
+                                                           ]
+                                                         ]
+                                         }
                      },
           "keyword_tokens" => {
                               "ByteString" => {},

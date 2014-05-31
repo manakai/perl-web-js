@@ -1,0 +1,99 @@
+=head1 NAME
+
+Web::IDL::Processor - A Web IDL processor
+
+=head1 SYNOPSIS
+
+  use Web::IDL::Processor;
+  $processor = Web::IDL::Processor->new;
+  for $parser (...) {
+    $processor->process_parsed_struct ($parser->parsed_struct);
+  }
+  $processor->end_processing;
+  warn Dumper $processor->definitions;
+
+=head1 DESCRIPTION
+
+The C<Web::IDL::Processor> module implements a processor of Web IDL,
+which receives a set of parsed Web IDL data structures generated from
+IDL fragments by L<Web::IDL::Parser>, check the conformance of them,
+and outputs the assembled definitions.
+
+=head1 METHODS
+
+Following methods are available:
+
+=over 4
+
+=item $processor = Web::IDL::Processor->new
+
+Create a new Web IDL processor object.
+
+=item $processor->onerror ($code)
+
+=item $code = $processor->onerror
+
+Get or set the error handler for the processor.  Any conformance
+error, as well as warning and additional processing information, is
+reported to the handler.  See
+<https://github.com/manakai/data-errors/blob/master/doc/onerror.txt>
+for details of error handling.
+
+The value should not be set while the processor is running.  If the
+value is changed, the result is undefined.
+
+=item $processor->process_parsed_struct ($strict)
+
+Process a parsed struct, returned by L<Web::IDL::Parser>'s
+C<parsed_struct> method.  This method can be invoked multiple times
+with different parsed structs obtained from different IDL fragments.
+
+=item $processor->end_processing
+
+Notify of the processor that all relevant parsed structs have been
+processed.
+
+=item $defs = $processor->definitions
+
+Return the definitions obtained as a result of processing of parsed
+structe.
+
+=back
+
+=head1 DATA STRUCTURE
+
+The definitions data structure is a hash reference, with key/value
+pairs where keys are names of definitions and values are their
+descriptions.
+
+XXX
+
+=head1 SPECIFICATIONS
+
+=over 4
+
+=item WEBIDL
+
+Web IDL <http://heycam.github.io/webidl/>.
+
+Web IDL "Promise<T>"
+<https://www.w3.org/Bugs/Public/show_bug.cgi?id=24291>.
+
+Web IDL "class"
+<https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
+<http://dom.spec.whatwg.org/#elements>.
+
+=back
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

@@ -23,6 +23,10 @@ Typedef
 |
 ImplementsStatement
 
+## Not in spec
+|
+_Class
+
 * CallbackOrInterface
 
 _Callback
@@ -46,6 +50,13 @@ Interface
 * Interface
 
 'interface'="definition_type" identifier=_"name" Inheritance '{' InterfaceMembers '}' ';'
+
+* _Class
+
+## Not in spec
+## <http://dom.spec.whatwg.org/#elements>
+## <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>
+'class'="definition_type" identifier=_"name" _ClassInheritance '{' InterfaceMembers '}' ';'
 
 * Partial
 
@@ -127,6 +138,12 @@ ExtendedAttributeList ExceptionMember
 ':' identifier="super_name"
 ?
 
+* _ClassInheritance
+
+## Not in spec
+'extends' identifier="super_name"
+?
+
 * Enum
 
 'enum'="definition_type" identifier=_"name" '{' EnumValueList '}' ';'
@@ -169,23 +186,23 @@ FloatLiteral
 |
 integer="value_integer"
 |
-'null'=value_null?
+'null'="value"
 
 * BooleanLiteral
 
-'true'=value_true?
+'true'="value"
 |
-'false'=value_false?
+'false'="value"
 
 * FloatLiteral
 
 float="value_float"
 |
-'-Infinity'=value_n_infinity?
+'-Infinity'="value"
 |
-'Infinity'=value_inifinity?
+'Infinity'="value"
 |
-'NaN'=value_nan?
+'NaN'="value"
 
 * AttributeOrOperationOrIterator
 
@@ -201,14 +218,32 @@ OperationOrIterator
 
 * Serializer
 
-'serializer'=serializer? SerializerRest
+#'serializer'=serializer? SerializerRest
+_SerializerOperation
+|
+_Serializer
 
 * SerializerRest
 
+## 'ReturnType' is not in spec grammer but required in prose
+ReturnType
 OperationRest
 |
 '=' SerializationPattern
-?
+|
+_SerializerEnd
+
+* _SerializerOperation
+
+'serializer'=serializer? ReturnType OperationRest
+
+* _Serializer
+
+'serializer'="member_type" '=' SerializationPattern ';'
+|
+'serializer'="member_type" ';'
+
+## ';' is missing in spec
 
 * SerializationPattern
 
@@ -220,14 +255,26 @@ identifier="value_name"
 
 * SerializationPatternMap
 
++value_names[]
+
 'getter'=getter?
+|
+
+## Not in spec grammer but defined in prose
+'attribute'=attribute?
+|
+'inherit'=inherit? ',' 'attribute'=attribute?
+
 |
 'inherit'=inherit? Identifiers
 |
 identifier="value_names"[] Identifiers
+
 ?
 
 * SerializationPatternList
+
++value_names[]
 
 'getter'=getter?
 |
@@ -244,6 +291,13 @@ AttributeRest
 |
 ReturnType OperationRest
 |
+_StringifierEnd
+
+* _StringifierEnd
+
++member_type="operation"
++type="DOMString"
++arguments[]
 ';'
 
 * StaticMember
@@ -309,13 +363,22 @@ OperationRest
 
 * IteratorRest
 
-'iterator'=iterator? OperationIteratorInterfaceOrObject ';'
+#'iterator'="member_type" OperationIteratorInterfaceOrObject ';'
+
+'iterator'="member_type" OptionalIteratorInterface ';'
+|
+_IteratorObject
 
 * OperationIteratorInterfaceOrObject
 
 OptionalIteratorInterface
 |
 'object'=object?
+
+* _IteratorObject
+
++member_type="iterator_object"
+'iterator' 'object' ';'
 
 * OptionalIteratorInterface
 
@@ -362,7 +425,7 @@ identifier=_"name"
 
 * Ellipsis
 
-'...'=more?
+'...'=variadic?
 ?
 
 * ExceptionMember
@@ -402,11 +465,11 @@ ExtendedAttributeArgList
 |
 ExtendedAttributeTypePair
 |
+#ExtendedAttributeIdent
+#|
+ExtendedAttributeNamedArgList
+|
 ExtendedAttributeIdentList
-|
-ExtendedAttributeIdent
-|
-ExtendedAttributeNameArgList
 |
 ExtendedAttributeNoArgs
 
@@ -436,7 +499,7 @@ UnionType TypeSuffix
 
 NonAnyType
 |
-'any'=type_any? TypeSuffixStartingWithArray
+'any'="type" TypeSuffixStartingWithArray
 
 * UnionType
 
@@ -448,8 +511,7 @@ NonAnyType
 |
 UnionType TypeSuffix
 |
-                # XXX
-'any'=type_any? '[' ']' TypeSuffix
+'any'="type" _TypeArray=type_array
 
 * UnionMemberTypes
 
@@ -466,13 +528,27 @@ PrimitiveType TypeSuffix
 |
 identifier="type_name" TypeSuffix
 |
-'sequence' '<' Type=type_suffix '>' Null
+_SequenceType=type_parameterized Null
 |
 'object'="type" TypeSuffix
 |
 'Date'="type" TypeSuffix
 |
 'RegExp'="type" TypeSuffix
+
+|
+## Not in spec
+_PromiseType=type_parameterized Null
+|
+'Promise'="type" TypeSuffix
+
+* _SequenceType
+
+'sequence'="type_outer" '<' Type '>'
+
+* _PromiseType
+
+'Promise'="type_outer" '<' Type '>'
 
 * ConstType
 
@@ -494,7 +570,11 @@ UnrestrictedFloatType
 
 * UnrestrictedFloatType
 
-'unrestricted'=unrestricted? FloatType
+#'unrestricted' FloatType
+_UnrestrictedFloat
+|
+_UnrestrictedDouble
+
 |
 FloatType
 
@@ -504,9 +584,25 @@ FloatType
 |
 'double'="type"
 
+* _UnrestrictedFloat
+
++type="unrestricted float"
+'unrestricted' 'float'
+
+* _UnrestrictedDouble
+
++type="unrestricted double"
+'unrestricted' 'double'
+
 * UnsignedIntegerType
 
-'unsigned'=unsigned? IntegerType
+#'unsigned' IntegerType
+_UnsignedShort
+|
+_UnsignedLongLong
+|
+_UnsignedLong
+
 |
 IntegerType
 
@@ -514,27 +610,55 @@ IntegerType
 
 'short'="type"
 |
-'long'="type" OptionalLong
+#'long'="type" OptionalLong
+_LongLong
+|
+_Long
 
 * OptionalLong
 
-'long'="type2"
+'long'
 ?
+
+* _Long
+
+'long'="type"
+
+* _LongLong
+
++type="long long"
+'long' 'long'
+
+* _UnsignedShort
+
++type="unsigned short"
+'unsigned' 'short'
+
+* _UnsignedLong
+
++type="unsigned long"
+'unsigned' 'long'
+
+* _UnsignedLongLong
+
++type="unsigned long long"
+'unsigned' 'long' 'long'
 
 * TypeSuffix
 
-# XXX
-'[' ']' TypeSuffix
+_TypeArray=type_array
 |
-#XXX
-'?'=type_null? TypeSuffixStartingWithArray
+'?'=type_nullable? TypeSuffixStartingWithArray
 ?
 
 * TypeSuffixStartingWithArray
 
-# XXX
-'[' ']' TypeSuffix
+_TypeArray=type_array
 ?
+
+* _TypeArray
+
+'[' ']' TypeSuffix
 
 * Null
 
@@ -558,7 +682,7 @@ identifier="value_names"[]!'='!'(' Identifiers
 
 * ExtendedAttributeNoArgs
 
-identifier="name1"!'('!'='
+identifier="name"!'('!'='
 
 * ExtendedAttributeArgList
 
@@ -566,15 +690,16 @@ identifier="name" '(' ArgumentList ')'
 
 * ExtendedAttributeIdent
 
+## Unused (-> ExtendedAttributeIdentList)
 identifier="name" '=' identifier="value_name"!'='!'('
 
 * ExtendedAttributeIdentList
 
-identifier="name" '=' IdentifierList
+identifier="name" '=' IdentifierList!'='!'('
 
 * ExtendedAttributeNamedArgList
 
-identifier="name" '=' identifier="value_name" '(' ArgumentList ')'
+identifier="name" '=' identifier="value_names"[] '(' ArgumentList ')'
 
 * ExtendedAttributeTypePair
 
