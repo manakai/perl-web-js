@@ -126,6 +126,11 @@ sub process_parsed_struct ($$$) {
 
         if ($def->{definition_type} eq 'callback') {
           $props->{overload_set} = $self->_overload_set ($di, [$def]);
+
+          $props->{TreatNonObjectAsNull}
+              = delete [values %{$props->{overload_set}}]->[0]->{TreatNonObjectAsNull};
+          delete $props->{TreatNonObjectAsNull}
+              unless defined $props->{TreatNonObjectAsNull};
         }
 
         if ($def->{definition_type} eq 'enum') {
@@ -225,6 +230,26 @@ sub process_parsed_struct ($$$) {
                        index => $op{$key}->[0]->{index}};
             $mem->{overload_set} = $self->_overload_set
                 ($di, $op{$key}, special => $mem->{special});
+
+            my $unforgeable;
+            my $non_unforgeable;
+            for (values %{$mem->{overload_set}}) {
+              if (delete $_->{Unforgeable}) {
+                $unforgeable = 1;
+              } else {
+                $non_unforgeable = 1;
+              }
+            }
+            if ($unforgeable) {
+              $mem->{Unforgeable} = 1;
+              if (defined $non_unforgeable) {
+                $self->onerror->(type => 'webidl:bad unforgeablility',
+                                 di => $di,
+                                 index => $op{$key}->[0]->{index},
+                                 level => 'm');
+              }
+            }
+
             push @mem, $mem;
           } # %op
 
@@ -242,13 +267,13 @@ sub process_parsed_struct ($$$) {
                   $props->{$mem->{special}}->[0] = $mem->{member_type};
                   my $mem_props = $props->{$mem->{special}}->[1] ||= {};
                   $mem_props->{overload_set} = $mem->{overload_set};
+                  $mem_props->{Unforgeable} = $mem->{Unforgeable}
+                      if defined $mem->{Unforgeable};
 
                   if ($mem->{special} eq 'legacycaller') {
                     # XXX legacycaller SHOULD NOT be used
                     
                   }
-
-                  $self->_extended_attributes ($di, $mem => $mem_props);
                 }
               } else { ## Regular or static operation
                 if (defined $props->{members}->{$mem->{name}}) {
@@ -282,7 +307,8 @@ sub process_parsed_struct ($$$) {
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
                   $mem_props->{overload_set} = $mem->{overload_set};
-                  $self->_extended_attributes ($di, $mem => $mem_props);
+                  $mem_props->{Unforgeable} = $mem->{Unforgeable}
+                      if defined $mem->{Unforgeable};
                 }
               }
             } elsif ($mem->{member_type} eq 'const' or
@@ -371,7 +397,7 @@ sub process_parsed_struct ($$$) {
                                          index => $mem->{index},
                                          level => 'm');
                       }
-                      $props->{stringifier} = ['attrref', $mem->{name}];
+                      $props->{stringifier} = ['ref_attribute', $mem->{name}];
                     }
                   }
                 } # attribute
@@ -496,17 +522,17 @@ my $XAttrAllowed = {
     Unforgeable => 1,
   },
   static_attribute => {
-    Clamp => 1, EnforceRange => 1, EnsureUTF16 => 1, Exposed => 1,
+    Clamp => 1, EnsureUTF16 => 1, Exposed => 1,
     SameObject => 1, TreatNullAs => 1,
   },
   operation => {
     Exposed => 1, NewObject => 1, TreatNullAs => 1, Unforgeable => 1,
   },
   static_operation => {
-    Exposed => 1, NewObject => 1, TreatNullAs => 1, Unforgeable => 1,
+    Exposed => 1, NewObject => 1, TreatNullAs => 1,
   },
   argument => {
-    Clamp => 1, EnforceRange => 1, EnsureUTF1 => 1, TreatNullAs => 1,
+    Clamp => 1, EnforceRange => 1, EnsureUTF16 => 1, TreatNullAs => 1,
   },
   serializer => {},
   iterator => {
@@ -525,7 +551,7 @@ my $XAttrAllowed = {
   },
   field => {},
   enum => {},
-  callback_function => {
+  callback => {
     TreatNonObjectAsNull => 1,
   },
   typedef => {},
@@ -536,7 +562,20 @@ my $XAttrArgs = {
   ArrayClass => {no => 1},
   Clamp => {no => 1},
   Constructor => {no => 1, args => 1},
-  MapClass => {no => 1},
+  EnforceRange => {no => 1},
+  EnsureUTF16 => {no => 1},
+  ImplicitThis => {no => 1},
+  LenientThis => {no => 1},
+  MapClass => {pair => 1},
+  NewObject => {no => 1},
+  NoInterfaceObject => {no => 1},
+  OverrideBuiltins => {no => 1},
+  PutForwards => {id => 1},
+  Replaceable => {no => 1},
+  SameObject => {no => 1},
+  TreatNonObjectAsNull => {no => 1}, # No MUST in spec
+  TreatNullAs => {id => 1},
+  Unforgeable => {no => 1},
 };
 
 my $XAttrMultiple = {
@@ -547,6 +586,11 @@ my $XAttrDisallowedCombinations = [
   ['ArrayClass', 'MapClass'],
   ['Clamp', 'EnforceRange'],
   ['Constructor', 'NoInterfaceObject'],
+  ['MapClass', 'Global'],
+  ['MapClass', 'PrimaryGlobal'],
+  ['OverrideBuiltins', 'Global'],
+  ['OverrideBuiltins', 'PrimaryGlobal'],
+  ['PutForwards', 'Replaceable'],
 ];
 
 sub _extended_attributes ($$$$) {
@@ -556,7 +600,7 @@ sub _extended_attributes ($$$$) {
   for my $attr (@{$src->{extended_attributes} or []}) {
     my $context = $src->{definition_type} || $src->{member_type} || 'argument';
     $context = 'partial_' . $context if $src->{partial};
-    $context = 'static_' . $context if $src->{context};
+    $context = 'static_' . $context if $src->{static};
     $context = 'callback_' . $context if $src->{callback};
     if ($XAttrAllowed->{$context}->{$attr->{name}}) {
       if ($has_xattrs->{$attr->{name}}) {
@@ -580,7 +624,7 @@ sub _extended_attributes ($$$$) {
           $args_type = 'args';
         }
       } elsif (defined $attr->{value_names}) {
-        $args_type = 'identifiers';
+        $args_type = @{$attr->{value_names}} == 1 ? 'id' : 'id_list';
       } elsif (defined $attr->{value_types}) {
         $args_type = 'pair';
       }
@@ -599,18 +643,123 @@ sub _extended_attributes ($$$$) {
           $dest->{ArrayClass} = 1;
           next;
         }
-      } elsif ($attr->{name} eq 'Clamp') {
+      } elsif ($attr->{name} eq 'MapClass') {
+        if (defined $src->{super_name}) {
+          #
+        } else {
+          my $t = $attr->{value_types};
+          if (defined $t) {
+            $dest->{MapClass}->{key_type} = $self->_type
+                ($di, {index => $attr->{index}, %{$t->[0]}});
+            $dest->{MapClass}->{value_type} = $self->_type
+                ($di, {index => $attr->{index}, %{$t->[1]}});
+
+            # XXX interface members' restrictions
+          }
+          next;
+        }
+      } elsif ($attr->{name} eq 'Clamp' or
+               $attr->{name} eq 'EnforceRange') {
         if ($src->{readonly}) {
           #
         } else {
-          $dest->{Clamp} = 1;
+          $dest->{$attr->{name}} = 1;
           # XXX MUST NOT use with non-integer type
           next;
         }
       } elsif ($attr->{name} eq 'Constructor') {
         push @constructor, $attr;
         next;
+      } elsif ($attr->{name} eq 'EnsureUTF16') {
+        $dest->{EnsureUTF16} = 1;
+        # XXX warn unless type is DOMString
+        # XXX warn if readonly
+        next;
+      } elsif ($attr->{name} eq 'ImplicitThis') {
+        $dest->{$attr->{name}} = 1;
+        next;
+      } elsif ($attr->{name} eq 'LenientThis' or
+               $attr->{name} eq 'TreatNonObjectAsNull') {
+        $dest->{$attr->{name}} = 1;
+        # XXX SHOULD NOT be used
+        next;
+      } elsif ($attr->{name} eq 'NewObject') {
+        if (not defined $src->{name}) {
+          #
+        } else {
+          # XXX return type MUST be interface
+          $dest->{$attr->{name}} = 1;
+          next;
+        }
+      } elsif ($attr->{name} eq 'SameObject') {
+        if ($src->{readonly}) {
+          # XXX type MUST be interface, array or object
+          $dest->{$attr->{name}} = 1;
+          next;
+        } else {
+          #
+        }
+      } elsif ($attr->{name} eq 'NoInterfaceObject') {
+        $dest->{$attr->{name}} = 1;
+        # XXX SHOULD NOT be used
+        # XXX MUST NOT be used if there is any static operation
+        # XXX MUST NOT be used on callback interface with no constant
+        next;
+      } elsif ($attr->{name} eq 'OverrideBuiltins') {
+        $dest->{$attr->{name}} = 1;
+        # XXX MUST NOT be used unless interface or partial interface with named getter
+        next;
+      } elsif ($attr->{name} eq 'PutForwards') {
+        if (@{$attr->{value_names} or []}) {
+          if ($dest->{setter}) {
+            $self->onerror->(type => 'webidl:duplicate',
+                             value => $attr->{name},
+                             di => $di,
+                             index => $attr->{index},
+                             level => $dest->{setter} eq 1 ? 'w' : 'm');
+          }
+          $dest->{setter} = ['ref_attribute', $attr->{value_names}->[0]];
+          # XXX there MUST be referenced attribute
+          # XXX there MUST NOT be cycle
+          # XXX MUST NOT be used on callback interface's attribute
+        }
+        next;
+      } elsif ($attr->{name} eq 'Replaceable') {
+        if ($dest->{setter}) {
+          $self->onerror->(type => 'webidl:duplicate',
+                           value => $attr->{name},
+                           di => $di,
+                           index => $attr->{index},
+                           level => $dest->{setter} eq 1 ? 'w' : 'm');
+        }
+        $dest->{setter} = 'replaceable';
+        # XXX MUST NOT be used on callback interface
+        next;
+      } elsif ($attr->{name} eq 'TreatNullAs') {
+        if (@{$attr->{value_names} or []}) {
+          if ($attr->{value_names}->[0] eq 'EmptyString') {
+            $dest->{$attr->{name}} = $attr->{value_names}->[0];
+            # XXX type MUST be DOMString
+            # XXX If operation return value, it MUST be in callback interface
+          } else {
+            $self->onerror->(type => 'webidl:bad args',
+                             di => $di,
+                             index => $attr->{index},
+                             value => $attr->{name},
+                             level => 'm');
+          }
+        }
+        next;
+      } elsif ($attr->{name} eq 'Unforgeable') {
+        $dest->{$attr->{name}} = 1;
+        # XXX restrictions on consequential interfaces
+        next;
       }
+
+      # XXX Exposed
+      # XXX Global
+      # XXX PrimaryGlobal
+      # XXX NamedConstructor
 
     }
     $self->onerror->(type => 'webidl:not allowed',
@@ -714,11 +863,11 @@ sub _value ($$$;%) {
     return ['string', $obj->{value_string}];
   } elsif (defined $obj->{value_name} and
            defined $args{context} and $args{context} eq 'serializer') {
-    return ['attrref', $obj->{value_name}];
+    return ['ref_attribute', $obj->{value_name}];
     # XXX MUST be an attribute of serializable type
   } elsif (defined $obj->{value_name} and
            defined $args{context} and $args{context} eq 'iterator') {
-    return ['interfaceref', $obj->{value_name}];
+    return ['ref_interface', $obj->{value_name}];
     # XXX MUST be an iterator object interface
   } elsif (defined $obj->{value}) {
     return $obj->{value};
@@ -733,7 +882,7 @@ sub _value ($$$;%) {
     # XXX requires indexed/named properties and whose type is serializable
     if (defined $o) {
       # XXX MUST be attributes whose type is serializable
-      push @v, map { ['attrref', $_] } @{$o->{value_names}};
+      push @v, map { ['ref_attribute', $_] } @{$o->{value_names}};
     }
     return \@v;
   } elsif ($args{optional}) {
@@ -879,9 +1028,12 @@ sub _overload_set ($$$;%) {
                        level => 'm');
     }
 
+    my $xa_props = {};
+    $self->_extended_attributes ($di, $_ => $xa_props);
+
     ## 5.4.
     push @$S, {type => $type, args => $args,
-               index => $_->{index}};
+               index => $_->{index}, %$xa_props};
 
     push @{$self->{state}->{args} ||= []}, [$args, $di, $_->{index}];
 
@@ -892,7 +1044,7 @@ sub _overload_set ($$$;%) {
     if (@$args and $args->[-1]->{optionality} eq 'variadic') {
       ## 5.5.1.
       push @$S, {type => $type, args => [@$args[0..($#$args-1)]],
-                 index => $_->{index}};
+                 index => $_->{index}, %$xa_props};
       
       ## 5.5.2.
       # N/A
@@ -907,7 +1059,7 @@ sub _overload_set ($$$;%) {
 
       ## 5.7.2.
       push @$S, {type => $type, args => [@$args[0..($l-1)]],
-                 index => $_->{index}};
+                 index => $_->{index}, %$xa_props};
 
       ## 5.7.3.
       $l--;
@@ -915,7 +1067,7 @@ sub _overload_set ($$$;%) {
 
     ## 5.8.
     if (@$args and $l == 0 and $args->[0]->{optionality} eq 'optional') {
-      push @$S, {type => $type, args => [], index => $_->{index}};
+      push @$S, {type => $type, args => [], index => $_->{index}, %$xa_props};
     }
   }
 
