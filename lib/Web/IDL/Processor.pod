@@ -85,6 +85,9 @@ Web IDL "class"
 
 =back
 
+This implementation does not allow use of extended attributes not
+allowed by Web IDL or any other applicable specification.
+
 =head1 AUTHOR
 
 Wakaba <wakaba@suikawiki.org>.
