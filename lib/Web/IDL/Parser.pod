@@ -342,6 +342,9 @@ Web IDL "class"
 
 =back
 
+In this implementation, extended attributes MUST be in one of six
+forms shown in the Web IDL specification.
+
 =head1 AUTHOR
 
 Wakaba <wakaba@suikawiki.org>.

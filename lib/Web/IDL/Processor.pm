@@ -247,6 +247,8 @@ sub process_parsed_struct ($$$) {
                     # XXX legacycaller SHOULD NOT be used
                     
                   }
+
+                  $self->_extended_attributes ($di, $mem => $mem_props);
                 }
               } else { ## Regular or static operation
                 if (defined $props->{members}->{$mem->{name}}) {
@@ -280,6 +282,7 @@ sub process_parsed_struct ($$$) {
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
                   $mem_props->{overload_set} = $mem->{overload_set};
+                  $self->_extended_attributes ($di, $mem => $mem_props);
                 }
               }
             } elsif ($mem->{member_type} eq 'const' or
@@ -385,6 +388,8 @@ sub process_parsed_struct ($$$) {
                   # XXX value type MUST be compat with type
                   # XXX string MUST be one of enum
                 } # has value
+
+                $self->_extended_attributes ($di, $mem => $mem_props);
               }
             } elsif ($mem->{member_type} eq 'serializer') {
               if (defined $props->{serializer}) {
@@ -400,6 +405,7 @@ sub process_parsed_struct ($$$) {
                 $mem_props->{value} = $self->_value
                     ($di, $mem, optional => 1, context => 'serializer');
                 delete $mem_props->{value} unless defined $mem_props->{value};
+                $self->_extended_attributes ($di, $mem => $mem_props);
               }
             } elsif ($mem->{member_type} eq 'iterator') {
               if (defined $props->{iterator}) {
@@ -420,6 +426,8 @@ sub process_parsed_struct ($$$) {
 
                 # XXX if {value} is not undef, its "iterator object"'s
                 # return type MUST be $self->{type}.
+
+                $self->_extended_attributes ($di, $mem => $mem_props);
               }
             } elsif ($mem->{member_type} eq 'iterator_object') {
               if (defined $props->{iterator_object}) {
@@ -433,18 +441,17 @@ sub process_parsed_struct ($$$) {
                 my $mem_props = $props->{iterator_object}->[1] ||= {};
 
                 $mem_props->{type} = $self->_type ($di, $mem);
+                $self->_extended_attributes ($di, $mem => $mem_props);
               }
             } else {
               $self->onerror->(type => 'webidl:unknown',
                                value => $mem->{member_type},
                                level => 'u');
             } # member_type
-
-            # XXX extended attributes
           }
         } # has member
 
-        # XXX extended attributes
+        $self->_extended_attributes ($di, $def => $props);
 
         # XXX SHOULD NOT define new callback interface with only a
         # single operation
@@ -452,6 +459,7 @@ sub process_parsed_struct ($$$) {
     } elsif ($def->{definition_type} eq 'implements') {
       push @{$self->{state}->{implements} ||= []},
           [$def->{name} => $def->{super_name}, $di, $def->{index}];
+      $self->_extended_attributes ($di, $def => {});
     } else {
       $self->onerror->(type => 'webidl:unknown',
                        value => $def->{definition_type},
@@ -460,8 +468,183 @@ sub process_parsed_struct ($$$) {
   } # definitions
 } # process_parsed_struct
 
-sub _type ($$$) {
-  my ($self, $di, $def) = @_;
+# XXX
+my $XAttrAllowed = {
+  interface => {
+    ArrayClass => 1, Constructor => 1, Exposed => 1, Global => 1,
+    ImplicitThis => 1, MapClass => 1, NamedConstructor => 1,
+    NoInterfaceObject => 1, OverrideBuiltins => 1, PrimaryGlobal => 1,
+    Unforgeable => 1,
+  },
+  callback_interface => {
+    ArrayClass => 1, Exposed => 1, Global => 1,
+    ImplicitThis => 1, MapClass => 1, NamedConstructor => 1,
+    NoInterfaceObject => 1, OverrideBuiltins => 1, PrimaryGlobal => 1,
+    Unforgeable => 1,
+  },
+  partial_interface => {
+    Exposed => 1, Global => 1, OverrideBuiltins => 1,
+    PrimaryGlobal => 1, Unforgeable => 1,
+  },
+  const => {
+    Exposed => 1,
+  },
+  attribute => {
+    Clamp => 1, EnforceRange => 1, EnsureUTF16 => 1, Exposed => 1,
+    SameObject => 1, TreatNullAs => 1,
+    LenientThis => 1, PutForwards => 1, Replaceable => 1,
+    Unforgeable => 1,
+  },
+  static_attribute => {
+    Clamp => 1, EnforceRange => 1, EnsureUTF16 => 1, Exposed => 1,
+    SameObject => 1, TreatNullAs => 1,
+  },
+  operation => {
+    Exposed => 1, NewObject => 1, TreatNullAs => 1, Unforgeable => 1,
+  },
+  static_operation => {
+    Exposed => 1, NewObject => 1, TreatNullAs => 1, Unforgeable => 1,
+  },
+  argument => {
+    Clamp => 1, EnforceRange => 1, EnsureUTF1 => 1, TreatNullAs => 1,
+  },
+  serializer => {},
+  iterator => {
+    Exposed => 1,
+  },
+  iterator_object => {},
+  dictionary => {
+    Constructor => 1, Exposed => 1,
+  },
+  partial_dictionary => {},
+  dictionary_member => {
+    Clamp => 1, EnforceRange => 1,
+  },
+  exception => {
+    NoInterfaceObject => 1,
+  },
+  field => {},
+  enum => {},
+  callback_function => {
+    TreatNonObjectAsNull => 1,
+  },
+  typedef => {},
+  implements => {},
+};
+
+my $XAttrArgs = {
+  ArrayClass => {no => 1},
+  Clamp => {no => 1},
+  Constructor => {no => 1, args => 1},
+  MapClass => {no => 1},
+};
+
+my $XAttrMultiple = {
+  Constructor => 1,
+};
+
+my $XAttrDisallowedCombinations = [
+  ['ArrayClass', 'MapClass'],
+  ['Clamp', 'EnforceRange'],
+  ['Constructor', 'NoInterfaceObject'],
+];
+
+sub _extended_attributes ($$$$) {
+  my ($self, $di, $src, $dest) = @_;
+  my $has_xattrs = {};
+  my @constructor;
+  for my $attr (@{$src->{extended_attributes} or []}) {
+    my $context = $src->{definition_type} || $src->{member_type} || 'argument';
+    $context = 'partial_' . $context if $src->{partial};
+    $context = 'static_' . $context if $src->{context};
+    $context = 'callback_' . $context if $src->{callback};
+    if ($XAttrAllowed->{$context}->{$attr->{name}}) {
+      if ($has_xattrs->{$attr->{name}}) {
+        unless ($XAttrMultiple->{$attr->{name}}) {
+          $self->onerror->(type => 'webidl:not allowed',
+                           value => $attr->{name},
+                           di => $di,
+                           index => $attr->{index},
+                           level => 'm');
+          next;
+        }
+      } else {
+        $has_xattrs->{$attr->{name}} = 1;
+      }
+
+      my $args_type = 'no';
+      if (defined $attr->{arguments}) {
+        if (defined $attr->{value_name}) {
+          $args_type = 'named_args';
+        } else {
+          $args_type = 'args';
+        }
+      } elsif (defined $attr->{value_names}) {
+        $args_type = 'identifiers';
+      } elsif (defined $attr->{value_types}) {
+        $args_type = 'pair';
+      }
+      unless ($XAttrArgs->{$attr->{name}}->{$args_type}) {
+        $self->onerror->(type => 'webidl:bad args',
+                         di => $di,
+                         index => $attr->{index},
+                         value => $attr->{name},
+                         level => 'm');
+      }
+
+      if ($attr->{name} eq 'ArrayClass') {
+        if (defined $src->{super_name}) {
+          #
+        } else {
+          $dest->{ArrayClass} = 1;
+          next;
+        }
+      } elsif ($attr->{name} eq 'Clamp') {
+        if ($src->{readonly}) {
+          #
+        } else {
+          $dest->{Clamp} = 1;
+          # XXX MUST NOT use with non-integer type
+          next;
+        }
+      } elsif ($attr->{name} eq 'Constructor') {
+        push @constructor, $attr;
+        next;
+      }
+
+    }
+    $self->onerror->(type => 'webidl:not allowed',
+                     value => $attr->{name},
+                     di => $di,
+                     index => $attr->{index},
+                     level => 'm');
+  }
+
+  if (@constructor) {
+    $dest->{Constructor} = ['operation', {
+      overload_set => $self->_overload_set
+          ($di, \@constructor, type_optional => 1),
+    }];
+    my $type = $self->_type
+        ($di, {type_name => $src->{name}, index => $src->{index}});
+    for (values %{$dest->{Constructor}->[1]->{overload_set}}) {
+      $_->{type} = $type;
+    }
+  }
+
+  for (@$XAttrDisallowedCombinations) {
+    if ($dest->{$_->[0]} and $dest->{$_->[1]}) {
+      $self->onerror->(type => 'webidl:not allowed',
+                       value => $_->[1],
+                       di => $di,
+                       index => $src->{index},
+                       level => 'm');
+    }
+  }
+} # _extended_attributes
+
+sub _type ($$$;%) {
+  my ($self, $di, $def, %args) = @_;
   my $value;
   if (defined $def->{type}) {
     # XXX warn if float
@@ -480,6 +663,8 @@ sub _type ($$$) {
     $value = ['union', {def => [map { $self->_type ($di, {index => $def->{index}, %$_}) } @{$def->{type_union}}]}];
     push @{$self->{state}->{types} ||= []},
         ['union', $value, $di, $def->{index}];
+  } elsif ($args{optional}) {
+    return undef;
   } else {
     $self->onerror->(type => 'webidl:unknown type',
                      di => $di,
@@ -645,11 +830,11 @@ sub _overload_set ($$$;%) {
       # XXX value type MUST be compat with type
       # XXX if type is enumeration, value MUST be one of them
 
-      # XXX extended attributes
+      $self->_extended_attributes ($di, $_->{arguments}->[$i] => $args->[$i]);
     }
 
     ## Return type
-    my $type = $self->_type ($di, $_);
+    my $type = $self->_type ($di, $_, optional => $args{type_optional});
     # XXX type restrictions
     my $expected_length;
     if (not defined $args{special}) {

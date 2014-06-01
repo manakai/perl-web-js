@@ -1,6 +1,8 @@
 package Web::IDL::Parser;
 use strict;
 use warnings;
+no warnings 'utf8';
+use warnings FATAL => 'recursion';
 our $VERSION = '1.0';
 use Web::IDL::_Defs;
 
