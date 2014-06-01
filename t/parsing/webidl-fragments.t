@@ -28,7 +28,7 @@ for my $path ($data_path->children (qr/\.dat$/)) {
         my %args = @_;
         push @error, join ';',
             $args{di} || $default_di,
-            $args{index},
+            defined $args{index} ? $args{index} : '',
             $args{type}, $args{text} || '',
             $args{value} || '',
             $args{level};

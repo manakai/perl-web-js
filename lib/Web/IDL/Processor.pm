@@ -990,6 +990,71 @@ sub end_processing ($) {
     delete $_->{index}, delete $_->{type_serialized} for @$args;
   }
 
+  ## Dictionary members
+  my @dict_name = grep {
+    $self->{defs}->{$_}->[0] eq 'dictionary';
+  } keys %{$self->{defs}};
+  for my $def_name (@dict_name) {
+    my $def = $self->{defs}->{$def_name};
+    my $included = {};
+    for my $mem_name (keys %{$def->[1]->{members}}) {
+      my $mem = $def->[1]->{members}->{$mem_name};
+      next unless $mem->[0] eq 'dictionary_member';
+      my @type = $mem->[1]->{type};
+      while (@type) {
+        my $type = shift @type;
+        if (not ref $type) {
+          #
+        } elsif ($type->[0] eq 'ref_dictionary') {
+          $included->{$type->[1]} = 1;
+          for (keys %{$self->{defs}->{$type->[1]}->[1]->{implements} or {}}) {
+            $included->{$_} = 1;
+          }
+        } elsif ($type->[0] eq 'array' or
+                 $type->[0] eq 'nullable' or
+                 $type->[0] eq 'sequence') {
+          push @type, $type->[1];
+        } elsif ($type->[0] eq 'union') {
+          push @type, @{$type->[1]->{def}};
+        }
+      }
+    }
+    $def->[1]->{dictionaries_included_by_members}
+        = $included if keys %$included;
+  } # defs
+  for my $def_name (@dict_name) {
+    my $def = $self->{defs}->{$def_name};
+    for (keys %{$def->[1]->{implements} or {}}) {
+      for (keys %{$self->{defs}->{$_}->[1]->{dictionaries_included_by_members} or {}}) {
+        $def->[1]->{dictionaries_included_by_members}->{$_} = 1;
+      }
+    }
+  } # defs
+  {
+    my $changed = 0;
+    for my $def_name (@dict_name) {
+      my $def = $self->{defs}->{$def_name};
+      for (keys %{$def->[1]->{dictionaries_included_by_members} or {}}) {
+        for (keys %{$self->{defs}->{$_}->[1]->{dictionaries_included_by_members} or {}}) {
+          unless ($def->[1]->{dictionaries_included_by_members}->{$_}) {
+            $def->[1]->{dictionaries_included_by_members}->{$_} = 1;
+            $changed = 1;
+          }
+        }
+      }
+    } # defs
+    redo if $changed;
+  }
+  for my $def_name (@dict_name) {
+    my $def = $self->{defs}->{$def_name};
+    if (($def->[1]->{dictionaries_included_by_members} or {})->{$def_name}) {
+      $self->onerror->(type => 'webidl:cyclic inheritance',
+                       value => $def_name,
+                       level => 'm');
+    }
+  } # defs
+  # XXX typedefs?
+
         # XXX warn if an object implements multiple interfaces with a special operation
 
         # XXX If there is named*, there MUST be namedGetter
