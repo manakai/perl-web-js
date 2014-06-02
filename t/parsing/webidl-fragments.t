@@ -49,6 +49,9 @@ for my $path ($data_path->children (qr/\.dat$/)) {
         eq_or_diff perl2json_chars_for_record $processor->processed,
                    perl2json_chars_for_record $expected;
       } else {
+        @error = grep {
+          not /;webidl:not defined;;\[PrimaryGlobal\];/;
+        } @error;
         eq_or_diff perl2json_chars_for_record $processor->processed->{idl_defs},
                    perl2json_chars_for_record $expected;
       }

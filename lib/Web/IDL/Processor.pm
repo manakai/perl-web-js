@@ -149,6 +149,9 @@ sub process_parsed_struct ($$$) {
           $props->{value} = ['stringset', $vals];
         } # enum
 
+        my $xattr_opts = {};
+        $self->_extended_attributes ($di, $def => $props, $xattr_opts);
+
         if ($def->{definition_type} eq 'interface' or
             $def->{definition_type} eq 'class' or
             $def->{definition_type} eq 'exception' or
@@ -233,11 +236,25 @@ sub process_parsed_struct ($$$) {
 
             my $unforgeable;
             my $non_unforgeable;
+            my $exposed;
+            my $bad_exposed;
             for (values %{$mem->{overload_set}}) {
               if (delete $_->{Unforgeable}) {
                 $unforgeable = 1;
               } else {
                 $non_unforgeable = 1;
+              }
+              if (defined $_->{_exposed}) {
+                if (defined $exposed) {
+                  unless ((join $;, @{$_->{_exposed}}) eq (join $;, @$exposed)) {
+                    $bad_exposed = 1;
+                  }
+                  delete $_->{_exposed};
+                } else {
+                  $exposed = delete $_->{_exposed};
+                }
+              } else {
+                $bad_exposed = 1;
               }
             }
             if ($unforgeable) {
@@ -246,6 +263,16 @@ sub process_parsed_struct ($$$) {
                 $self->onerror->(type => 'webidl:bad unforgeablility',
                                  di => $di,
                                  index => $op{$key}->[0]->{index},
+                                 level => 'm');
+              }
+            }
+            if (defined $exposed) {
+              $mem->{_exposed} = $exposed;
+              if ($bad_exposed) {
+                $self->onerror->(type => 'webidl:inconsistent',
+                                 di => $di,
+                                 index => $op{$key}->[0]->{index},
+                                 value => '[Exposed]',
                                  level => 'm');
               }
             }
@@ -269,6 +296,8 @@ sub process_parsed_struct ($$$) {
                   $mem_props->{overload_set} = $mem->{overload_set};
                   $mem_props->{Unforgeable} = $mem->{Unforgeable}
                       if defined $mem->{Unforgeable};
+                  $mem_props->{_exposed} = $mem->{_exposed}
+                      if defined $mem->{_exposed};
 
                   if ($mem->{special} eq 'legacycaller') {
                     # XXX legacycaller SHOULD NOT be used
@@ -309,6 +338,8 @@ sub process_parsed_struct ($$$) {
                   $mem_props->{overload_set} = $mem->{overload_set};
                   $mem_props->{Unforgeable} = $mem->{Unforgeable}
                       if defined $mem->{Unforgeable};
+                  $mem_props->{_exposed} = $mem->{_exposed}
+                      if defined $mem->{_exposed};
                 }
               }
             } elsif ($mem->{member_type} eq 'const' or
@@ -415,7 +446,9 @@ sub process_parsed_struct ($$$) {
                   # XXX string MUST be one of enum
                 } # has value
 
-                $self->_extended_attributes ($di, $mem => $mem_props);
+                $mem_props->{_exposed} = $xattr_opts->{Exposed}
+                    if defined $xattr_opts->{Exposed};
+                $self->_extended_attributes ($di, $mem => $mem_props, {});
               }
             } elsif ($mem->{member_type} eq 'serializer') {
               if (defined $props->{serializer}) {
@@ -431,7 +464,10 @@ sub process_parsed_struct ($$$) {
                 $mem_props->{value} = $self->_value
                     ($di, $mem, optional => 1, context => 'serializer');
                 delete $mem_props->{value} unless defined $mem_props->{value};
-                $self->_extended_attributes ($di, $mem => $mem_props);
+
+                $mem_props->{_exposed} = $xattr_opts->{Exposed}
+                    if defined $xattr_opts->{Exposed};
+                $self->_extended_attributes ($di, $mem => $mem_props, {});
               }
             } elsif ($mem->{member_type} eq 'iterator') {
               if (defined $props->{iterator}) {
@@ -453,7 +489,9 @@ sub process_parsed_struct ($$$) {
                 # XXX if {value} is not undef, its "iterator object"'s
                 # return type MUST be $self->{type}.
 
-                $self->_extended_attributes ($di, $mem => $mem_props);
+                $mem_props->{_exposed} = $xattr_opts->{Exposed}
+                    if defined $xattr_opts->{Exposed};
+                $self->_extended_attributes ($di, $mem => $mem_props, {});
               }
             } elsif ($mem->{member_type} eq 'iterator_object') {
               if (defined $props->{iterator_object}) {
@@ -467,7 +505,10 @@ sub process_parsed_struct ($$$) {
                 my $mem_props = $props->{iterator_object}->[1] ||= {};
 
                 $mem_props->{type} = $self->_type ($di, $mem);
-                $self->_extended_attributes ($di, $mem => $mem_props);
+
+                $mem_props->{_exposed} = $xattr_opts->{Exposed}
+                    if defined $xattr_opts->{Exposed};
+                $self->_extended_attributes ($di, $mem => $mem_props, {});
               }
             } else {
               $self->onerror->(type => 'webidl:unknown',
@@ -477,15 +518,13 @@ sub process_parsed_struct ($$$) {
           }
         } # has member
 
-        $self->_extended_attributes ($di, $def => $props);
-
         # XXX SHOULD NOT define new callback interface with only a
         # single operation
       }
     } elsif ($def->{definition_type} eq 'implements') {
       push @{$self->{state}->{implements} ||= []},
           [$def->{name} => $def->{super_name}, $di, $def->{index}];
-      $self->_extended_attributes ($di, $def => {});
+      $self->_extended_attributes ($di, $def => {}, {});
     } else {
       $self->onerror->(type => 'webidl:unknown',
                        value => $def->{definition_type},
@@ -576,6 +615,9 @@ my $XAttrArgs = {
   TreatNonObjectAsNull => {no => 1}, # No MUST in spec
   TreatNullAs => {id => 1},
   Unforgeable => {no => 1},
+  Global => {no => 1, id => 1, id_list => 1},
+  PrimaryGlobal => {no => 1, id => 1, id_list => 1},
+  Exposed => {id => 1, id_list => 1},
 };
 
 my $XAttrMultiple = {
@@ -591,10 +633,11 @@ my $XAttrDisallowedCombinations = [
   ['OverrideBuiltins', 'Global'],
   ['OverrideBuiltins', 'PrimaryGlobal'],
   ['PutForwards', 'Replaceable'],
+  ['Global', 'PrimaryGlobal'],
 ];
 
-sub _extended_attributes ($$$$) {
-  my ($self, $di, $src, $dest) = @_;
+sub _extended_attributes ($$$$$) {
+  my ($self, $di, $src, $dest, $dest_context) = @_;
   my $has_xattrs = {};
   my @constructor;
   for my $attr (@{$src->{extended_attributes} or []}) {
@@ -754,11 +797,56 @@ sub _extended_attributes ($$$$) {
         $dest->{$attr->{name}} = 1;
         # XXX restrictions on consequential interfaces
         next;
+      } elsif ($attr->{name} eq 'Global' or
+               $attr->{name} eq 'PrimaryGlobal') {
+        $dest->{Global} = 1;
+        if (defined $attr->{value_names}) {
+          for (@{$attr->{value_names}}) {
+            $self->{processed}->{global_names}->{$_}->{$src->{name}} = 1;
+          }
+        } else {
+          $self->{processed}->{global_names}->{$src->{name}}->{$src->{name}} = 1;
+        }
+        if ($attr->{name} eq 'PrimaryGlobal') {
+          if (defined $self->{processed}->{primary_global}) {
+            $self->onerror->(type => 'webidl:duplicate',
+                             value => $attr->{name},
+                             di => $di,
+                             index => $attr->{index},
+                             level => 'm');
+          } else {
+            $self->{processed}->{primary_global} = $src->{name};
+          }
+        }
+        # XXX If partial interface, it MUST have named getter.
+        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, serializers, iterators
+        # XXX MUST NOT have named setter, creattor, deleter
+        # XXX MUST NOT inherit interface with OverrideBuiltins
+        # XXX MUST NOT inherit this interface
+        next;
+      } elsif ($attr->{name} eq 'Exposed') {
+        if (defined $src->{member_type}) { # member
+          if (defined $dest->{_exposed}) {
+            $self->onerror->(type => 'webidl:not allowed',
+                             value => $attr->{name},
+                             di => $di,
+                             index => $attr->{index},
+                             level => 'm');
+          }
+          $dest->{_exposed} = $attr->{value_names} || [];
+          # XXX MUST NOT be specified for exception's const
+        } else { # interface
+          if ($src->{partial}) {
+            $dest_context->{Exposed} = $attr->{value_names} || [];
+            # XXX
+          } else {
+            $self->{state}->{exposed}->{$src->{name}} = $attr->{value_names} || [];
+          }
+        }
+        # XXX for dictionary, there MUST be Constructor
+        next;
       }
 
-      # XXX Exposed
-      # XXX Global
-      # XXX PrimaryGlobal
       # XXX NamedConstructor
 
     }
@@ -979,7 +1067,8 @@ sub _overload_set ($$$;%) {
       # XXX value type MUST be compat with type
       # XXX if type is enumeration, value MUST be one of them
 
-      $self->_extended_attributes ($di, $_->{arguments}->[$i] => $args->[$i]);
+      $self->_extended_attributes
+          ($di, $_->{arguments}->[$i] => $args->[$i], {});
     }
 
     ## Return type
@@ -1029,7 +1118,7 @@ sub _overload_set ($$$;%) {
     }
 
     my $xa_props = {};
-    $self->_extended_attributes ($di, $_ => $xa_props);
+    $self->_extended_attributes ($di, $_ => $xa_props, {});
 
     ## 5.4.
     push @$S, {type => $type, args => $args,
@@ -1391,6 +1480,77 @@ sub end_processing ($) {
     }
   } # defs
   # XXX typedefs?
+
+  ## Exposedness
+  unless (defined $self->{processed}->{primary_global}) {
+    $self->onerror->(type => 'webidl:not defined',
+                     value => '[PrimaryGlobal]',
+                     level => 'w');
+  }
+  for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
+    my $def = $self->{processed}->{idl_defs}->{$def_name};
+    if ($def->[0] eq 'interface') {
+      if (defined $self->{state}->{exposed}->{$def_name}) {
+        $def->[1]->{Exposed} = {};
+        for my $gname (@{$self->{state}->{exposed}->{$def_name} or []}) {
+          if (defined $self->{processed}->{global_names}->{$gname}) {
+            for (keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
+              $def->[1]->{Exposed}->{$_} = 1;
+            }
+          } else {
+            $self->onerror->(type => 'webidl:not defined',
+                             value => $gname,
+                             level => 'm');
+          }
+        }
+      } else { # No [Exposed]
+        if (defined $self->{processed}->{primary_global}) {
+          $def->[1]->{Exposed}->{$self->{processed}->{primary_global}} = 1;
+        } else {
+          if (defined $self->{processed}->{global_names}) {
+            $def->[1]->{Exposed} = {};
+          } else {
+            #
+          }
+        }
+      }
+
+      for my $mem_name (keys %{$def->[1]->{members}}) {
+        my $mem = $def->[1]->{members}->{$mem_name};
+        if (defined $mem->[1]->{_exposed}) {
+          $mem->[1]->{Exposed} = {};
+          for my $gname (@{delete $mem->[1]->{_exposed}}) {
+            if (defined $self->{processed}->{global_names}->{$gname}) {
+              for (keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
+                if ($def->[1]->{Exposed}->{$_}) {
+                  $mem->[1]->{Exposed}->{$_} = 1;
+                } else {
+                  $self->onerror->(type => 'webidl:not allowed',
+                                   value => "[Exposed=$_]",
+                                   level => 'w');
+                }
+              }
+            } else {
+              $self->onerror->(type => 'webidl:not defined',
+                               value => $gname,
+                               level => 'm');
+            }
+          }
+        }
+      }
+    } elsif ($def->[0] eq 'exception') {
+      if (defined $self->{processed}->{global_names}) {
+        $def->[1]->{Exposed} = {};
+        for (values %{$self->{processed}->{global_names}}) {
+          $def->[1]->{Exposed}->{$_} = 1 for keys %$_;
+        }
+      } else {
+        #
+      }
+    }
+  } # idl_defs
+  # XXX warn if interfaces in {implements} are not Exposed to same set
+  # of globals
 
         # XXX warn if an object implements multiple interfaces with a special operation
 
