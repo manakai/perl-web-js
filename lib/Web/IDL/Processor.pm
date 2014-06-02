@@ -543,7 +543,7 @@ my $XAttrAllowed = {
   },
   callback_interface => {
     ArrayClass => 1, Exposed => 1, Global => 1,
-    ImplicitThis => 1, MapClass => 1, NamedConstructor => 1,
+    ImplicitThis => 1, MapClass => 1,
     NoInterfaceObject => 1, OverrideBuiltins => 1, PrimaryGlobal => 1,
     Unforgeable => 1,
   },
@@ -618,10 +618,12 @@ my $XAttrArgs = {
   Global => {no => 1, id => 1, id_list => 1},
   PrimaryGlobal => {no => 1, id => 1, id_list => 1},
   Exposed => {id => 1, id_list => 1},
+  NamedConstructor => {id => 1, named_args => 1},
 };
 
 my $XAttrMultiple = {
   Constructor => 1,
+  NamedConstructor => 1,
 };
 
 my $XAttrDisallowedCombinations = [
@@ -640,6 +642,7 @@ sub _extended_attributes ($$$$$) {
   my ($self, $di, $src, $dest, $dest_context) = @_;
   my $has_xattrs = {};
   my @constructor;
+  my $named_constructors = {};
   for my $attr (@{$src->{extended_attributes} or []}) {
     my $context = $src->{definition_type} || $src->{member_type} || 'argument';
     $context = 'partial_' . $context if $src->{partial};
@@ -661,7 +664,7 @@ sub _extended_attributes ($$$$$) {
 
       my $args_type = 'no';
       if (defined $attr->{arguments}) {
-        if (defined $attr->{value_name}) {
+        if (defined $attr->{value_names}) {
           $args_type = 'named_args';
         } else {
           $args_type = 'args';
@@ -712,6 +715,10 @@ sub _extended_attributes ($$$$$) {
         }
       } elsif ($attr->{name} eq 'Constructor') {
         push @constructor, $attr;
+        next;
+      } elsif ($attr->{name} eq 'NamedConstructor') {
+        push @{$named_constructors->{$attr->{value_names}->[0]} ||= []}, $attr
+            if @{$attr->{value_names} or []};
         next;
       } elsif ($attr->{name} eq 'EnsureUTF16') {
         $dest->{EnsureUTF16} = 1;
@@ -846,9 +853,6 @@ sub _extended_attributes ($$$$$) {
         # XXX for dictionary, there MUST be Constructor
         next;
       }
-
-      # XXX NamedConstructor
-
     }
     $self->onerror->(type => 'webidl:not allowed',
                      value => $attr->{name},
@@ -865,6 +869,17 @@ sub _extended_attributes ($$$$$) {
     my $type = $self->_type
         ($di, {type_name => $src->{name}, index => $src->{index}});
     for (values %{$dest->{Constructor}->[1]->{overload_set}}) {
+      $_->{type} = $type;
+    }
+  }
+  for (keys %{$named_constructors}) {
+    $dest->{NamedConstructor}->{$_} = ['operation', {
+      overload_set => $self->_overload_set
+          ($di, $named_constructors->{$_}, type_optional => 1),
+    }];
+    my $type = $self->_type
+        ($di, {type_name => $src->{name}, index => $src->{index}});
+    for (values %{$dest->{NamedConstructor}->{$_}->[1]->{overload_set}}) {
       $_->{type} = $type;
     }
   }
@@ -1489,7 +1504,9 @@ sub end_processing ($) {
   }
   for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
-    if ($def->[0] eq 'interface') {
+    if ($def->[0] eq 'interface' or
+        $def->[0] eq 'callback_interface' or
+        ($def->[0] eq 'dictionary' and defined $def->[1]->{Constructor})) {
       if (defined $self->{state}->{exposed}->{$def_name}) {
         $def->[1]->{Exposed} = {};
         for my $gname (@{$self->{state}->{exposed}->{$def_name} or []}) {
@@ -1551,6 +1568,58 @@ sub end_processing ($) {
   } # idl_defs
   # XXX warn if interfaces in {implements} are not Exposed to same set
   # of globals
+
+  ## Interface objects
+  my $gmembers = $self->{processed}->{global_members} ||= {};
+  for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
+    my $def = $self->{processed}->{idl_defs}->{$def_name};
+    if ($def->[0] eq 'interface' or
+        $def->[0] eq 'callback_interface' or
+        $def->[0] eq 'exception' or
+        $def->[0] eq 'dictionary') {
+      my @key;
+      for (keys %{$def->[1]->{NamedConstructor} or {}}) {
+        if (defined $gmembers->{$_}) {
+          $self->onerror->(type => 'webidl:duplicate',
+                           value => $_,
+                           level => 'm');
+        } else {
+          $gmembers->{$_} = $def->[1]->{NamedConstructor}->{$_};
+          push @key, $_;
+        }
+      }
+      delete $def->[1]->{NamedConstructor};
+
+      if (defined $def->[1]->{Constructor}) {
+        if (defined $gmembers->{$def_name}) {
+          $self->onerror->(type => 'webidl:duplicate',
+                           value => $def_name,
+                           level => 'm');
+        } else {
+          $gmembers->{$def_name} = delete $def->[1]->{Constructor};
+          push @key, $def_name;
+        }
+      } elsif ($def->[1]->{NoInterfaceObject} or
+               $def->[0] eq 'dictionary' or
+               ($def->[0] eq 'callback_interface' and
+                not grep { $_->[0] eq 'const' } values %{$def->[1]->{members}})) {
+        #
+      } else {
+        if (defined $gmembers->{$def_name}) {
+          $self->onerror->(type => 'webidl:duplicate',
+                           value => $def_name,
+                           level => 'm');
+        } else {
+          $gmembers->{$def_name} = ['object', {}];
+          push @key, $def_name;
+        }
+      }
+      for (@key) {
+        $gmembers->{$_}->[1]->{Exposed} = $def->[1]->{Exposed}
+            if defined $def->[1]->{Exposed};
+      }
+    }
+  }
 
         # XXX warn if an object implements multiple interfaces with a special operation
 
