@@ -53,7 +53,7 @@ with different parsed structs obtained from different IDL fragments.
 Notify of the processor that all relevant parsed structs have been
 processed.
 
-=item $defs = $processor->definitions
+=item $defs = $processor->processed
 
 Return the definitions obtained as a result of processing of parsed
 structe.
@@ -62,9 +62,10 @@ structe.
 
 =head1 DATA STRUCTURE
 
-The definitions data structure is a hash reference, with key/value
-pairs where keys are names of definitions and values are their
-descriptions.
+The "processed" data structure is a hash reference, XXX
+
+The C<idl_defs> value is a hash reference with key/value pairs where
+keys are names of definitions and values are their descriptions.
 
 XXX
 
