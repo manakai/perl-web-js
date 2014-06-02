@@ -3,10 +3,10 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 
 sub new ($) {
-  return bless {defs => {}}, $_[0];
+  return bless {processed => {idl_defs => {}}}, $_[0];
 } # new
 
 sub onerror ($;$) {
@@ -72,9 +72,9 @@ sub process_parsed_struct ($$$) {
         }
 
         if ($def->{partial}) {
-          if (not defined $self->{defs}->{$def->{name}}->[0] or
-              $self->{defs}->{$def->{name}}->[0] eq $def->{definition_type} or
-              ($self->{defs}->{$def->{name}}->[0] eq 'callback_interface' and
+          if (not defined $self->{processed}->{idl_defs}->{$def->{name}}->[0] or
+              $self->{processed}->{idl_defs}->{$def->{name}}->[0] eq $def->{definition_type} or
+              ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'callback_interface' and
                $def->{definition_type} eq 'interface')) {
             #
           } else {
@@ -85,13 +85,13 @@ sub process_parsed_struct ($$$) {
                              level => 'm');
             next;
           }
-          $self->{defs}->{$def->{name}}->[0] ||= $def->{definition_type};
+          $self->{processed}->{idl_defs}->{$def->{name}}->[0] ||= $def->{definition_type};
         } elsif ($def->{definition_type} eq 'interface' and $def->{callback}) {
-          $self->{defs}->{$def->{name}}->[0] = 'callback_interface';
+          $self->{processed}->{idl_defs}->{$def->{name}}->[0] = 'callback_interface';
         } else {
-          if (not defined $self->{defs}->{$def->{name}}->[0] or
-              $self->{defs}->{$def->{name}}->[0] eq $def->{definition_type} or
-              ($self->{defs}->{$def->{name}}->[0] eq 'interface' and
+          if (not defined $self->{processed}->{idl_defs}->{$def->{name}}->[0] or
+              $self->{processed}->{idl_defs}->{$def->{name}}->[0] eq $def->{definition_type} or
+              ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'interface' and
                $def->{definition_type} eq 'callback_interface')) {
             #
           } else {
@@ -100,11 +100,11 @@ sub process_parsed_struct ($$$) {
                              index => $def->{index},
                              value => $def->{definition_type},
                              level => 'm');
-            $self->{defs}->{$def->{name}}->[1] = {};
+            $self->{processed}->{idl_defs}->{$def->{name}}->[1] = {};
           }
-          $self->{defs}->{$def->{name}}->[0] = $def->{definition_type};
+          $self->{processed}->{idl_defs}->{$def->{name}}->[0] = $def->{definition_type};
         }
-        my $props = $self->{defs}->{$def->{name}}->[1] ||= {};
+        my $props = $self->{processed}->{idl_defs}->{$def->{name}}->[1] ||= {};
 
         # XXX exception SHOULD NOT be used
 
@@ -294,7 +294,7 @@ sub process_parsed_struct ($$$) {
 
                   if ($mem->{member_type} eq 'operation' and $mem->{static}) {
                     $props->{members}->{$mem->{name}}->[0] = 'static_operation';
-                    if ($self->{defs}->{$def->{name}}->[0] eq 'callback_interface') {
+                    if ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'callback_interface') {
                       $self->onerror->(type => 'webidl:not allowed',
                                        value => $mem->{name},
                                        di => $di,
@@ -333,7 +333,7 @@ sub process_parsed_struct ($$$) {
 
                 if ($mem->{member_type} eq 'attribute' and $mem->{static}) {
                   $props->{members}->{$mem->{name}}->[0] = 'static_attribute';
-                  if ($self->{defs}->{$def->{name}}->[0] eq 'callback_interface') {
+                  if ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'callback_interface') {
                     $self->onerror->(type => 'webidl:not allowed',
                                      value => $mem->{name},
                                      di => $di,
@@ -1097,9 +1097,9 @@ sub end_processing ($) {
 
   ## Resolve type names
   for my $name (keys %{$self->{state}->{has_ref} or {}}) {
-    if (defined $self->{defs}->{$name}) {
+    if (defined $self->{processed}->{idl_defs}->{$name}) {
       $self->{state}->{has_ref}->{$name}->[0]->[0]
-          = 'ref_' . $self->{defs}->{$name}->[0];
+          = 'ref_' . $self->{processed}->{idl_defs}->{$name}->[0];
     }
     unless ($self->{state}->{has_def}->{$name}) {
       $self->onerror->(type => 'webidl:not defined',
@@ -1190,8 +1190,8 @@ sub end_processing ($) {
   ## Resolve inheritance
   for (@{$self->{state}->{inherits} || []}) {
     my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{defs}->{$sub} or die;
-    my $super_def = $self->{defs}->{$super};
+    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or die;
+    my $super_def = $self->{processed}->{idl_defs}->{$super};
 
     if (not defined $super_def) {
       $self->onerror->(type => 'webidl:not defined',
@@ -1219,8 +1219,8 @@ sub end_processing ($) {
             = 1 + $super_def->[1]->{implements}->{$_}->{depth};
       }
 
-      for my $n (keys %{$self->{defs}}) {
-        my $n_def = $self->{defs}->{$n};
+      for my $n (keys %{$self->{processed}->{idl_defs}}) {
+        my $n_def = $self->{processed}->{idl_defs}->{$n};
         if (($n_def->[1]->{implements} or {})->{$sub}) {
           die unless $n_def->[0] eq $sub_def->[0];
           for (keys %{$sub_def->[1]->{implements} or {}}) {
@@ -1236,8 +1236,8 @@ sub end_processing ($) {
   my $is_supplemental = {};
   for (@{$self->{state}->{implements} or []}) {
     my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{defs}->{$sub} or die;
-    my $super_def = $self->{defs}->{$super};
+    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or die;
+    my $super_def = $self->{processed}->{idl_defs}->{$super};
     $is_supplemental->{$super} = 1;
 
     if (not defined $super_def) {
@@ -1273,8 +1273,8 @@ sub end_processing ($) {
         $sub_def->[1]->{implements}->{$_}->{consequential} = 1;
       }
 
-      for my $n (keys %{$self->{defs}}) {
-        my $n_def = $self->{defs}->{$n};
+      for my $n (keys %{$self->{processed}->{idl_defs}}) {
+        my $n_def = $self->{processed}->{idl_defs}->{$n};
         if (($n_def->[1]->{implements} or {})->{$sub}) {
           die unless $n_def->[0] eq $sub_def->[0];
           for (keys %{$sub_def->[1]->{implements} or {}}) {
@@ -1293,7 +1293,7 @@ sub end_processing ($) {
 
   for (@{$self->{state}->{implements} or []}) {
     my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{defs}->{$sub} or die;
+    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or die;
     if ($is_supplemental->{$sub}) {
       $self->onerror->(type => 'webidl:implements implements',
                        di => $di,
@@ -1329,10 +1329,10 @@ sub end_processing ($) {
 
   ## Dictionary members
   my @dict_name = grep {
-    $self->{defs}->{$_}->[0] eq 'dictionary';
-  } keys %{$self->{defs}};
+    $self->{processed}->{idl_defs}->{$_}->[0] eq 'dictionary';
+  } keys %{$self->{processed}->{idl_defs}};
   for my $def_name (@dict_name) {
-    my $def = $self->{defs}->{$def_name};
+    my $def = $self->{processed}->{idl_defs}->{$def_name};
     my $included = {};
     for my $mem_name (keys %{$def->[1]->{members}}) {
       my $mem = $def->[1]->{members}->{$mem_name};
@@ -1344,7 +1344,7 @@ sub end_processing ($) {
           #
         } elsif ($type->[0] eq 'ref_dictionary') {
           $included->{$type->[1]} = 1;
-          for (keys %{$self->{defs}->{$type->[1]}->[1]->{implements} or {}}) {
+          for (keys %{$self->{processed}->{idl_defs}->{$type->[1]}->[1]->{implements} or {}}) {
             $included->{$_} = 1;
           }
         } elsif ($type->[0] eq 'array' or
@@ -1360,9 +1360,9 @@ sub end_processing ($) {
         = $included if keys %$included;
   } # defs
   for my $def_name (@dict_name) {
-    my $def = $self->{defs}->{$def_name};
+    my $def = $self->{processed}->{idl_defs}->{$def_name};
     for (keys %{$def->[1]->{implements} or {}}) {
-      for (keys %{$self->{defs}->{$_}->[1]->{dictionaries_included_by_members} or {}}) {
+      for (keys %{$self->{processed}->{idl_defs}->{$_}->[1]->{dictionaries_included_by_members} or {}}) {
         $def->[1]->{dictionaries_included_by_members}->{$_} = 1;
       }
     }
@@ -1370,9 +1370,9 @@ sub end_processing ($) {
   {
     my $changed = 0;
     for my $def_name (@dict_name) {
-      my $def = $self->{defs}->{$def_name};
+      my $def = $self->{processed}->{idl_defs}->{$def_name};
       for (keys %{$def->[1]->{dictionaries_included_by_members} or {}}) {
-        for (keys %{$self->{defs}->{$_}->[1]->{dictionaries_included_by_members} or {}}) {
+        for (keys %{$self->{processed}->{idl_defs}->{$_}->[1]->{dictionaries_included_by_members} or {}}) {
           unless ($def->[1]->{dictionaries_included_by_members}->{$_}) {
             $def->[1]->{dictionaries_included_by_members}->{$_} = 1;
             $changed = 1;
@@ -1383,7 +1383,7 @@ sub end_processing ($) {
     redo if $changed;
   }
   for my $def_name (@dict_name) {
-    my $def = $self->{defs}->{$def_name};
+    my $def = $self->{processed}->{idl_defs}->{$def_name};
     if (($def->[1]->{dictionaries_included_by_members} or {})->{$def_name}) {
       $self->onerror->(type => 'webidl:cyclic inheritance',
                        value => $def_name,
@@ -1404,9 +1404,9 @@ sub end_processing ($) {
         # XXX there MUST NOT be identifier conflicting member on consequential interfaces
 } # end_processing
 
-sub definitions ($) {
-  return $_[0]->{defs};
-} # definitions
+sub processed ($) {
+  return $_[0]->{processed};
+} # processed
 
 1;
 

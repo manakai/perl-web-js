@@ -45,8 +45,13 @@ for my $path ($data_path->children (qr/\.dat$/)) {
       $processor->end_processing;
 
       my $expected = json_chars2perl $test->{processed}->[0];
-      eq_or_diff perl2json_chars_for_record $processor->definitions,
-                 perl2json_chars_for_record $expected;
+      if ($expected->{idl_defs}) {
+        eq_or_diff perl2json_chars_for_record $processor->processed,
+                   perl2json_chars_for_record $expected;
+      } else {
+        eq_or_diff perl2json_chars_for_record $processor->processed->{idl_defs},
+                   perl2json_chars_for_record $expected;
+      }
 
       eq_or_diff \@error, $test->{errors}->[0] || [];
 
