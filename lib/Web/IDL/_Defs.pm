@@ -1387,7 +1387,7 @@ $Web::IDL::_Defs = {
                                                      [
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "_IDInSpecDirective"
+                                                         "value" => "_IDInSpecDirectiveIgnored"
                                                        },
                                                        {
                                                          "set_value" => "type_name",

@@ -597,7 +597,7 @@ PrimitiveType TypeSuffix
 |
 'DOMString'="type" TypeSuffix
 |
-_IDInSpecDirective
+_IDInSpecDirectiveIgnored
 identifier="type_name" TypeSuffix
 |
 _SequenceType=type_parameterized Null
