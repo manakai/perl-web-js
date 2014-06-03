@@ -240,6 +240,11 @@ sub process_parsed_struct ($$$) {
             $mem->{overload_set} = $self->_overload_set
                 ($di, $op{$key}, special => $mem->{special});
 
+            my $id_name = $key;
+            $id_name =~ s/^named_//;
+            $id_name =~ s/^indexed_//;
+            my $id = [map { $_->{$id_name . '_id'} } @{$op{$key}}]->[0];
+
             my $unforgeable;
             my $non_unforgeable;
             my $exposed;
@@ -266,6 +271,7 @@ sub process_parsed_struct ($$$) {
                 $mem->{$key} = delete $_->{$key} if defined $_->{$key};
               }
             }
+            $mem->{id} = $id if defined $id;
             if ($unforgeable) {
               $mem->{Unforgeable} = 1;
               if (defined $non_unforgeable) {

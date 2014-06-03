@@ -458,6 +458,10 @@ $Web::IDL::_Defs = {
                                                        ],
                                                        [
                                                          {
+                                                           "type" => "rule",
+                                                           "value" => "_IDInSpecDirectiveIgnored"
+                                                         },
+                                                         {
                                                            "set_value" => "value_string",
                                                            "type" => "string"
                                                          }
@@ -1988,16 +1992,167 @@ $Web::IDL::_Defs = {
                                                       "set_true" => "legacycaller",
                                                       "type" => "legacycaller"
                                                     }
+                                                  ],
+                                                  [
+                                                    {
+                                                      "type" => "["
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "identifier",
+                                                      "value" => "id"
+                                                    },
+                                                    {
+                                                      "type" => "="
+                                                    },
+                                                    {
+                                                      "set_value" => "getter_id",
+                                                      "type" => "string"
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "]"
+                                                    },
+                                                    {
+                                                      "set_true" => "getter",
+                                                      "type" => "getter"
+                                                    }
+                                                  ],
+                                                  [
+                                                    {
+                                                      "type" => "["
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "identifier",
+                                                      "value" => "id"
+                                                    },
+                                                    {
+                                                      "type" => "="
+                                                    },
+                                                    {
+                                                      "set_value" => "setter_id",
+                                                      "type" => "string"
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "]"
+                                                    },
+                                                    {
+                                                      "set_true" => "setter",
+                                                      "type" => "setter"
+                                                    }
+                                                  ],
+                                                  [
+                                                    {
+                                                      "type" => "["
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "identifier",
+                                                      "value" => "id"
+                                                    },
+                                                    {
+                                                      "type" => "="
+                                                    },
+                                                    {
+                                                      "set_value" => "creator_id",
+                                                      "type" => "string"
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "]"
+                                                    },
+                                                    {
+                                                      "set_true" => "creator",
+                                                      "type" => "creator"
+                                                    }
+                                                  ],
+                                                  [
+                                                    {
+                                                      "type" => "["
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "identifier",
+                                                      "value" => "id"
+                                                    },
+                                                    {
+                                                      "type" => "="
+                                                    },
+                                                    {
+                                                      "set_value" => "deleter_id",
+                                                      "type" => "string"
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "]"
+                                                    },
+                                                    {
+                                                      "set_true" => "deleter",
+                                                      "type" => "deleter"
+                                                    }
+                                                  ],
+                                                  [
+                                                    {
+                                                      "type" => "["
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "identifier",
+                                                      "value" => "id"
+                                                    },
+                                                    {
+                                                      "type" => "="
+                                                    },
+                                                    {
+                                                      "set_value" => "legacycaller_id",
+                                                      "type" => "string"
+                                                    },
+                                                    {
+                                                      "type" => "other",
+                                                      "value" => "*"
+                                                    },
+                                                    {
+                                                      "type" => "]"
+                                                    },
+                                                    {
+                                                      "set_true" => "legacycaller",
+                                                      "type" => "legacycaller"
+                                                    }
                                                   ]
                                                 ]
                                   },
                        "SpecialOperation" => {
                                              "patterns" => [
                                                            [
-                                                             {
-                                                               "type" => "rule",
-                                                               "value" => "_IDInSpecDirective"
-                                                             },
                                                              {
                                                                "type" => "rule",
                                                                "value" => "Special"
@@ -2021,10 +2176,6 @@ $Web::IDL::_Defs = {
                                      "can_be_empty" => 1,
                                      "patterns" => [
                                                    [
-                                                     {
-                                                       "type" => "rule",
-                                                       "value" => "_IDInSpecDirectiveIgnored"
-                                                     },
                                                      {
                                                        "type" => "rule",
                                                        "value" => "Special"

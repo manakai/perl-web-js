@@ -149,6 +149,7 @@ Type _Name Default ';'
 
 ConstValue
 |
+_IDInSpecDirectiveIgnored
 string="value_string"
 
 * Exception
@@ -375,12 +376,10 @@ SpecialOperation
 
 * SpecialOperation
 
-_IDInSpecDirective
 Special Specials ReturnType OperationRest
 
 * Specials
 
-_IDInSpecDirectiveIgnored
 Special Specials
 ?
 
@@ -394,6 +393,23 @@ Special Specials
 |
 'deleter'=deleter?
 |
+'legacycaller'=legacycaller?
+|
+
+## Non-standard : _IDInSpecDirective
+'[' other:'*' identifier:'id' '=' string="getter_id" other:'*' ']'
+'getter'=getter?
+|
+'[' other:'*' identifier:'id' '=' string="setter_id" other:'*' ']'
+'setter'=setter?
+|
+'[' other:'*' identifier:'id' '=' string="creator_id" other:'*' ']'
+'creator'=creator?
+|
+'[' other:'*' identifier:'id' '=' string="deleter_id" other:'*' ']'
+'deleter'=deleter?
+|
+'[' other:'*' identifier:'id' '=' string="legacycaller_id" other:'*' ']'
 'legacycaller'=legacycaller?
 
 * OperationOrIteratorRest
