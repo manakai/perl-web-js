@@ -1375,9 +1375,18 @@ sub end_processing ($) {
   my $is_supplemental = {};
   for (@{$self->{state}->{implements} or []}) {
     my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or die;
+    my $sub_def = $self->{processed}->{idl_defs}->{$sub};
     my $super_def = $self->{processed}->{idl_defs}->{$super};
     $is_supplemental->{$super} = 1;
+
+    if (not defined $sub_def) {
+      $self->onerror->(type => 'webidl:not defined',
+                       di => $di,
+                       index => $index,
+                       value => $sub,
+                       level => 'm');
+      next;
+    }
 
     if (not defined $super_def) {
       $self->onerror->(type => 'webidl:not defined',
@@ -1432,7 +1441,7 @@ sub end_processing ($) {
 
   for (@{$self->{state}->{implements} or []}) {
     my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or die;
+    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or next;
     if ($is_supplemental->{$sub}) {
       $self->onerror->(type => 'webidl:implements implements',
                        di => $di,
