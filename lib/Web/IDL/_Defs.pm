@@ -1382,6 +1382,10 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
+                                                         "type" => "rule",
+                                                         "value" => "_IDInSpecDirective"
+                                                       },
+                                                       {
                                                          "set_value" => "type_name",
                                                          "type" => "identifier"
                                                        },
@@ -2019,6 +2023,10 @@ $Web::IDL::_Defs = {
                                                    [
                                                      {
                                                        "type" => "rule",
+                                                       "value" => "_IDInSpecDirectiveIgnored"
+                                                     },
+                                                     {
+                                                       "type" => "rule",
                                                        "value" => "Special"
                                                      },
                                                      {
@@ -2476,6 +2484,37 @@ $Web::IDL::_Defs = {
                                                              ]
                                                            ]
                                              },
+                       "_IDInSpecDirectiveIgnored" => {
+                                                      "can_be_empty" => 1,
+                                                      "patterns" => [
+                                                                    [
+                                                                      {
+                                                                        "type" => "["
+                                                                      },
+                                                                      {
+                                                                        "type" => "other",
+                                                                        "value" => "*"
+                                                                      },
+                                                                      {
+                                                                        "type" => "identifier",
+                                                                        "value" => "id"
+                                                                      },
+                                                                      {
+                                                                        "type" => "="
+                                                                      },
+                                                                      {
+                                                                        "type" => "string"
+                                                                      },
+                                                                      {
+                                                                        "type" => "other",
+                                                                        "value" => "*"
+                                                                      },
+                                                                      {
+                                                                        "type" => "]"
+                                                                      }
+                                                                    ]
+                                                                  ]
+                                                    },
                        "_InterfaceMember" => {
                                              "patterns" => [
                                                            [
