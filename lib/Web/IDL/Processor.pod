@@ -84,6 +84,9 @@ Web IDL "class"
 <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
 <http://dom.spec.whatwg.org/#elements>.
 
+Web IDL [TreatNonCallableAsNull] (obsolete)
+<https://github.com/heycam/webidl/commit/4043b051d492d4a2f21064f0edf91e642c5a6249>.
+
 =back
 
 This implementation does not allow use of extended attributes not

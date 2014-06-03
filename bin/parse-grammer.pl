@@ -56,6 +56,10 @@ for (split /\x0D?\x0A/, $grammer_path->slurp_utf8) {
         $pattern->{set} = $1;
       }
 
+      if (s/:'([^']+)'$//) {
+        $pattern->{value} = $1;
+      }
+
       if (/^'([^']*)'$/) {
         $pattern->{type} = $1;
 

@@ -415,6 +415,11 @@ ExtendedAttributeList OptionalOrRequiredArgument
 
 'optional'=optional? Type ArgumentName Default
 |
+
+## Error handling (not in spec)
+Type ArgumentName '=' DefaultValue
+
+|
 Type Ellipsis ArgumentName
 
 * ArgumentName
@@ -465,8 +470,11 @@ ExtendedAttributeArgList
 |
 ExtendedAttributeTypePair
 |
+
 #ExtendedAttributeIdent
-#|
+identifier:'PutForwards'="name" '=' identifier="value_names"[]!'='!'('
+
+|
 ExtendedAttributeNamedArgList
 |
 ExtendedAttributeIdentList

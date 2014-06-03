@@ -780,6 +780,24 @@ $Web::IDL::_Defs = {
                                                             ],
                                                             [
                                                               {
+                                                                "set_value" => "name",
+                                                                "type" => "identifier",
+                                                                "value" => "PutForwards"
+                                                              },
+                                                              {
+                                                                "type" => "="
+                                                              },
+                                                              {
+                                                                "append_value" => "value_names",
+                                                                "next_is_not" => {
+                                                                                 "(" => 1,
+                                                                                 "=" => 1
+                                                                               },
+                                                                "type" => "identifier"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
                                                                 "type" => "rule",
                                                                 "value" => "ExtendedAttributeNamedArgList"
                                                               }
@@ -1537,6 +1555,23 @@ $Web::IDL::_Defs = {
                                                                        {
                                                                          "type" => "rule",
                                                                          "value" => "Default"
+                                                                       }
+                                                                     ],
+                                                                     [
+                                                                       {
+                                                                         "type" => "rule",
+                                                                         "value" => "Type"
+                                                                       },
+                                                                       {
+                                                                         "type" => "rule",
+                                                                         "value" => "ArgumentName"
+                                                                       },
+                                                                       {
+                                                                         "type" => "="
+                                                                       },
+                                                                       {
+                                                                         "type" => "rule",
+                                                                         "value" => "DefaultValue"
                                                                        }
                                                                      ],
                                                                      [
