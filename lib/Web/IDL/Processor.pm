@@ -18,9 +18,9 @@ sub onerror ($;$) {
     warn sprintf "WebIDL conformance error (%s): %s at index %d%s in document %d\n",
         $args{level},
         $args{type} . (defined $args{text} ? ': ' . $args{text} : ''),
-        $args{index},
+        $args{index} || 0,
         (defined $args{value} ? ' "' . $args{value} . '"' : ''),
-        $args{di};
+        defined $args{di} ? $args{di} : -1;
   };
 } # onerror
 
@@ -124,6 +124,7 @@ sub process_parsed_struct ($$$) {
           # XXX MUST NOT use itself directly or indirectly
         }
 
+        my $xattr_opts = {};
         if ($def->{definition_type} eq 'callback') {
           $props->{overload_set} = $self->_overload_set ($di, [$def]);
 
@@ -131,6 +132,8 @@ sub process_parsed_struct ($$$) {
               = delete [values %{$props->{overload_set}}]->[0]->{TreatNonObjectAsNull};
           delete $props->{TreatNonObjectAsNull}
               unless defined $props->{TreatNonObjectAsNull};
+        } else {
+          $self->_extended_attributes ($di, $def => $props, $xattr_opts);
         }
 
         if ($def->{definition_type} eq 'enum') {
@@ -148,9 +151,6 @@ sub process_parsed_struct ($$$) {
           }
           $props->{value} = ['stringset', $vals];
         } # enum
-
-        my $xattr_opts = {};
-        $self->_extended_attributes ($di, $def => $props, $xattr_opts);
 
         if ($def->{definition_type} eq 'interface' or
             $def->{definition_type} eq 'class' or
@@ -592,6 +592,7 @@ my $XAttrAllowed = {
   enum => {},
   callback => {
     TreatNonObjectAsNull => 1,
+    TreatNonCallableAsNull => 1,
   },
   typedef => {},
   implements => {},
@@ -613,6 +614,7 @@ my $XAttrArgs = {
   Replaceable => {no => 1},
   SameObject => {no => 1},
   TreatNonObjectAsNull => {no => 1}, # No MUST in spec
+  TreatNonCallableAsNull => {no => 1}, # No longer in spec
   TreatNullAs => {id => 1},
   Unforgeable => {no => 1},
   Global => {no => 1, id => 1, id_list => 1},
@@ -732,6 +734,14 @@ sub _extended_attributes ($$$$$) {
                $attr->{name} eq 'TreatNonObjectAsNull') {
         $dest->{$attr->{name}} = 1;
         # XXX SHOULD NOT be used
+        next;
+      } elsif ($attr->{name} eq 'TreatNonCallableAsNull') {
+        $dest->{TreatNonObjectAsNull} = 1;
+        $self->onerror->(type => 'webidl:obsolete',
+                         value => $attr->{name},
+                         di => $di,
+                         index => $attr->{index},
+                         level => 'm');
         next;
       } elsif ($attr->{name} eq 'NewObject') {
         if (not defined $src->{name}) {
@@ -1050,6 +1060,14 @@ sub _overload_set ($$$;%) {
         $name{$name} = 1;
       }
 
+      $args->[$i]->{value} = $self->_value
+          ($di, $_->{arguments}->[$i], optional => 1);
+      delete $args->[$i]->{value} unless defined $args->[$i]->{value};
+      # XXX integer value MUST be in range
+      # XXX float value or literal MUST be in range
+      # XXX value type MUST be compat with type
+      # XXX if type is enumeration, value MUST be one of them
+
       ## 5.3.
       if ($_->{arguments}->[$i]->{variadic}) {
         if ($i == $n - 1) {
@@ -1063,24 +1081,28 @@ sub _overload_set ($$$;%) {
           $args->[$i]->{optionality} = 'required';
         }
       } else {
-        $args->[$i]->{optionality} = $_->{arguments}->[$i]->{optional} ? 'optional' : 'required';
+        if ($_->{arguments}->[$i]->{optional}) {
+          $args->[$i]->{optionality} = 'optional';
+        } elsif (defined $args->[$i]->{value}) {
+          ## Not in spec
+          $self->onerror->(type => 'webidl:non-optional default',
+                           di => $di,
+                           index => $_->{arguments}->[$i]->{index},
+                           value => $name,
+                           level => 'm');
+          $args->[$i]->{optionality} = 'optional';
+        } else {
+          $args->[$i]->{optionality} = 'required';
+        }
       }
       if (defined $args{special} and
           not $args->[$i]->{optionality} eq 'required') {
-        $self->onerror->(type => 'webidl:bad optionality',
+        $self->onerror->(type => 'webidl:bad optionality:special',
                          di => $di,
                          index => $_->{arguments}->[$i]->{index},
                          value => $name,
                          level => 'm');
       }
-
-      $args->[$i]->{value} = $self->_value
-          ($di, $_->{arguments}->[$i], optional => 1);
-      delete $args->[$i]->{value} unless defined $args->[$i]->{value};
-      # XXX integer value MUST be in range
-      # XXX float value or literal MUST be in range
-      # XXX value type MUST be compat with type
-      # XXX if type is enumeration, value MUST be one of them
 
       $self->_extended_attributes
           ($di, $_->{arguments}->[$i] => $args->[$i], {});
