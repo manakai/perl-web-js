@@ -72,6 +72,12 @@ identifier=_"name"
 '[' other:'*' identifier:'id' '=' string="id" other:'*' ']'
 ?
 
+* _IDInSpecDirectiveIgnored
+
+## Non-standard
+'[' other:'*' identifier:'id' '=' string other:'*' ']'
+?
+
 * Interface
 
 'interface'="definition_type" _Name Inheritance '{' InterfaceMembers '}' ';'
@@ -374,6 +380,7 @@ Special Specials ReturnType OperationRest
 
 * Specials
 
+_IDInSpecDirectiveIgnored
 Special Specials
 ?
 
@@ -574,6 +581,7 @@ PrimitiveType TypeSuffix
 |
 'DOMString'="type" TypeSuffix
 |
+_IDInSpecDirective
 identifier="type_name" TypeSuffix
 |
 _SequenceType=type_parameterized Null
