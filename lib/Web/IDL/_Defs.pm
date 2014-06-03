@@ -42,9 +42,8 @@ $Web::IDL::_Defs = {
                                                        ],
                                                        [
                                                          {
-                                                           "remove_underscore" => 1,
-                                                           "set_value" => "name",
-                                                           "type" => "identifier"
+                                                           "type" => "rule",
+                                                           "value" => "_Name"
                                                          }
                                                        ]
                                                      ]
@@ -268,9 +267,8 @@ $Web::IDL::_Defs = {
                                                             "value" => "Type"
                                                           },
                                                           {
-                                                            "remove_underscore" => 1,
-                                                            "set_value" => "name",
-                                                            "type" => "identifier"
+                                                            "type" => "rule",
+                                                            "value" => "_Name"
                                                           },
                                                           {
                                                             "type" => ";"
@@ -314,9 +312,8 @@ $Web::IDL::_Defs = {
                                          "patterns" => [
                                                        [
                                                          {
-                                                           "remove_underscore" => 1,
-                                                           "set_value" => "name",
-                                                           "type" => "identifier"
+                                                           "type" => "rule",
+                                                           "value" => "_Name"
                                                          },
                                                          {
                                                            "type" => "="
@@ -369,9 +366,8 @@ $Web::IDL::_Defs = {
                                                     "value" => "ConstType"
                                                   },
                                                   {
-                                                    "remove_underscore" => 1,
-                                                    "set_value" => "name",
-                                                    "type" => "identifier"
+                                                    "type" => "rule",
+                                                    "value" => "_Name"
                                                   },
                                                   {
                                                     "type" => "="
@@ -524,6 +520,14 @@ $Web::IDL::_Defs = {
                                         "patterns" => [
                                                       [
                                                         {
+                                                          "type" => "rule",
+                                                          "value" => "_SpecDirective"
+                                                        },
+                                                        {
+                                                          "type" => "rule",
+                                                          "value" => "_ObsoleteDirective"
+                                                        },
+                                                        {
                                                           "append" => "definitions",
                                                           "multiple" => 1,
                                                           "type" => "rule",
@@ -540,9 +544,8 @@ $Web::IDL::_Defs = {
                                                          "type" => "dictionary"
                                                        },
                                                        {
-                                                         "remove_underscore" => 1,
-                                                         "set_value" => "name",
-                                                         "type" => "identifier"
+                                                         "type" => "rule",
+                                                         "value" => "_Name"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -572,9 +575,8 @@ $Web::IDL::_Defs = {
                                                                "value" => "Type"
                                                              },
                                                              {
-                                                               "remove_underscore" => 1,
-                                                               "set_value" => "name",
-                                                               "type" => "identifier"
+                                                               "type" => "rule",
+                                                               "value" => "_Name"
                                                              },
                                                              {
                                                                "type" => "rule",
@@ -617,9 +619,8 @@ $Web::IDL::_Defs = {
                                                    "type" => "enum"
                                                  },
                                                  {
-                                                   "remove_underscore" => 1,
-                                                   "set_value" => "name",
-                                                   "type" => "identifier"
+                                                   "type" => "rule",
+                                                   "value" => "_Name"
                                                  },
                                                  {
                                                    "type" => "{"
@@ -641,8 +642,9 @@ $Web::IDL::_Defs = {
                                           "patterns" => [
                                                         [
                                                           {
-                                                            "append_value" => "value_strings",
-                                                            "type" => "string"
+                                                            "append" => "value_items",
+                                                            "type" => "rule",
+                                                            "value" => "_EnumItem"
                                                           },
                                                           {
                                                             "type" => "rule",
@@ -670,8 +672,9 @@ $Web::IDL::_Defs = {
                                                 "patterns" => [
                                                               [
                                                                 {
-                                                                  "append_value" => "value_strings",
-                                                                  "type" => "string"
+                                                                  "append" => "value_items",
+                                                                  "type" => "rule",
+                                                                  "value" => "_EnumItem"
                                                                 },
                                                                 {
                                                                   "type" => "rule",
@@ -688,9 +691,8 @@ $Web::IDL::_Defs = {
                                                         "type" => "exception"
                                                       },
                                                       {
-                                                        "remove_underscore" => 1,
-                                                        "set_value" => "name",
-                                                        "type" => "identifier"
+                                                        "type" => "rule",
+                                                        "value" => "_Name"
                                                       },
                                                       {
                                                         "type" => "rule",
@@ -720,9 +722,8 @@ $Web::IDL::_Defs = {
                                                              "value" => "Type"
                                                            },
                                                            {
-                                                             "remove_underscore" => 1,
-                                                             "set_value" => "name",
-                                                             "type" => "identifier"
+                                                             "type" => "rule",
+                                                             "value" => "_Name"
                                                            },
                                                            {
                                                              "type" => ";"
@@ -813,6 +814,27 @@ $Web::IDL::_Defs = {
                                                                 "type" => "rule",
                                                                 "value" => "ExtendedAttributeNoArgs"
                                                               }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_value" => "name",
+                                                                "type" => "identifier"
+                                                              },
+                                                              {
+                                                                "type" => "="
+                                                              },
+                                                              {
+                                                                "type" => "rule",
+                                                                "value" => "_IDInSpecDirective"
+                                                              },
+                                                              {
+                                                                "append_value" => "value_names",
+                                                                "next_is_not" => {
+                                                                                 "(" => 1,
+                                                                                 "=" => 1
+                                                                               },
+                                                                "type" => "identifier"
+                                                              }
                                                             ]
                                                           ],
                                               "set_index" => 1
@@ -820,6 +842,10 @@ $Web::IDL::_Defs = {
                        "ExtendedAttributeArgList" => {
                                                      "patterns" => [
                                                                    [
+                                                                     {
+                                                                       "type" => "rule",
+                                                                       "value" => "_IDInSpecDirective"
+                                                                     },
                                                                      {
                                                                        "set_value" => "name",
                                                                        "type" => "identifier"
@@ -848,11 +874,15 @@ $Web::IDL::_Defs = {
                                                                      "type" => "="
                                                                    },
                                                                    {
+                                                                     "type" => "rule",
+                                                                     "value" => "_IDInSpecDirective"
+                                                                   },
+                                                                   {
+                                                                     "append_value" => "value_names",
                                                                      "next_is_not" => {
                                                                                       "(" => 1,
                                                                                       "=" => 1
                                                                                     },
-                                                                     "set_value" => "value_name",
                                                                      "type" => "identifier"
                                                                    }
                                                                  ]
@@ -861,6 +891,10 @@ $Web::IDL::_Defs = {
                        "ExtendedAttributeIdentList" => {
                                                        "patterns" => [
                                                                      [
+                                                                       {
+                                                                         "type" => "rule",
+                                                                         "value" => "_IDInSpecDirective"
+                                                                       },
                                                                        {
                                                                          "set_value" => "name",
                                                                          "type" => "identifier"
@@ -978,6 +1012,10 @@ $Web::IDL::_Defs = {
                                                                             "type" => "="
                                                                           },
                                                                           {
+                                                                            "type" => "rule",
+                                                                            "value" => "_IDInSpecDirective"
+                                                                          },
+                                                                          {
                                                                             "append_value" => "value_names",
                                                                             "type" => "identifier"
                                                                           },
@@ -997,6 +1035,10 @@ $Web::IDL::_Defs = {
                        "ExtendedAttributeNoArgs" => {
                                                     "patterns" => [
                                                                   [
+                                                                    {
+                                                                      "type" => "rule",
+                                                                      "value" => "_IDInSpecDirective"
+                                                                    },
                                                                     {
                                                                       "next_is_not" => {
                                                                                        "(" => 1,
@@ -1023,6 +1065,10 @@ $Web::IDL::_Defs = {
                        "ExtendedAttributeTypePair" => {
                                                       "patterns" => [
                                                                     [
+                                                                      {
+                                                                        "type" => "rule",
+                                                                        "value" => "_IDInSpecDirective"
+                                                                      },
                                                                       {
                                                                         "set_value" => "name",
                                                                         "type" => "identifier"
@@ -1228,9 +1274,8 @@ $Web::IDL::_Defs = {
                                                         "type" => "interface"
                                                       },
                                                       {
-                                                        "remove_underscore" => 1,
-                                                        "set_value" => "name",
-                                                        "type" => "identifier"
+                                                        "type" => "rule",
+                                                        "value" => "_Name"
                                                       },
                                                       {
                                                         "type" => "rule",
@@ -1506,9 +1551,8 @@ $Web::IDL::_Defs = {
                                                "patterns" => [
                                                              [
                                                                {
-                                                                 "remove_underscore" => 1,
-                                                                 "set_value" => "name",
-                                                                 "type" => "identifier"
+                                                                 "type" => "rule",
+                                                                 "value" => "_Name"
                                                                }
                                                              ]
                                                            ]
@@ -1628,9 +1672,8 @@ $Web::IDL::_Defs = {
                                                                 "type" => "dictionary"
                                                               },
                                                               {
-                                                                "remove_underscore" => 1,
-                                                                "set_value" => "name",
-                                                                "type" => "identifier"
+                                                                "type" => "rule",
+                                                                "value" => "_Name"
                                                               },
                                                               {
                                                                 "type" => "{"
@@ -1656,9 +1699,8 @@ $Web::IDL::_Defs = {
                                                                "type" => "interface"
                                                              },
                                                              {
-                                                               "remove_underscore" => 1,
-                                                               "set_value" => "name",
-                                                               "type" => "identifier"
+                                                               "type" => "rule",
+                                                               "value" => "_Name"
                                                              },
                                                              {
                                                                "type" => "{"
@@ -1950,6 +1992,10 @@ $Web::IDL::_Defs = {
                                                            [
                                                              {
                                                                "type" => "rule",
+                                                               "value" => "_IDInSpecDirective"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
                                                                "value" => "Special"
                                                              },
                                                              {
@@ -2019,6 +2065,10 @@ $Web::IDL::_Defs = {
                        "Stringifier" => {
                                         "patterns" => [
                                                       [
+                                                        {
+                                                          "type" => "rule",
+                                                          "value" => "_IDInSpecDirective"
+                                                        },
                                                         {
                                                           "set_true" => "stringifier",
                                                           "type" => "stringifier"
@@ -2122,9 +2172,8 @@ $Web::IDL::_Defs = {
                                                       "value" => "Type"
                                                     },
                                                     {
-                                                      "remove_underscore" => 1,
-                                                      "set_value" => "name",
-                                                      "type" => "identifier"
+                                                      "type" => "rule",
+                                                      "value" => "_Name"
                                                     },
                                                     {
                                                       "type" => ";"
@@ -2293,9 +2342,8 @@ $Web::IDL::_Defs = {
                                                      "type" => "class"
                                                    },
                                                    {
-                                                     "remove_underscore" => 1,
-                                                     "set_value" => "name",
-                                                     "type" => "identifier"
+                                                     "type" => "rule",
+                                                     "value" => "_Name"
                                                    },
                                                    {
                                                      "type" => "rule",
@@ -2367,6 +2415,20 @@ $Web::IDL::_Defs = {
                                                             ],
                                               "set_index" => 1
                                             },
+                       "_EnumItem" => {
+                                      "patterns" => [
+                                                    [
+                                                      {
+                                                        "type" => "rule",
+                                                        "value" => "_IDInSpecDirective"
+                                                      },
+                                                      {
+                                                        "set_value" => "value_string",
+                                                        "type" => "string"
+                                                      }
+                                                    ]
+                                                  ]
+                                    },
                        "_ExceptionMember" => {
                                              "patterns" => [
                                                            [
@@ -2382,6 +2444,38 @@ $Web::IDL::_Defs = {
                                                          ],
                                              "set_index" => 1
                                            },
+                       "_IDInSpecDirective" => {
+                                               "can_be_empty" => 1,
+                                               "patterns" => [
+                                                             [
+                                                               {
+                                                                 "type" => "["
+                                                               },
+                                                               {
+                                                                 "type" => "other",
+                                                                 "value" => "*"
+                                                               },
+                                                               {
+                                                                 "type" => "identifier",
+                                                                 "value" => "id"
+                                                               },
+                                                               {
+                                                                 "type" => "="
+                                                               },
+                                                               {
+                                                                 "set_value" => "id",
+                                                                 "type" => "string"
+                                                               },
+                                                               {
+                                                                 "type" => "other",
+                                                                 "value" => "*"
+                                                               },
+                                                               {
+                                                                 "type" => "]"
+                                                               }
+                                                             ]
+                                                           ]
+                                             },
                        "_InterfaceMember" => {
                                              "patterns" => [
                                                            [
@@ -2446,6 +2540,47 @@ $Web::IDL::_Defs = {
                                                       ]
                                                     ]
                                     },
+                       "_Name" => {
+                                  "patterns" => [
+                                                [
+                                                  {
+                                                    "type" => "rule",
+                                                    "value" => "_IDInSpecDirective"
+                                                  },
+                                                  {
+                                                    "remove_underscore" => 1,
+                                                    "set_value" => "name",
+                                                    "type" => "identifier"
+                                                  }
+                                                ]
+                                              ]
+                                },
+                       "_ObsoleteDirective" => {
+                                               "can_be_empty" => 1,
+                                               "patterns" => [
+                                                             [
+                                                               {
+                                                                 "type" => "["
+                                                               },
+                                                               {
+                                                                 "type" => "other",
+                                                                 "value" => "*"
+                                                               },
+                                                               {
+                                                                 "set_true" => "obsolete",
+                                                                 "type" => "identifier",
+                                                                 "value" => "obsolete"
+                                                               },
+                                                               {
+                                                                 "type" => "other",
+                                                                 "value" => "*"
+                                                               },
+                                                               {
+                                                                 "type" => "]"
+                                                               }
+                                                             ]
+                                                           ]
+                                             },
                        "_PromiseType" => {
                                          "patterns" => [
                                                        [
@@ -2490,6 +2625,10 @@ $Web::IDL::_Defs = {
                                         "patterns" => [
                                                       [
                                                         {
+                                                          "type" => "rule",
+                                                          "value" => "_IDInSpecDirective"
+                                                        },
+                                                        {
                                                           "set_type" => "member_type",
                                                           "type" => "serializer"
                                                         },
@@ -2505,6 +2644,10 @@ $Web::IDL::_Defs = {
                                                         }
                                                       ],
                                                       [
+                                                        {
+                                                          "type" => "rule",
+                                                          "value" => "_IDInSpecDirective"
+                                                        },
                                                         {
                                                           "set_type" => "member_type",
                                                           "type" => "serializer"
@@ -2533,6 +2676,38 @@ $Web::IDL::_Defs = {
                                                                ]
                                                              ]
                                                },
+                       "_SpecDirective" => {
+                                           "can_be_empty" => 1,
+                                           "patterns" => [
+                                                         [
+                                                           {
+                                                             "type" => "["
+                                                           },
+                                                           {
+                                                             "type" => "other",
+                                                             "value" => "*"
+                                                           },
+                                                           {
+                                                             "type" => "identifier",
+                                                             "value" => "spec"
+                                                           },
+                                                           {
+                                                             "type" => "="
+                                                           },
+                                                           {
+                                                             "set_value" => "spec",
+                                                             "type" => "identifier"
+                                                           },
+                                                           {
+                                                             "type" => "other",
+                                                             "value" => "*"
+                                                           },
+                                                           {
+                                                             "type" => "]"
+                                                           }
+                                                         ]
+                                                       ]
+                                         },
                        "_StringifierEnd" => {
                                             "ensure_arrayref" => "arguments",
                                             "patterns" => [

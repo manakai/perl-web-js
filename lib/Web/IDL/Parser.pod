@@ -100,10 +100,11 @@ The name of the member from which the member inherits, if any.
 The array reference containing the members of the definition, if
 applicable.
 
-=item value_strings
+=item value_items
 
-The allowed string values associated with the definition, if
-applicable.
+The array reference of the allowed string values associated with the
+definition, if applicable.  Items are hash references with a key/value
+pair whose key is C<type_string> and value is the string value.
 
 =item arguments
 
@@ -324,6 +325,12 @@ C<Promise>, if the hash reference containing the key/value pair
 represents a parameterized Web IDL type of the target.
 
 =back
+
+Hash references might also contain key/value pairs C<id>, C<spec>, and
+C<obsolete>, corresponding to non-standard directives C<[*id="..."*]>,
+C<[*spec=...*]>, and C<[*obsolete*]>.  These directives are only used
+for internal processing of <https://github.com/manakai/data-web-defs>
+and are not (and should not) be used elsewhere.
 
 =head1 SPECIFICATIONS
 

@@ -41,6 +41,8 @@ my $Reserved = {
 
 sub process_parsed_struct ($$$) {
   my ($self, $di, $in) = @_;
+  local $self->{spec} = $in->{spec};
+  local $self->{obsolete} = $in->{obsolete};
   for my $def (@{$in->{definitions} or []}) {
     if ($def->{definition_type} eq 'interface' or
         $def->{definition_type} eq 'class' or
@@ -138,15 +140,19 @@ sub process_parsed_struct ($$$) {
 
         if ($def->{definition_type} eq 'enum') {
           my $vals = {};
-          for (@{$def->{value_strings}}) {
-            if (defined $vals->{$_}) {
+          for (@{$def->{value_items}}) {
+            if (defined $vals->{$_->{value_string}}) {
               $self->onerror->(type => 'webidl:duplicate',
-                               value => $_,
+                               value => $_->{value_string},
                                di => $di,
                                index => $def->{index},
                                level => 'm');
             } else {
-              $vals->{$_} = 1;
+              $vals->{$_->{value_string}} = {};
+              $vals->{$_->{value_string}}->{spec} = $self->{spec}
+                  if defined $self->{spec};
+              $vals->{$_->{value_string}}->{id} = $_->{id}
+                  if defined $_->{id};
             }
           }
           $props->{value} = ['stringset', $vals];
@@ -256,6 +262,9 @@ sub process_parsed_struct ($$$) {
               } else {
                 $bad_exposed = 1;
               }
+              for my $key (qw(obsolete spec id)) {
+                $mem->{$key} = delete $_->{$key} if defined $_->{$key};
+              }
             }
             if ($unforgeable) {
               $mem->{Unforgeable} = 1;
@@ -293,11 +302,10 @@ sub process_parsed_struct ($$$) {
                 } else {
                   $props->{$mem->{special}}->[0] = $mem->{member_type};
                   my $mem_props = $props->{$mem->{special}}->[1] ||= {};
-                  $mem_props->{overload_set} = $mem->{overload_set};
-                  $mem_props->{Unforgeable} = $mem->{Unforgeable}
-                      if defined $mem->{Unforgeable};
-                  $mem_props->{_exposed} = $mem->{_exposed}
-                      if defined $mem->{_exposed};
+                  for (qw(overload_set Unforgeable _exposed
+                          obsolete spec id)) {
+                    $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
+                  }
 
                   if ($mem->{special} eq 'legacycaller') {
                     # XXX legacycaller SHOULD NOT be used
@@ -335,11 +343,10 @@ sub process_parsed_struct ($$$) {
                   }
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
-                  $mem_props->{overload_set} = $mem->{overload_set};
-                  $mem_props->{Unforgeable} = $mem->{Unforgeable}
-                      if defined $mem->{Unforgeable};
-                  $mem_props->{_exposed} = $mem->{_exposed}
-                      if defined $mem->{_exposed};
+                  for (qw(overload_set Unforgeable _exposed
+                          obsolete spec id)) {
+                    $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
+                  }
                 }
               }
             } elsif ($mem->{member_type} eq 'const' or
@@ -902,6 +909,12 @@ sub _extended_attributes ($$$$$) {
                        index => $src->{index},
                        level => 'm');
     }
+  }
+
+  unless ($src->{partial}) {
+    $dest->{id} = $src->{id} if defined $src->{id};
+    $dest->{spec} = $self->{spec} if defined $self->{spec};
+    $dest->{obsolete} = 1 if $self->{obsolete};
   }
 } # _extended_attributes
 

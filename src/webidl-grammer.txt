@@ -1,6 +1,20 @@
 * Definitions
 
+_SpecDirective
+_ObsoleteDirective
 _Definition*=definitions[]
+
+* _SpecDirective
+
+## Non-standard
+'[' other:'*' identifier:'spec' '=' identifier="spec" other:'*' ']'
+?
+
+* _ObsoleteDirective
+
+## Non-standard
+'[' other:'*' identifier:'obsolete'=obsolete? other:'*' ']'
+?
 
 * _Definition
 
@@ -47,16 +61,27 @@ CallbackRest
 |
 Interface
 
+* _Name
+
+_IDInSpecDirective
+identifier=_"name"
+
+* _IDInSpecDirective
+
+## Non-standard
+'[' other:'*' identifier:'id' '=' string="id" other:'*' ']'
+?
+
 * Interface
 
-'interface'="definition_type" identifier=_"name" Inheritance '{' InterfaceMembers '}' ';'
+'interface'="definition_type" _Name Inheritance '{' InterfaceMembers '}' ';'
 
 * _Class
 
 ## Not in spec
 ## <http://dom.spec.whatwg.org/#elements>
 ## <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>
-'class'="definition_type" identifier=_"name" _ClassInheritance '{' InterfaceMembers '}' ';'
+'class'="definition_type" _Name _ClassInheritance '{' InterfaceMembers '}' ';'
 
 * Partial
 
@@ -70,7 +95,7 @@ PartialDictionary
 
 * PartialInterface
 
-'interface'="definition_type" identifier=_"name" '{' InterfaceMembers '}' ';'
+'interface'="definition_type" _Name '{' InterfaceMembers '}' ';'
 
 * InterfaceMembers
 
@@ -89,7 +114,7 @@ AttributeOrOperationOrIterator
 
 * Dictionary
 
-'dictionary'="definition_type" identifier=_"name" Inheritance '{' DictionaryMembers '}' ';'
+'dictionary'="definition_type" _Name Inheritance '{' DictionaryMembers '}' ';'
 
 * DictionaryMembers
 
@@ -103,11 +128,11 @@ ExtendedAttributeList DictionaryMember
 
 * DictionaryMember
 
-Type identifier=_"name" Default ';'
+Type _Name Default ';'
 
 * PartialDictionary
 
-'dictionary'="definition_type" identifier=_"name" '{' DictionaryMembers '}' ';'
+'dictionary'="definition_type" _Name '{' DictionaryMembers '}' ';'
 
 * Default
 
@@ -122,7 +147,7 @@ string="value_string"
 
 * Exception
 
-'exception'="definition_type" identifier=_"name" Inheritance '{' ExceptionMembers '}' ';'
+'exception'="definition_type" _Name Inheritance '{' ExceptionMembers '}' ';'
 
 * ExceptionMembers
 
@@ -146,11 +171,16 @@ ExtendedAttributeList ExceptionMember
 
 * Enum
 
-'enum'="definition_type" identifier=_"name" '{' EnumValueList '}' ';'
+'enum'="definition_type" _Name '{' EnumValueList '}' ';'
 
 * EnumValueList
 
-string="value_strings"[] EnumValueListComma
+_EnumItem=value_items[] EnumValueListComma
+
+* _EnumItem
+
+_IDInSpecDirective
+string="value_string"
 
 * EnumValueListComma
 
@@ -159,16 +189,16 @@ string="value_strings"[] EnumValueListComma
 
 * EnumValueListString
 
-string="value_strings"[] EnumValueListComma
+_EnumItem=value_items[] EnumValueListComma
 ?
 
 * CallbackRest
 
-identifier=_"name" '=' ReturnType '(' ArgumentList ')' ';'
+_Name '=' ReturnType '(' ArgumentList ')' ';'
 
 * Typedef
 
-'typedef'="definition_type" Type identifier=_"name" ';'
+'typedef'="definition_type" Type _Name ';'
 
 * ImplementsStatement
 
@@ -176,7 +206,7 @@ identifier="name" 'implements'="definition_type" identifier="super_name" ';'
 
 * Const
 
-'const'="member_type" ConstType identifier=_"name" '=' ConstValue ';'
+'const'="member_type" ConstType _Name '=' ConstValue ';'
 
 * ConstValue
 
@@ -239,8 +269,10 @@ _SerializerEnd
 
 * _Serializer
 
+_IDInSpecDirective
 'serializer'="member_type" '=' SerializationPattern ';'
 |
+_IDInSpecDirective
 'serializer'="member_type" ';'
 
 ## ';' is missing in spec
@@ -283,6 +315,7 @@ identifier="value_names"[] Identifiers
 
 * Stringifier
 
+_IDInSpecDirective
 'stringifier'=stringifier? StringifierRest
 
 * StringifierRest
@@ -316,7 +349,7 @@ Inherit AttributeRest
 
 * AttributeRest
 
-ReadOnly 'attribute'="member_type" Type identifier=_"name" ';'
+ReadOnly 'attribute'="member_type" Type _Name ';'
 
 * Inherit
 
@@ -336,6 +369,7 @@ SpecialOperation
 
 * SpecialOperation
 
+_IDInSpecDirective
 Special Specials ReturnType OperationRest
 
 * Specials
@@ -392,7 +426,7 @@ OptionalIdentifier '(' ArgumentList ')' ';'
 
 * OptionalIdentifier
 
-identifier=_"name"
+_Name
 ?
 
 * ArgumentList
@@ -426,7 +460,7 @@ Type Ellipsis ArgumentName
 
 ArgumentNameKeyword
 |
-identifier=_"name"
+_Name
 
 * Ellipsis
 
@@ -442,7 +476,7 @@ ExceptionField
 * ExceptionField
 
 +member_type="field"
-Type identifier=_"name" ';'
+Type _Name ';'
 
 * ExtendedAttributeList
 
@@ -480,6 +514,12 @@ ExtendedAttributeNamedArgList
 ExtendedAttributeIdentList
 |
 ExtendedAttributeNoArgs
+|
+
+#ExtendedAttributeIdent
+identifier="name" '='
+_IDInSpecDirective
+identifier="value_names"[]!'='!'('
 
 * ExtendedAttributeRest
 
@@ -690,25 +730,35 @@ identifier="value_names"[]!'='!'(' Identifiers
 
 * ExtendedAttributeNoArgs
 
+_IDInSpecDirective
 identifier="name"!'('!'='
 
 * ExtendedAttributeArgList
 
+_IDInSpecDirective
 identifier="name" '(' ArgumentList ')'
 
 * ExtendedAttributeIdent
 
 ## Unused (-> ExtendedAttributeIdentList)
-identifier="name" '=' identifier="value_name"!'='!'('
+#_IDInSpecDirective
+identifier="name" '='
+_IDInSpecDirective
+identifier="value_names"[]!'='!'('
 
 * ExtendedAttributeIdentList
 
+_IDInSpecDirective
 identifier="name" '=' IdentifierList!'='!'('
 
 * ExtendedAttributeNamedArgList
 
-identifier="name" '=' identifier="value_names"[] '(' ArgumentList ')'
+#_IDInSpecDirective
+identifier="name" '='
+_IDInSpecDirective
+identifier="value_names"[] '(' ArgumentList ')'
 
 * ExtendedAttributeTypePair
 
+_IDInSpecDirective
 identifier="name" '(' Type=value_types[] ',' Type=value_types[] ')'
