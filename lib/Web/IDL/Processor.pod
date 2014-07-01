@@ -69,6 +69,21 @@ keys are names of definitions and values are their descriptions.
 
 XXX
 
+=over 4
+
+=item sequence
+
+A sequence type.  The C<1>st item is a type value representing the
+inner type.
+
+=item sequence_value
+
+A sequence value.  The C<1>st item is an array reference containing
+the items of the value.  If it is an empty array reference, this is an
+empty sequence.
+
+=back
+
 =head1 SPECIFICATIONS
 
 =over 4

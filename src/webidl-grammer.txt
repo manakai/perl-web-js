@@ -151,6 +151,8 @@ ConstValue
 |
 _IDInSpecDirectiveIgnored
 string="value_string"
+|
+'[' ']'=value_empty_sequence?
 
 * Exception
 
