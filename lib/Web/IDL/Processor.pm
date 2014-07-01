@@ -1017,6 +1017,8 @@ sub _value ($$$;%) {
       push @v, map { ['ref_attribute', $_] } @{$o->{value_names}};
     }
     return \@v;
+  } elsif ($obj->{value_empty_sequence}) {
+    return ['sequence_value', []];
   } elsif ($args{optional}) {
     return undef;
   }

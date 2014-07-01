@@ -166,6 +166,10 @@ The value associated with the member, as a string, if applicable.
 
 The value associated with the member, as an identifier, if applicable.
 
+=item value_empty_sequence
+
+If specified, the value is an empty sequence.
+
 =item value_map
 
 The serialization pattern (map) of the member, if applicable.

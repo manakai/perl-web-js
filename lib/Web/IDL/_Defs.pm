@@ -465,6 +465,15 @@ $Web::IDL::_Defs = {
                                                            "set_value" => "value_string",
                                                            "type" => "string"
                                                          }
+                                                       ],
+                                                       [
+                                                         {
+                                                           "type" => "["
+                                                         },
+                                                         {
+                                                           "set_true" => "value_empty_sequence",
+                                                           "type" => "]"
+                                                         }
                                                        ]
                                                      ]
                                        },
