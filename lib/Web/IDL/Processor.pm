@@ -1309,12 +1309,12 @@ sub end_processing ($) {
             $flattened->{$v} = $t;
           }
         }
-      }
+      } # @member
       $type->[1]->{flattened} = $flattened;
       # XXX and expand typedefs?
 
       my $dict;
-      for (keys %$flattened) {
+      for (sort { $a cmp $b } keys %$flattened) {
         if (/^ref_dictionary\[/) {
           $dict = $flattened->{$_};
           last;
