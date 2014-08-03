@@ -1,4 +1,94 @@
 $Web::IDL::_Defs = {
+          "allowed_xattrs" => {
+                              "argument" => {
+                                            "Clamp" => 1,
+                                            "EnforceRange" => 1,
+                                            "EnsureUTF16" => 1,
+                                            "TreatNullAs" => 1
+                                          },
+                              "attribute" => {
+                                             "Clamp" => 1,
+                                             "EnforceRange" => 1,
+                                             "EnsureUTF16" => 1,
+                                             "Exposed" => 1,
+                                             "LenientThis" => 1,
+                                             "PutForwards" => 1,
+                                             "Replaceable" => 1,
+                                             "SameObject" => 1,
+                                             "TreatNullAs" => 1,
+                                             "Unforgeable" => 1
+                                           },
+                              "callback" => {
+                                            "TreatNonCallableAsNull" => 1,
+                                            "TreatNonObjectAsNull" => 1
+                                          },
+                              "callback_interface" => {
+                                                      "ArrayClass" => 1,
+                                                      "Exposed" => 1,
+                                                      "Global" => 1,
+                                                      "ImplicitThis" => 1,
+                                                      "MapClass" => 1,
+                                                      "NoInterfaceObject" => 1,
+                                                      "OverrideBuiltins" => 1,
+                                                      "PrimaryGlobal" => 1,
+                                                      "Unforgeable" => 1
+                                                    },
+                              "const" => {
+                                         "Exposed" => 1
+                                       },
+                              "dictionary" => {
+                                              "Constructor" => 1,
+                                              "Exposed" => 1
+                                            },
+                              "dictionary_member" => {
+                                                     "Clamp" => 1,
+                                                     "EnforceRange" => 1
+                                                   },
+                              "exception" => {
+                                             "NoInterfaceObject" => 1
+                                           },
+                              "interface" => {
+                                             "ArrayClass" => 1,
+                                             "Constructor" => 1,
+                                             "Exposed" => 1,
+                                             "Global" => 1,
+                                             "ImplicitThis" => 1,
+                                             "MapClass" => 1,
+                                             "NamedConstructor" => 1,
+                                             "NoInterfaceObject" => 1,
+                                             "OverrideBuiltins" => 1,
+                                             "PrimaryGlobal" => 1,
+                                             "Unforgeable" => 1
+                                           },
+                              "iterator" => {
+                                            "Exposed" => 1
+                                          },
+                              "operation" => {
+                                             "Exposed" => 1,
+                                             "NewObject" => 1,
+                                             "TreatNullAs" => 1,
+                                             "Unforgeable" => 1
+                                           },
+                              "partial_interface" => {
+                                                     "Exposed" => 1,
+                                                     "Global" => 1,
+                                                     "OverrideBuiltins" => 1,
+                                                     "PrimaryGlobal" => 1,
+                                                     "Unforgeable" => 1
+                                                   },
+                              "static_attribute" => {
+                                                    "Clamp" => 1,
+                                                    "EnsureUTF16" => 1,
+                                                    "Exposed" => 1,
+                                                    "SameObject" => 1,
+                                                    "TreatNullAs" => 1
+                                                  },
+                              "static_operation" => {
+                                                    "Exposed" => 1,
+                                                    "NewObject" => 1,
+                                                    "TreatNullAs" => 1
+                                                  }
+                            },
           "grammer" => {
                        "Argument" => {
                                      "patterns" => [
@@ -3194,6 +3284,247 @@ $Web::IDL::_Defs = {
                             "]" => 1,
                             "{" => 1,
                             "}" => 1
-                          }
+                          },
+          "reserved" => {
+                        "argument" => {
+                                      "constructor" => 1,
+                                      "iterator" => 1,
+                                      "toJSON" => 1,
+                                      "toString" => 1
+                                    },
+                        "attribute" => {
+                                       "constructor" => 1,
+                                       "iterator" => 1,
+                                       "prototype" => 1,
+                                       "toJSON" => 1,
+                                       "toString" => 1
+                                     },
+                        "callback" => {
+                                      "constructor" => 1,
+                                      "iterator" => 1,
+                                      "toJSON" => 1,
+                                      "toString" => 1
+                                    },
+                        "callback_interface" => {
+                                                "constructor" => 1,
+                                                "iterator" => 1,
+                                                "toJSON" => 1,
+                                                "toString" => 1
+                                              },
+                        "class" => {
+                                   "constructor" => 1,
+                                   "iterator" => 1,
+                                   "toJSON" => 1,
+                                   "toString" => 1
+                                 },
+                        "const" => {
+                                   "constructor" => 1,
+                                   "iterator" => 1,
+                                   "prototype" => 1,
+                                   "toJSON" => 1,
+                                   "toString" => 1
+                                 },
+                        "dictionary" => {
+                                        "constructor" => 1,
+                                        "iterator" => 1,
+                                        "toJSON" => 1,
+                                        "toString" => 1
+                                      },
+                        "dictionary_member" => {
+                                               "constructor" => 1,
+                                               "iterator" => 1,
+                                               "toJSON" => 1,
+                                               "toString" => 1
+                                             },
+                        "enum" => {
+                                  "constructor" => 1,
+                                  "iterator" => 1,
+                                  "toJSON" => 1,
+                                  "toString" => 1
+                                },
+                        "exception" => {
+                                       "Error" => 1,
+                                       "EvalError" => 1,
+                                       "RangeError" => 1,
+                                       "ReferenceError" => 1,
+                                       "SyntaxError" => 1,
+                                       "TypeError" => 1,
+                                       "URIError" => 1,
+                                       "constructor" => 1,
+                                       "iterator" => 1,
+                                       "toJSON" => 1,
+                                       "toString" => 1
+                                     },
+                        "field" => {
+                                   "constructor" => 1,
+                                   "iterator" => 1,
+                                   "message" => 1,
+                                   "name" => 1,
+                                   "toJSON" => 1,
+                                   "toString" => 1
+                                 },
+                        "interface" => {
+                                       "constructor" => 1,
+                                       "iterator" => 1,
+                                       "toJSON" => 1,
+                                       "toString" => 1
+                                     },
+                        "operation" => {
+                                       "constructor" => 1,
+                                       "iterator" => 1,
+                                       "prototype" => 1,
+                                       "toJSON" => 1,
+                                       "toString" => 1
+                                     },
+                        "partial_dictionary" => {
+                                                "constructor" => 1,
+                                                "iterator" => 1,
+                                                "toJSON" => 1,
+                                                "toString" => 1
+                                              },
+                        "partial_interface" => {
+                                               "constructor" => 1,
+                                               "iterator" => 1,
+                                               "toJSON" => 1,
+                                               "toString" => 1
+                                             },
+                        "static_attribute" => {
+                                              "constructor" => 1,
+                                              "iterator" => 1,
+                                              "prototype" => 1,
+                                              "toJSON" => 1,
+                                              "toString" => 1
+                                            },
+                        "static_operation" => {
+                                              "constructor" => 1,
+                                              "iterator" => 1,
+                                              "prototype" => 1,
+                                              "toJSON" => 1,
+                                              "toString" => 1
+                                            },
+                        "typedef" => {
+                                     "constructor" => 1,
+                                     "iterator" => 1,
+                                     "toJSON" => 1,
+                                     "toString" => 1
+                                   }
+                      },
+          "xattr_args" => {
+                          "ArrayClass" => {
+                                          "no" => 1
+                                        },
+                          "Clamp" => {
+                                     "no" => 1
+                                   },
+                          "Constructor" => {
+                                           "args" => 1,
+                                           "no" => 1
+                                         },
+                          "EnforceRange" => {
+                                            "no" => 1
+                                          },
+                          "EnsureUTF16" => {
+                                           "no" => 1
+                                         },
+                          "Exposed" => {
+                                       "id" => 1,
+                                       "id_list" => 1
+                                     },
+                          "Global" => {
+                                      "id" => 1,
+                                      "id_list" => 1,
+                                      "no" => 1
+                                    },
+                          "ImplicitThis" => {
+                                            "no" => 1
+                                          },
+                          "LenientThis" => {
+                                           "no" => 1
+                                         },
+                          "MapClass" => {
+                                        "pair" => 1
+                                      },
+                          "NamedConstructor" => {
+                                                "id" => 1,
+                                                "named_args" => 1
+                                              },
+                          "NewObject" => {
+                                         "no" => 1
+                                       },
+                          "NoInterfaceObject" => {
+                                                 "no" => 1
+                                               },
+                          "OverrideBuiltins" => {
+                                                "no" => 1
+                                              },
+                          "PrimaryGlobal" => {
+                                             "id" => 1,
+                                             "id_list" => 1,
+                                             "no" => 1
+                                           },
+                          "PutForwards" => {
+                                           "id" => 1
+                                         },
+                          "Replaceable" => {
+                                           "no" => 1
+                                         },
+                          "SameObject" => {
+                                          "no" => 1
+                                        },
+                          "TreatNonCallableAsNull" => {
+                                                      "no" => 1
+                                                    },
+                          "TreatNonObjectAsNull" => {
+                                                    "no" => 1
+                                                  },
+                          "TreatNullAs" => {
+                                           "id" => 1
+                                         },
+                          "Unforgeable" => {
+                                           "no" => 1
+                                         }
+                        },
+          "xattr_disallowed" => [
+                                [
+                                  "ArrayClass",
+                                  "MapClass"
+                                ],
+                                [
+                                  "Clamp",
+                                  "EnforceRange"
+                                ],
+                                [
+                                  "Constructor",
+                                  "NoInterfaceObject"
+                                ],
+                                [
+                                  "Global",
+                                  "MapClass"
+                                ],
+                                [
+                                  "Global",
+                                  "OverrideBuiltins"
+                                ],
+                                [
+                                  "Global",
+                                  "PrimaryGlobal"
+                                ],
+                                [
+                                  "MapClass",
+                                  "PrimaryGlobal"
+                                ],
+                                [
+                                  "OverrideBuiltins",
+                                  "PrimaryGlobal"
+                                ],
+                                [
+                                  "PutForwards",
+                                  "Replaceable"
+                                ]
+                              ],
+          "xattr_multiple" => {
+                              "Constructor" => 1,
+                              "NamedConstructor" => 1
+                            }
         };
 
