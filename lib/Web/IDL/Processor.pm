@@ -231,7 +231,7 @@ sub process_parsed_struct ($$$) {
             } # $key
           } # $mem
 
-          for my $key (keys %op) {
+          for my $key (sort { $a cmp $b } keys %op) {
             my $mem = {member_type => 'operation',
                        static => $op{$key}->[0]->{static},
                        special => ($key =~ /$;/o ? undef : $key),
@@ -1243,7 +1243,7 @@ sub end_processing ($) {
   my $self = $_[0];
 
   ## Resolve type names
-  for my $name (keys %{$self->{state}->{has_ref} or {}}) {
+  for my $name (sort { $a cmp $b } keys %{$self->{state}->{has_ref} or {}}) {
     if (defined $self->{processed}->{idl_defs}->{$name}) {
       $self->{state}->{has_ref}->{$name}->[0]->[0]
           = 'ref_' . $self->{processed}->{idl_defs}->{$name}->[0];
@@ -1274,7 +1274,7 @@ sub end_processing ($) {
       while (@member) {
         my $t = shift @member;
         if (ref $t and $t->[0] eq 'union') {
-          for (keys %{$t->[1]->{flattened}}) {
+          for (sort { $a cmp $b } keys %{$t->[1]->{flattened}}) {
             if (defined $flattened->{$_}) {
               $self->onerror->(type => 'webidl:not distinguishable',
                                value => $_,
@@ -1623,7 +1623,7 @@ sub end_processing ($) {
 
   ## Interface objects
   my $gmembers = $self->{processed}->{global_members} ||= {};
-  for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
+  for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or
         $def->[0] eq 'callback_interface' or
