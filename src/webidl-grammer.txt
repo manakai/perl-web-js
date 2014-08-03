@@ -169,14 +169,19 @@ ExtendedAttributeList ExceptionMember
 
 * Inheritance
 
-':' identifier="super_name"
+':' _SuperName
 ?
 
 * _ClassInheritance
 
 ## Not in spec
-'extends' identifier="super_name"
+'extends' _SuperName
 ?
+
+* _SuperName
+
+_IDInSpecDirectiveIgnored
+identifier="super_name"
 
 * Enum
 
@@ -211,7 +216,7 @@ _Name '=' ReturnType '(' ArgumentList ')' ';'
 
 * ImplementsStatement
 
-identifier="name" 'implements'="definition_type" identifier="super_name" ';'
+identifier="name" 'implements'="definition_type" _SuperName ';'
 
 * Const
 

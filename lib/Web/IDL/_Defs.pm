@@ -1223,8 +1223,8 @@ $Web::IDL::_Defs = {
                                                                   "type" => "implements"
                                                                 },
                                                                 {
-                                                                  "set_value" => "super_name",
-                                                                  "type" => "identifier"
+                                                                  "type" => "rule",
+                                                                  "value" => "_SuperName"
                                                                 },
                                                                 {
                                                                   "type" => ";"
@@ -1251,8 +1251,8 @@ $Web::IDL::_Defs = {
                                                           "type" => ":"
                                                         },
                                                         {
-                                                          "set_value" => "super_name",
-                                                          "type" => "identifier"
+                                                          "type" => "rule",
+                                                          "value" => "_SuperName"
                                                         }
                                                       ]
                                                     ]
@@ -2541,8 +2541,8 @@ $Web::IDL::_Defs = {
                                                                 "type" => "extends"
                                                               },
                                                               {
-                                                                "set_value" => "super_name",
-                                                                "type" => "identifier"
+                                                                "type" => "rule",
+                                                                "value" => "_SuperName"
                                                               }
                                                             ]
                                                           ]
@@ -2927,6 +2927,20 @@ $Web::IDL::_Defs = {
                                                             ]
                                                           ]
                                           },
+                       "_SuperName" => {
+                                       "patterns" => [
+                                                     [
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "_IDInSpecDirectiveIgnored"
+                                                       },
+                                                       {
+                                                         "set_value" => "super_name",
+                                                         "type" => "identifier"
+                                                       }
+                                                     ]
+                                                   ]
+                                     },
                        "_TypeArray" => {
                                        "patterns" => [
                                                      [
