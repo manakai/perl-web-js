@@ -249,28 +249,29 @@ sub process_parsed_struct ($$$) {
             my $non_unforgeable;
             my $exposed;
             my $bad_exposed;
-            for (values %{$mem->{overload_set}}) {
-              if (delete $_->{Unforgeable}) {
+            for (sort { $a cmp $b } keys %{$mem->{overload_set}}) {
+              my $v = $mem->{overload_set}->{$_};
+              if (delete $v->{Unforgeable}) {
                 $unforgeable = 1;
               } else {
                 $non_unforgeable = 1;
               }
-              if (defined $_->{_exposed}) {
+              if (defined $v->{_exposed}) {
                 if (defined $exposed) {
-                  unless ((join $;, @{$_->{_exposed}}) eq (join $;, @$exposed)) {
+                  unless ((join $;, @{$v->{_exposed}}) eq (join $;, @$exposed)) {
                     $bad_exposed = 1;
                   }
-                  delete $_->{_exposed};
+                  delete $v->{_exposed};
                 } else {
-                  $exposed = delete $_->{_exposed};
+                  $exposed = delete $v->{_exposed};
                 }
               } else {
                 $bad_exposed = 1;
               }
               for my $key (qw(obsolete spec id)) {
-                $mem->{$key} = delete $_->{$key} if defined $_->{$key};
+                $mem->{$key} = delete $v->{$key} if defined $v->{$key};
               }
-            }
+            } # $v
             $mem->{id} = $id if defined $id;
             if ($unforgeable) {
               $mem->{Unforgeable} = 1;
