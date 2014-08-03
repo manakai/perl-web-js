@@ -616,20 +616,26 @@ _SequenceType=type_parameterized Null
 'Date'="type" TypeSuffix
 |
 'RegExp'="type" TypeSuffix
+|
+PromiseType=type_parameterized Null
 
 |
-## Not in spec
-_PromiseType=type_parameterized Null
-|
-'Promise'="type" TypeSuffix
+_ObsPromiseType=type_parameterized
 
 * _SequenceType
 
 'sequence'="type_outer" '<' Type '>'
 
-* _PromiseType
+* PromiseType
 
-'Promise'="type_outer" '<' Type '>'
+'Promise'="type_outer" '<' ReturnType '>'
+
+* _ObsPromiseType
+
+## Not in spec
+'Promise'="type_outer" TypeSuffix
+
++type="any"
 
 * ConstType
 

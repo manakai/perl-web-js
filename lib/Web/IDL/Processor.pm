@@ -1015,8 +1015,7 @@ sub _overload_set ($$$;%) {
     if (not defined $args{special}) {
       #
     } elsif ($args{special} eq 'legacycaller') {
-      if ((not ref $type and $type eq 'Promise') or
-          (ref $type eq 'ARRAY' and $type->[0] eq 'Promise')) {
+      if (ref $type eq 'ARRAY' and $type->[0] eq 'Promise') {
         ## XXX union, nullable, sequence, array of Promise should also
         ## be disallowed?
         $self->onerror->(type => 'webidl:bad type',
