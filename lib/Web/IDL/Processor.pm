@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '2.0';
+our $VERSION = '3.0';
 
 sub new ($) {
   return bless {processed => {idl_defs => {}}}, $_[0];
@@ -630,9 +630,9 @@ my $XAttrArgs = {
   TreatNonCallableAsNull => {no => 1}, # No longer in spec
   TreatNullAs => {id => 1},
   Unforgeable => {no => 1},
-  Global => {no => 1, id => 1, id_list => 1},
-  PrimaryGlobal => {no => 1, id => 1, id_list => 1},
-  Exposed => {id => 1, id_list => 1},
+  Global => {no => 1, id => 1, id_list => 1}, # 'id' not allowed in spec
+  PrimaryGlobal => {no => 1, id => 1, id_list => 1}, # 'id' not allowed in spec
+  Exposed => {id => 1, id => 1, id_list => 1},
   NamedConstructor => {id => 1, named_args => 1},
 };
 

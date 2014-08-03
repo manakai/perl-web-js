@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 use Web::IDL::_Defs;
 
 sub new ($) {

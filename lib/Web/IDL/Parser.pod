@@ -353,6 +353,11 @@ Web IDL "class"
 
 =back
 
+This implementation also supports old syntax for extended attributes
+which take an identifier list
+<https://github.com/heycam/webidl/commit/0527ec461492849d310257c50a7d2c54b4632b91>,
+for backward compatibility.  This will be removed in due course.
+
 In this implementation, extended attributes MUST be in one of six
 forms shown in the Web IDL specification.
 

@@ -543,6 +543,8 @@ ExtendedAttributeNamedArgList
 |
 ExtendedAttributeIdentList
 |
+ObsExtendedAttributeIdentList
+|
 ExtendedAttributeNoArgs
 |
 
@@ -777,10 +779,15 @@ identifier="name" '='
 _IDInSpecDirective
 identifier="value_names"[]!'='!'('
 
-* ExtendedAttributeIdentList
+* ObsExtendedAttributeIdentList
 
 _IDInSpecDirective
 identifier="name" '=' IdentifierList!'='!'('
+
+* ExtendedAttributeIdentList
+
+_IDInSpecDirective
+identifier="name" '=' '(' IdentifierList ')'
 
 * ExtendedAttributeNamedArgList
 
