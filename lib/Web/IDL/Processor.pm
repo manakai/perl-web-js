@@ -3,7 +3,8 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '3.0';
+our $VERSION = '4.0';
+use Web::IDL::_Defs;
 
 sub new ($) {
   return bless {processed => {idl_defs => {}}}, $_[0];
@@ -23,21 +24,6 @@ sub onerror ($;$) {
         defined $args{di} ? $args{di} : -1;
   };
 } # onerror
-
-# XXX
-## <http://heycam.github.io/webidl/#dfn-reserved-identifier>
-my $ReservedIdentifiers = {
-  constructor => 1, iterator => 1, toString => 1, toJSON => 1,
-};
-my $Reserved = {
-  const => {prototype => 1},
-  attribute => {prototype => 1},
-  operation => {prototype => 1},
-  exception => {Error => 1, EvalError => 1, RangeError => 1,
-                ReferenceError => 1, SyntaxError => 1, TypeError => 1,
-                URIError => 1},
-  field => {name => 1, message => 1},
-};
 
 sub process_parsed_struct ($$$) {
   my ($self, $di, $in) = @_;
@@ -62,8 +48,7 @@ sub process_parsed_struct ($$$) {
           $self->{state}->{has_ref}->{$def->{name}}
               ||= [['ref', $def->{name}], $di, $def->{index}];
         } else {
-          if ($ReservedIdentifiers->{$def->{name}} or
-              $Reserved->{$def->{definition_type}}->{$def->{name}}) {
+          if ($Web::IDL::_Defs->{reserved}->{$def->{definition_type}}->{$def->{name}}) {
             $self->onerror->(type => 'webidl:reserved',
                              value => $def->{name},
                              di => $di,
@@ -327,8 +312,7 @@ sub process_parsed_struct ($$$) {
                                    index => $mem->{index},
                                    level => 'm');
                 } else {
-                  if ($ReservedIdentifiers->{$mem->{name}} or
-                      $Reserved->{$mem->{member_type}}->{$mem->{name}}) {
+                  if ($Web::IDL::_Defs->{reserved}->{$mem->{member_type}}->{$mem->{name}}) {
                     $self->onerror->(type => 'webidl:reserved',
                                      value => $mem->{name},
                                      di => $di,
@@ -367,8 +351,7 @@ sub process_parsed_struct ($$$) {
                                  index => $mem->{index},
                                  level => 'm');
               } else {
-                if ($ReservedIdentifiers->{$mem->{name}} or
-                    $Reserved->{$mem->{member_type}}->{$mem->{name}}) {
+                if ($Web::IDL::_Defs->{reserved}->{$mem->{member_type}}->{$mem->{name}}) {
                   $self->onerror->(type => 'webidl:reserved',
                                    value => $mem->{name},
                                    di => $di,
@@ -547,113 +530,6 @@ sub process_parsed_struct ($$$) {
   } # definitions
 } # process_parsed_struct
 
-# XXX
-my $XAttrAllowed = {
-  interface => {
-    ArrayClass => 1, Constructor => 1, Exposed => 1, Global => 1,
-    ImplicitThis => 1, MapClass => 1, NamedConstructor => 1,
-    NoInterfaceObject => 1, OverrideBuiltins => 1, PrimaryGlobal => 1,
-    Unforgeable => 1,
-  },
-  callback_interface => {
-    ArrayClass => 1, Exposed => 1, Global => 1,
-    ImplicitThis => 1, MapClass => 1,
-    NoInterfaceObject => 1, OverrideBuiltins => 1, PrimaryGlobal => 1,
-    Unforgeable => 1,
-  },
-  partial_interface => {
-    Exposed => 1, Global => 1, OverrideBuiltins => 1,
-    PrimaryGlobal => 1, Unforgeable => 1,
-  },
-  const => {
-    Exposed => 1,
-  },
-  attribute => {
-    Clamp => 1, EnforceRange => 1, EnsureUTF16 => 1, Exposed => 1,
-    SameObject => 1, TreatNullAs => 1,
-    LenientThis => 1, PutForwards => 1, Replaceable => 1,
-    Unforgeable => 1,
-  },
-  static_attribute => {
-    Clamp => 1, EnsureUTF16 => 1, Exposed => 1,
-    SameObject => 1, TreatNullAs => 1,
-  },
-  operation => {
-    Exposed => 1, NewObject => 1, TreatNullAs => 1, Unforgeable => 1,
-  },
-  static_operation => {
-    Exposed => 1, NewObject => 1, TreatNullAs => 1,
-  },
-  argument => {
-    Clamp => 1, EnforceRange => 1, EnsureUTF16 => 1, TreatNullAs => 1,
-  },
-  serializer => {},
-  iterator => {
-    Exposed => 1,
-  },
-  iterator_object => {},
-  dictionary => {
-    Constructor => 1, Exposed => 1,
-  },
-  partial_dictionary => {},
-  dictionary_member => {
-    Clamp => 1, EnforceRange => 1,
-  },
-  exception => {
-    NoInterfaceObject => 1,
-  },
-  field => {},
-  enum => {},
-  callback => {
-    TreatNonObjectAsNull => 1,
-    TreatNonCallableAsNull => 1,
-  },
-  typedef => {},
-  implements => {},
-};
-
-my $XAttrArgs = {
-  ArrayClass => {no => 1},
-  Clamp => {no => 1},
-  Constructor => {no => 1, args => 1},
-  EnforceRange => {no => 1},
-  EnsureUTF16 => {no => 1},
-  ImplicitThis => {no => 1},
-  LenientThis => {no => 1},
-  MapClass => {pair => 1},
-  NewObject => {no => 1},
-  NoInterfaceObject => {no => 1},
-  OverrideBuiltins => {no => 1},
-  PutForwards => {id => 1},
-  Replaceable => {no => 1},
-  SameObject => {no => 1},
-  TreatNonObjectAsNull => {no => 1}, # No MUST in spec
-  TreatNonCallableAsNull => {no => 1}, # No longer in spec
-  TreatNullAs => {id => 1},
-  Unforgeable => {no => 1},
-  Global => {no => 1, id => 1, id_list => 1}, # 'id' not allowed in spec
-  PrimaryGlobal => {no => 1, id => 1, id_list => 1}, # 'id' not allowed in spec
-  Exposed => {id => 1, id => 1, id_list => 1},
-  NamedConstructor => {id => 1, named_args => 1},
-};
-
-my $XAttrMultiple = {
-  Constructor => 1,
-  NamedConstructor => 1,
-};
-
-my $XAttrDisallowedCombinations = [
-  ['ArrayClass', 'MapClass'],
-  ['Clamp', 'EnforceRange'],
-  ['Constructor', 'NoInterfaceObject'],
-  ['MapClass', 'Global'],
-  ['MapClass', 'PrimaryGlobal'],
-  ['OverrideBuiltins', 'Global'],
-  ['OverrideBuiltins', 'PrimaryGlobal'],
-  ['PutForwards', 'Replaceable'],
-  ['Global', 'PrimaryGlobal'],
-];
-
 sub _extended_attributes ($$$$$) {
   my ($self, $di, $src, $dest, $dest_context) = @_;
   my $has_xattrs = {};
@@ -664,9 +540,9 @@ sub _extended_attributes ($$$$$) {
     $context = 'partial_' . $context if $src->{partial};
     $context = 'static_' . $context if $src->{static};
     $context = 'callback_' . $context if $src->{callback};
-    if ($XAttrAllowed->{$context}->{$attr->{name}}) {
+    if ($Web::IDL::_Defs->{allowed_xattrs}->{$context}->{$attr->{name}}) {
       if ($has_xattrs->{$attr->{name}}) {
-        unless ($XAttrMultiple->{$attr->{name}}) {
+        unless ($Web::IDL::_Defs->{xattr_multiple}->{$attr->{name}}) {
           $self->onerror->(type => 'webidl:not allowed',
                            value => $attr->{name},
                            di => $di,
@@ -690,7 +566,7 @@ sub _extended_attributes ($$$$$) {
       } elsif (defined $attr->{value_types}) {
         $args_type = 'pair';
       }
-      unless ($XAttrArgs->{$attr->{name}}->{$args_type}) {
+      unless ($Web::IDL::_Defs->{xattr_args}->{$attr->{name}}->{$args_type}) {
         $self->onerror->(type => 'webidl:bad args',
                          di => $di,
                          index => $attr->{index},
@@ -908,10 +784,10 @@ sub _extended_attributes ($$$$$) {
     }
   }
 
-  for (@$XAttrDisallowedCombinations) {
+  for (@{$Web::IDL::_Defs->{xattr_disallowed}}) {
     if ($dest->{$_->[0]} and $dest->{$_->[1]}) {
       $self->onerror->(type => 'webidl:not allowed',
-                       value => $_->[1],
+                       value => $_->[0],
                        di => $di,
                        index => $src->{index},
                        level => 'm');
@@ -1065,7 +941,7 @@ sub _overload_set ($$$;%) {
       # XXX type restrictions
 
       my $name = $args->[$i]->{name} = $_->{arguments}->[$i]->{name};
-      if ($ReservedIdentifiers->{$name}) {
+      if ($Web::IDL::_Defs->{reserved}->{argument}->{$name}) {
         $self->onerror->(type => 'webidl:reserved',
                          value => $name,
                          di => $di,

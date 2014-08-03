@@ -1,4 +1,4 @@
-all: deps json-ps lib/Web/IDL/_Defs.pm
+all: deps json-ps generated
 
 clean: clean-json-ps
 	rm -fr local/*.json
@@ -40,6 +40,8 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 	$(WGET) -O $@ https://raw.githubusercontent.com/wakaba/perl-json-ps/master/lib/JSON/PS.pm
 
 ## ------ Build ------
+
+generated: lib/Web/IDL/_Defs.pm
 
 lib/Web/IDL/_Defs.pm: bin/generate-webidl-defs.pl local/webidl-grammer.json \
     local/webidl.json
