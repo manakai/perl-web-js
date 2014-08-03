@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '2.0';
+our $VERSION = '3.0';
 
 sub new ($) {
   return bless {processed => {idl_defs => {}}}, $_[0];
@@ -231,7 +231,7 @@ sub process_parsed_struct ($$$) {
             } # $key
           } # $mem
 
-          for my $key (keys %op) {
+          for my $key (sort { $a cmp $b } keys %op) {
             my $mem = {member_type => 'operation',
                        static => $op{$key}->[0]->{static},
                        special => ($key =~ /$;/o ? undef : $key),
@@ -249,28 +249,29 @@ sub process_parsed_struct ($$$) {
             my $non_unforgeable;
             my $exposed;
             my $bad_exposed;
-            for (values %{$mem->{overload_set}}) {
-              if (delete $_->{Unforgeable}) {
+            for (sort { $a cmp $b } keys %{$mem->{overload_set}}) {
+              my $v = $mem->{overload_set}->{$_};
+              if (delete $v->{Unforgeable}) {
                 $unforgeable = 1;
               } else {
                 $non_unforgeable = 1;
               }
-              if (defined $_->{_exposed}) {
+              if (defined $v->{_exposed}) {
                 if (defined $exposed) {
-                  unless ((join $;, @{$_->{_exposed}}) eq (join $;, @$exposed)) {
+                  unless ((join $;, @{$v->{_exposed}}) eq (join $;, @$exposed)) {
                     $bad_exposed = 1;
                   }
-                  delete $_->{_exposed};
+                  delete $v->{_exposed};
                 } else {
-                  $exposed = delete $_->{_exposed};
+                  $exposed = delete $v->{_exposed};
                 }
               } else {
                 $bad_exposed = 1;
               }
               for my $key (qw(obsolete spec id)) {
-                $mem->{$key} = delete $_->{$key} if defined $_->{$key};
+                $mem->{$key} = delete $v->{$key} if defined $v->{$key};
               }
-            }
+            } # $v
             $mem->{id} = $id if defined $id;
             if ($unforgeable) {
               $mem->{Unforgeable} = 1;
@@ -630,9 +631,9 @@ my $XAttrArgs = {
   TreatNonCallableAsNull => {no => 1}, # No longer in spec
   TreatNullAs => {id => 1},
   Unforgeable => {no => 1},
-  Global => {no => 1, id => 1, id_list => 1},
-  PrimaryGlobal => {no => 1, id => 1, id_list => 1},
-  Exposed => {id => 1, id_list => 1},
+  Global => {no => 1, id => 1, id_list => 1}, # 'id' not allowed in spec
+  PrimaryGlobal => {no => 1, id => 1, id_list => 1}, # 'id' not allowed in spec
+  Exposed => {id => 1, id => 1, id_list => 1},
   NamedConstructor => {id => 1, named_args => 1},
 };
 
@@ -895,7 +896,7 @@ sub _extended_attributes ($$$$$) {
       $_->{type} = $type;
     }
   }
-  for (keys %{$named_constructors}) {
+  for (sort { $a cmp $b } keys %{$named_constructors}) {
     $dest->{NamedConstructor}->{$_} = ['operation', {
       overload_set => $self->_overload_set
           ($di, $named_constructors->{$_}, type_optional => 1),
@@ -1243,7 +1244,7 @@ sub end_processing ($) {
   my $self = $_[0];
 
   ## Resolve type names
-  for my $name (keys %{$self->{state}->{has_ref} or {}}) {
+  for my $name (sort { $a cmp $b } keys %{$self->{state}->{has_ref} or {}}) {
     if (defined $self->{processed}->{idl_defs}->{$name}) {
       $self->{state}->{has_ref}->{$name}->[0]->[0]
           = 'ref_' . $self->{processed}->{idl_defs}->{$name}->[0];
@@ -1274,7 +1275,7 @@ sub end_processing ($) {
       while (@member) {
         my $t = shift @member;
         if (ref $t and $t->[0] eq 'union') {
-          for (keys %{$t->[1]->{flattened}}) {
+          for (sort { $a cmp $b } keys %{$t->[1]->{flattened}}) {
             if (defined $flattened->{$_}) {
               $self->onerror->(type => 'webidl:not distinguishable',
                                value => $_,
@@ -1484,13 +1485,13 @@ sub end_processing ($) {
   }
 
   ## Dictionary members
-  my @dict_name = grep {
+  my @dict_name = sort { $a cmp $b } grep {
     $self->{processed}->{idl_defs}->{$_}->[0] eq 'dictionary';
   } keys %{$self->{processed}->{idl_defs}};
   for my $def_name (@dict_name) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     my $included = {};
-    for my $mem_name (keys %{$def->[1]->{members}}) {
+    for my $mem_name (sort { $a cmp $b } keys %{$def->[1]->{members}}) {
       my $mem = $def->[1]->{members}->{$mem_name};
       next unless $mem->[0] eq 'dictionary_member';
       my @type = $mem->[1]->{type};
@@ -1554,7 +1555,7 @@ sub end_processing ($) {
                      value => '[PrimaryGlobal]',
                      level => 'w');
   }
-  for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
+  for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or
         $def->[0] eq 'callback_interface' or
@@ -1584,13 +1585,13 @@ sub end_processing ($) {
         }
       }
 
-      for my $mem_name (keys %{$def->[1]->{members}}) {
+      for my $mem_name (sort { $a cmp $b } keys %{$def->[1]->{members}}) {
         my $mem = $def->[1]->{members}->{$mem_name};
         if (defined $mem->[1]->{_exposed}) {
           $mem->[1]->{Exposed} = {};
           for my $gname (@{delete $mem->[1]->{_exposed}}) {
             if (defined $self->{processed}->{global_names}->{$gname}) {
-              for (keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
+              for (sort { $a cmp $b } keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
                 if ($def->[1]->{Exposed}->{$_}) {
                   $mem->[1]->{Exposed}->{$_} = 1;
                 } else {
@@ -1623,14 +1624,14 @@ sub end_processing ($) {
 
   ## Interface objects
   my $gmembers = $self->{processed}->{global_members} ||= {};
-  for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
+  for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or
         $def->[0] eq 'callback_interface' or
         $def->[0] eq 'exception' or
         $def->[0] eq 'dictionary') {
       my @key;
-      for (keys %{$def->[1]->{NamedConstructor} or {}}) {
+      for (sort { $a cmp $b } keys %{$def->[1]->{NamedConstructor} or {}}) {
         if (defined $gmembers->{$_}) {
           $self->onerror->(type => 'webidl:duplicate',
                            value => $_,

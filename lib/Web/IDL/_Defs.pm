@@ -825,6 +825,12 @@ $Web::IDL::_Defs = {
                                                             [
                                                               {
                                                                 "type" => "rule",
+                                                                "value" => "ObsExtendedAttributeIdentList"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "type" => "rule",
                                                                 "value" => "ExtendedAttributeNoArgs"
                                                               }
                                                             ],
@@ -916,12 +922,14 @@ $Web::IDL::_Defs = {
                                                                          "type" => "="
                                                                        },
                                                                        {
-                                                                         "next_is_not" => {
-                                                                                          "(" => 1,
-                                                                                          "=" => 1
-                                                                                        },
+                                                                         "type" => "("
+                                                                       },
+                                                                       {
                                                                          "type" => "rule",
                                                                          "value" => "IdentifierList"
+                                                                       },
+                                                                       {
+                                                                         "type" => ")"
                                                                        }
                                                                      ]
                                                                    ]
@@ -1223,8 +1231,8 @@ $Web::IDL::_Defs = {
                                                                   "type" => "implements"
                                                                 },
                                                                 {
-                                                                  "set_value" => "super_name",
-                                                                  "type" => "identifier"
+                                                                  "type" => "rule",
+                                                                  "value" => "_SuperName"
                                                                 },
                                                                 {
                                                                   "type" => ";"
@@ -1251,8 +1259,8 @@ $Web::IDL::_Defs = {
                                                           "type" => ":"
                                                         },
                                                         {
-                                                          "set_value" => "super_name",
-                                                          "type" => "identifier"
+                                                          "type" => "rule",
+                                                          "value" => "_SuperName"
                                                         }
                                                       ]
                                                     ]
@@ -1482,6 +1490,31 @@ $Web::IDL::_Defs = {
                                                ]
                                              ]
                                },
+                       "ObsExtendedAttributeIdentList" => {
+                                                          "patterns" => [
+                                                                        [
+                                                                          {
+                                                                            "type" => "rule",
+                                                                            "value" => "_IDInSpecDirective"
+                                                                          },
+                                                                          {
+                                                                            "set_value" => "name",
+                                                                            "type" => "identifier"
+                                                                          },
+                                                                          {
+                                                                            "type" => "="
+                                                                          },
+                                                                          {
+                                                                            "next_is_not" => {
+                                                                                             "(" => 1,
+                                                                                             "=" => 1
+                                                                                           },
+                                                                            "type" => "rule",
+                                                                            "value" => "IdentifierList"
+                                                                          }
+                                                                        ]
+                                                                      ]
+                                                        },
                        "OperationIteratorInterfaceOrObject" => {
                                                                "patterns" => [
                                                                              [
@@ -2541,8 +2574,8 @@ $Web::IDL::_Defs = {
                                                                 "type" => "extends"
                                                               },
                                                               {
-                                                                "set_value" => "super_name",
-                                                                "type" => "identifier"
+                                                                "type" => "rule",
+                                                                "value" => "_SuperName"
                                                               }
                                                             ]
                                                           ]
@@ -2927,6 +2960,20 @@ $Web::IDL::_Defs = {
                                                             ]
                                                           ]
                                           },
+                       "_SuperName" => {
+                                       "patterns" => [
+                                                     [
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "_IDInSpecDirectiveIgnored"
+                                                       },
+                                                       {
+                                                         "set_value" => "super_name",
+                                                         "type" => "identifier"
+                                                       }
+                                                     ]
+                                                   ]
+                                     },
                        "_TypeArray" => {
                                        "patterns" => [
                                                      [
