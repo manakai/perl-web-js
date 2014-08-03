@@ -742,6 +742,7 @@ sub _extended_attributes ($$$$$) {
           }
           $dest->{_exposed} = $attr->{value_names} || [];
           # XXX MUST NOT be specified for exception's const
+          # XXX MUST be subset of interface's exposure set
         } else { # interface
           if ($src->{partial}) {
             $dest_context->{Exposed} = $attr->{value_names} || [];
@@ -751,6 +752,7 @@ sub _extended_attributes ($$$$$) {
           }
         }
         # XXX for dictionary, there MUST be Constructor
+        # XXX exposure sets MUST be subset of consequential's exposure sets
         next;
       }
     }
@@ -1013,8 +1015,7 @@ sub _overload_set ($$$;%) {
     if (not defined $args{special}) {
       #
     } elsif ($args{special} eq 'legacycaller') {
-      if ((not ref $type and $type eq 'Promise') or
-          (ref $type eq 'ARRAY' and $type->[0] eq 'Promise')) {
+      if (ref $type eq 'ARRAY' and $type->[0] eq 'Promise') {
         ## XXX union, nullable, sequence, array of Promise should also
         ## be disallowed?
         $self->onerror->(type => 'webidl:bad type',
@@ -1495,7 +1496,7 @@ sub end_processing ($) {
       }
     }
   } # idl_defs
-  # XXX warn if interfaces in {implements} are not Exposed to same set
+  # XXX error if interfaces in {implements} are not Exposed to same set
   # of globals
 
   ## Interface objects

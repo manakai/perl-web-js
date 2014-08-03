@@ -1550,7 +1550,7 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "set" => "type_parameterized",
                                                          "type" => "rule",
-                                                         "value" => "_PromiseType"
+                                                         "value" => "PromiseType"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -1559,12 +1559,9 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
-                                                         "set_type" => "type",
-                                                         "type" => "Promise"
-                                                       },
-                                                       {
+                                                         "set" => "type_parameterized",
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "_ObsPromiseType"
                                                        }
                                                      ]
                                                    ]
@@ -1892,6 +1889,26 @@ $Web::IDL::_Defs = {
                                                         ]
                                                       ]
                                         },
+                       "PromiseType" => {
+                                        "patterns" => [
+                                                      [
+                                                        {
+                                                          "set_type" => "type_outer",
+                                                          "type" => "Promise"
+                                                        },
+                                                        {
+                                                          "type" => "<"
+                                                        },
+                                                        {
+                                                          "type" => "rule",
+                                                          "value" => "ReturnType"
+                                                        },
+                                                        {
+                                                          "type" => ">"
+                                                        }
+                                                      ]
+                                                    ]
+                                      },
                        "ReadOnly" => {
                                      "can_be_empty" => 1,
                                      "patterns" => [
@@ -2877,6 +2894,26 @@ $Web::IDL::_Defs = {
                                                 ]
                                               ]
                                 },
+                       "_ObsPromiseType" => {
+                                            "patterns" => [
+                                                          [
+                                                            {
+                                                              "set_type" => "type_outer",
+                                                              "type" => "Promise"
+                                                            },
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "TypeSuffix"
+                                                            }
+                                                          ]
+                                                        ],
+                                            "set_fields" => [
+                                                            [
+                                                              "type",
+                                                              "any"
+                                                            ]
+                                                          ]
+                                          },
                        "_ObsoleteDirective" => {
                                                "can_be_empty" => 1,
                                                "patterns" => [
@@ -2903,26 +2940,6 @@ $Web::IDL::_Defs = {
                                                              ]
                                                            ]
                                              },
-                       "_PromiseType" => {
-                                         "patterns" => [
-                                                       [
-                                                         {
-                                                           "set_type" => "type_outer",
-                                                           "type" => "Promise"
-                                                         },
-                                                         {
-                                                           "type" => "<"
-                                                         },
-                                                         {
-                                                           "type" => "rule",
-                                                           "value" => "Type"
-                                                         },
-                                                         {
-                                                           "type" => ">"
-                                                         }
-                                                       ]
-                                                     ]
-                                       },
                        "_SequenceType" => {
                                           "patterns" => [
                                                         [
