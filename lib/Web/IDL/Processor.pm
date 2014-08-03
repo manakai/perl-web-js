@@ -895,7 +895,7 @@ sub _extended_attributes ($$$$$) {
       $_->{type} = $type;
     }
   }
-  for (keys %{$named_constructors}) {
+  for (sort { $a cmp $b } keys %{$named_constructors}) {
     $dest->{NamedConstructor}->{$_} = ['operation', {
       overload_set => $self->_overload_set
           ($di, $named_constructors->{$_}, type_optional => 1),
@@ -1484,13 +1484,13 @@ sub end_processing ($) {
   }
 
   ## Dictionary members
-  my @dict_name = grep {
+  my @dict_name = sort { $a cmp $b } grep {
     $self->{processed}->{idl_defs}->{$_}->[0] eq 'dictionary';
   } keys %{$self->{processed}->{idl_defs}};
   for my $def_name (@dict_name) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     my $included = {};
-    for my $mem_name (keys %{$def->[1]->{members}}) {
+    for my $mem_name (sort { $a cmp $b } keys %{$def->[1]->{members}}) {
       my $mem = $def->[1]->{members}->{$mem_name};
       next unless $mem->[0] eq 'dictionary_member';
       my @type = $mem->[1]->{type};
@@ -1554,7 +1554,7 @@ sub end_processing ($) {
                      value => '[PrimaryGlobal]',
                      level => 'w');
   }
-  for my $def_name (keys %{$self->{processed}->{idl_defs}}) {
+  for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or
         $def->[0] eq 'callback_interface' or
@@ -1584,13 +1584,13 @@ sub end_processing ($) {
         }
       }
 
-      for my $mem_name (keys %{$def->[1]->{members}}) {
+      for my $mem_name (sort { $a cmp $b } keys %{$def->[1]->{members}}) {
         my $mem = $def->[1]->{members}->{$mem_name};
         if (defined $mem->[1]->{_exposed}) {
           $mem->[1]->{Exposed} = {};
           for my $gname (@{delete $mem->[1]->{_exposed}}) {
             if (defined $self->{processed}->{global_names}->{$gname}) {
-              for (keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
+              for (sort { $a cmp $b } keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
                 if ($def->[1]->{Exposed}->{$_}) {
                   $mem->[1]->{Exposed}->{$_} = 1;
                 } else {
@@ -1630,7 +1630,7 @@ sub end_processing ($) {
         $def->[0] eq 'exception' or
         $def->[0] eq 'dictionary') {
       my @key;
-      for (keys %{$def->[1]->{NamedConstructor} or {}}) {
+      for (sort { $a cmp $b } keys %{$def->[1]->{NamedConstructor} or {}}) {
         if (defined $gmembers->{$_}) {
           $self->onerror->(type => 'webidl:duplicate',
                            value => $_,
