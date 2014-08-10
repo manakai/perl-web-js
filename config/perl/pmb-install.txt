@@ -1,7 +1,7 @@
 Scalar::Util~1.39
 Capture::Tiny~0.24
 File::Spec~3.47
-JE~0.060
+JE~0.061
 Time::Zone~2.24
 Algorithm::Diff~1.1902
 Path::Tiny~0.056
