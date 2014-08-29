@@ -14,4 +14,4 @@ Carp~1.3301
 Text::Diff~1.41
 Test::More~1.001003
 Test::Differences~0.62
-Path::Class~0.33
+Path::Class~0.34
