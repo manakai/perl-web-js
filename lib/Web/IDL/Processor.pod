@@ -84,6 +84,14 @@ empty sequence.
 
 =back
 
+=over 4
+
+=item required (boolean)
+
+Whether the dictionary member is required or not.
+
+=back
+
 =head1 SPECIFICATIONS
 
 =over 4

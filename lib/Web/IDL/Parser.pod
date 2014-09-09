@@ -143,6 +143,8 @@ The name of the member, if applicable.
 
 =item creator, getter, setter, deleter, stringifier, serializer
 
+=item required
+
 Whether the keyword is set to the member or not.
 
 =item value

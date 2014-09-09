@@ -161,6 +161,12 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
+                                                                  "type" => "required"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
                                                                   "type" => "typedef"
                                                                 }
                                                               ],
@@ -307,6 +313,32 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "AttributeName" => {
+                                          "patterns" => [
+                                                        [
+                                                          {
+                                                            "type" => "rule",
+                                                            "value" => "_Name"
+                                                          }
+                                                        ],
+                                                        [
+                                                          {
+                                                            "type" => "rule",
+                                                            "value" => "AttributeNameKeyword"
+                                                          }
+                                                        ]
+                                                      ]
+                                        },
+                       "AttributeNameKeyword" => {
+                                                 "patterns" => [
+                                                               [
+                                                                 {
+                                                                   "set_type" => "name",
+                                                                   "type" => "required"
+                                                                 }
+                                                               ]
+                                                             ]
+                                               },
                        "AttributeOrOperationOrIterator" => {
                                                            "patterns" => [
                                                                          [
@@ -358,7 +390,7 @@ $Web::IDL::_Defs = {
                                                           },
                                                           {
                                                             "type" => "rule",
-                                                            "value" => "_Name"
+                                                            "value" => "AttributeName"
                                                           },
                                                           {
                                                             "type" => ";"
@@ -673,6 +705,10 @@ $Web::IDL::_Defs = {
                        "DictionaryMember" => {
                                              "patterns" => [
                                                            [
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "Required"
+                                                             },
                                                              {
                                                                "type" => "rule",
                                                                "value" => "Type"
@@ -1916,6 +1952,17 @@ $Web::IDL::_Defs = {
                                                      {
                                                        "set_true" => "readonly",
                                                        "type" => "readonly"
+                                                     }
+                                                   ]
+                                                 ]
+                                   },
+                       "Required" => {
+                                     "can_be_empty" => 1,
+                                     "patterns" => [
+                                                   [
+                                                     {
+                                                       "set_true" => "required",
+                                                       "type" => "required"
                                                      }
                                                    ]
                                                  ]
@@ -3261,6 +3308,10 @@ $Web::IDL::_Defs = {
                                            "argument_name" => 1
                                          },
                               "readonly" => {},
+                              "required" => {
+                                            "argument_name" => 1,
+                                            "attribute_name" => 1
+                                          },
                               "sequence" => {},
                               "serializer" => {
                                               "argument_name" => 1
