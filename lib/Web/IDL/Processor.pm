@@ -666,7 +666,7 @@ sub _extended_attributes ($$$$$) {
                              value => $attr->{name},
                              di => $di,
                              index => $attr->{index},
-                             level => $dest->{setter} eq 1 ? 'w' : 'm');
+                             level => 'm');
           }
           $dest->{setter} = ['ref_attribute', $attr->{value_names}->[0]];
           # XXX there MUST be referenced attribute
@@ -680,7 +680,7 @@ sub _extended_attributes ($$$$$) {
                            value => $attr->{name},
                            di => $di,
                            index => $attr->{index},
-                           level => $dest->{setter} eq 1 ? 'w' : 'm');
+                           level => 'm');
         }
         $dest->{setter} = 'replaceable';
         # XXX MUST NOT be used on callback interface
