@@ -18,6 +18,10 @@ for (keys %{$data->{keyword_tokens}}) {
     push @{$Data->{grammer}->{ArgumentNameKeyword}->{patterns} ||= []},
         [{type => $_, set_type => 'name'}];
   }
+  if ($data->{keyword_tokens}->{$_}->{attribute_name}) {
+    push @{$Data->{grammer}->{AttributeNameKeyword}->{patterns} ||= []},
+        [{type => $_, set_type => 'name'}];
+  }
 }
 
 for my $construct (keys %{$data->{constructs}}) {

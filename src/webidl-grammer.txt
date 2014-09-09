@@ -134,7 +134,12 @@ ExtendedAttributeList DictionaryMember
 
 * DictionaryMember
 
-Type _Name Default ';'
+Required Type _Name Default ';'
+
+* Required
+
+'required'=required?
+?
 
 * PartialDictionary
 
@@ -363,7 +368,13 @@ Inherit AttributeRest
 
 * AttributeRest
 
-ReadOnly 'attribute'="member_type" Type _Name ';'
+ReadOnly 'attribute'="member_type" Type AttributeName ';'
+
+* AttributeName
+
+_Name
+|
+AttributeNameKeyword
 
 * Inherit
 

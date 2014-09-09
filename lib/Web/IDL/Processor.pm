@@ -441,6 +441,8 @@ sub process_parsed_struct ($$$) {
                   # XXX float value or literal MUST be in range
                   # XXX value type MUST be compat with type
                   # XXX string MUST be one of enum
+
+                  $mem_props->{required} = 1 if $mem->{required};
                 } # has value
 
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
