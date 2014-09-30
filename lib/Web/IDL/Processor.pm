@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '4.0';
+our $VERSION = '5.0';
 use Web::IDL::_Defs;
 
 sub new ($) {
@@ -256,6 +256,10 @@ sub process_parsed_struct ($$$) {
               for my $key (qw(obsolete spec id)) {
                 $mem->{$key} = delete $v->{$key} if defined $v->{$key};
               }
+              if (delete $v->{Unscopeable}) {
+                # XXX warn if inconsistent
+                $mem->{Unscopeable} = 1;
+              }
             } # $v
             $mem->{id} = $id if defined $id;
             if ($unforgeable) {
@@ -303,6 +307,14 @@ sub process_parsed_struct ($$$) {
                     # XXX legacycaller SHOULD NOT be used
                     
                   }
+
+                  if (not defined $mem->{name} and $mem->{Unscopeable}) {
+                    $self->onerror->(type => 'webidl:not allowed',
+                                     value => '[Unscopeable]',
+                                     di => $di,
+                                     index => $mem->{index},
+                                     level => 'm');
+                  }
                 }
               } else { ## Regular or static operation
                 if (defined $props->{members}->{$mem->{name}}) {
@@ -335,7 +347,7 @@ sub process_parsed_struct ($$$) {
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
                   for (qw(overload_set Unforgeable _exposed
-                          obsolete spec id)) {
+                          obsolete spec id Unscopeable)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
                 }
@@ -756,14 +768,17 @@ sub _extended_attributes ($$$$$) {
         # XXX for dictionary, there MUST be Constructor
         # XXX exposure sets MUST be subset of consequential's exposure sets
         next;
-      }
+      } elsif ($attr->{name} eq 'Unscopeable') {
+        $dest->{Unscopeable} = 1;
+        next;
+      } # $attr->{name}
     }
     $self->onerror->(type => 'webidl:not allowed',
                      value => $attr->{name},
                      di => $di,
                      index => $attr->{index},
                      level => 'm');
-  }
+  } # $attr
 
   if (@constructor) {
     $dest->{Constructor} = ['operation', {

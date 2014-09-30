@@ -107,6 +107,10 @@ Web IDL "class"
 Web IDL [TreatNonCallableAsNull] (obsolete)
 <https://github.com/heycam/webidl/commit/4043b051d492d4a2f21064f0edf91e642c5a6249>.
 
+Web IDL iterator interfaces
+<https://github.com/heycam/webidl/commit/f87ea39994972ebd75f4b98c2dc01a32aaa9d1f5>,
+<https://www.w3.org/Bugs/Public/show_bug.cgi?id=17648#c8>.
+
 =back
 
 This implementation does not allow use of extended attributes not

@@ -16,7 +16,8 @@ $Web::IDL::_Defs = {
                                              "Replaceable" => 1,
                                              "SameObject" => 1,
                                              "TreatNullAs" => 1,
-                                             "Unforgeable" => 1
+                                             "Unforgeable" => 1,
+                                             "Unscopeable" => 1
                                            },
                               "callback" => {
                                             "TreatNonCallableAsNull" => 1,
@@ -67,7 +68,8 @@ $Web::IDL::_Defs = {
                                              "Exposed" => 1,
                                              "NewObject" => 1,
                                              "TreatNullAs" => 1,
-                                             "Unforgeable" => 1
+                                             "Unforgeable" => 1,
+                                             "Unscopeable" => 1
                                            },
                               "partial_interface" => {
                                                      "Exposed" => 1,
@@ -3549,6 +3551,9 @@ $Web::IDL::_Defs = {
                                            "id" => 1
                                          },
                           "Unforgeable" => {
+                                           "no" => 1
+                                         },
+                          "Unscopeable" => {
                                            "no" => 1
                                          }
                         },
