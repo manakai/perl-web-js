@@ -545,24 +545,13 @@ ExtendedAttributeArgList
 |
 ExtendedAttributeTypePair
 |
-
-#ExtendedAttributeIdent
-identifier:'PutForwards'="name" '=' identifier="value_names"[]!'='!'('
-
-|
 ExtendedAttributeNamedArgList
 |
 ExtendedAttributeIdentList
 |
-ObsExtendedAttributeIdentList
-|
 ExtendedAttributeNoArgs
 |
-
-#ExtendedAttributeIdent
-identifier="name" '='
-_IDInSpecDirective
-identifier="value_names"[]!'='!'('
+ExtendedAttributeIdent
 
 * ExtendedAttributeRest
 
@@ -822,16 +811,10 @@ identifier="name" '(' ArgumentList ')'
 
 * ExtendedAttributeIdent
 
-## Unused (-> ExtendedAttributeIdentList)
-#_IDInSpecDirective
+_IDInSpecDirective
 identifier="name" '='
 _IDInSpecDirective
 identifier="value_names"[]!'='!'('
-
-* ObsExtendedAttributeIdentList
-
-_IDInSpecDirective
-identifier="name" '=' IdentifierList!'='!'('
 
 * ExtendedAttributeIdentList
 
@@ -840,7 +823,7 @@ identifier="name" '=' '(' IdentifierList ')'
 
 * ExtendedAttributeNamedArgList
 
-#_IDInSpecDirective
+_IDInSpecDirective
 identifier="name" '='
 _IDInSpecDirective
 identifier="value_names"[] '(' ArgumentList ')'
