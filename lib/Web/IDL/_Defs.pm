@@ -3,13 +3,11 @@ $Web::IDL::_Defs = {
                               "argument" => {
                                             "Clamp" => 1,
                                             "EnforceRange" => 1,
-                                            "EnsureUTF16" => 1,
                                             "TreatNullAs" => 1
                                           },
                               "attribute" => {
                                              "Clamp" => 1,
                                              "EnforceRange" => 1,
-                                             "EnsureUTF16" => 1,
                                              "Exposed" => 1,
                                              "LenientThis" => 1,
                                              "PutForwards" => 1,
@@ -28,7 +26,6 @@ $Web::IDL::_Defs = {
                                                       "Exposed" => 1,
                                                       "Global" => 1,
                                                       "ImplicitThis" => 1,
-                                                      "MapClass" => 1,
                                                       "NoInterfaceObject" => 1,
                                                       "OverrideBuiltins" => 1,
                                                       "PrimaryGlobal" => 1,
@@ -54,7 +51,6 @@ $Web::IDL::_Defs = {
                                              "Exposed" => 1,
                                              "Global" => 1,
                                              "ImplicitThis" => 1,
-                                             "MapClass" => 1,
                                              "NamedConstructor" => 1,
                                              "NoInterfaceObject" => 1,
                                              "OverrideBuiltins" => 1,
@@ -80,7 +76,6 @@ $Web::IDL::_Defs = {
                                                    },
                               "static_attribute" => {
                                                     "Clamp" => 1,
-                                                    "EnsureUTF16" => 1,
                                                     "Exposed" => 1,
                                                     "SameObject" => 1,
                                                     "TreatNullAs" => 1
@@ -145,18 +140,6 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
-                                                                  "type" => "creator"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "static"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
                                                                   "type" => "attribute"
                                                                 }
                                                               ],
@@ -170,12 +153,6 @@ $Web::IDL::_Defs = {
                                                                 {
                                                                   "set_type" => "name",
                                                                   "type" => "typedef"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "interface"
                                                                 }
                                                               ],
                                                               [
@@ -205,12 +182,6 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
-                                                                  "type" => "serializer"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
                                                                   "type" => "const"
                                                                 }
                                                               ],
@@ -223,19 +194,7 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
-                                                                  "type" => "class"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
                                                                   "type" => "inherit"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "partial"
                                                                 }
                                                               ],
                                                               [
@@ -253,7 +212,7 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
-                                                                  "type" => "enum"
+                                                                  "type" => "setlike"
                                                                 }
                                                               ],
                                                               [
@@ -265,19 +224,73 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
-                                                                  "type" => "implements"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "exception"
+                                                                  "type" => "maplike"
                                                                 }
                                                               ],
                                                               [
                                                                 {
                                                                   "set_type" => "name",
                                                                   "type" => "setter"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "creator"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "static"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "interface"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "legacyiterable"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "serializer"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "class"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "partial"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "enum"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "iterable"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
+                                                                  "type" => "implements"
                                                                 }
                                                               ]
                                                             ]
@@ -416,6 +429,76 @@ $Web::IDL::_Defs = {
                                                          ]
                                                        ]
                                          },
+                       "BufferRelatedType" => {
+                                              "patterns" => [
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "ArrayBuffer"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "DataView"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Int8Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Int161Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Int32Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Uint8Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Uint16Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Uint32Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Uint8ClampedArray"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Float32Array"
+                                                              }
+                                                            ],
+                                                            [
+                                                              {
+                                                                "set_type" => "type",
+                                                                "type" => "Float64Array"
+                                                              }
+                                                            ]
+                                                          ]
+                                            },
                        "CallbackOrInterface" => {
                                                 "patterns" => [
                                                               [
@@ -1531,6 +1614,16 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
+                                                         "set_type" => "type",
+                                                         "type" => "USVString"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "TypeSuffix"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
                                                          "type" => "rule",
                                                          "value" => "_IDInSpecDirectiveIgnored"
                                                        },
@@ -1578,6 +1671,36 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "set_type" => "type",
                                                          "type" => "RegExp"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "TypeSuffix"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set_type" => "type",
+                                                         "type" => "Error"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "TypeSuffix"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set_type" => "type",
+                                                         "type" => "DOMException"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "TypeSuffix"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "BufferRelatedtype"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -3241,13 +3364,27 @@ $Web::IDL::_Defs = {
                                          }
                      },
           "keyword_tokens" => {
+                              "ArrayBuffer" => {},
                               "ByteString" => {},
+                              "DOMException" => {},
                               "DOMString" => {},
+                              "DataView" => {},
                               "Date" => {},
+                              "Error" => {},
+                              "Float32Array" => {},
+                              "Float64Array" => {},
                               "Infinity" => {},
+                              "Int16Array" => {},
+                              "Int32Array" => {},
+                              "Int8Array" => {},
                               "NaN" => {},
                               "Promise" => {},
                               "RegExp" => {},
+                              "USVString" => {},
+                              "Uint16Array" => {},
+                              "Uint32Array" => {},
+                              "Uint8Array" => {},
+                              "Uint8ClampedArray" => {},
                               "any" => {},
                               "attribute" => {
                                              "argument_name" => 1
@@ -3276,9 +3413,6 @@ $Web::IDL::_Defs = {
                               "enum" => {
                                         "argument_name" => 1
                                       },
-                              "exception" => {
-                                             "argument_name" => 1
-                                           },
                               "extends" => {
                                            "argument_name" => 1
                                          },
@@ -3296,11 +3430,19 @@ $Web::IDL::_Defs = {
                               "interface" => {
                                              "argument_name" => 1
                                            },
-                              "iterator" => {},
+                              "iterable" => {
+                                            "argument_name" => 1
+                                          },
                               "legacycaller" => {
                                                 "argument_name" => 1
                                               },
+                              "legacyiterable" => {
+                                                  "argument_name" => 1
+                                                },
                               "long" => {},
+                              "maplike" => {
+                                           "argument_name" => 1
+                                         },
                               "null" => {},
                               "object" => {},
                               "octet" => {},
@@ -3318,6 +3460,9 @@ $Web::IDL::_Defs = {
                               "serializer" => {
                                               "argument_name" => 1
                                             },
+                              "setlike" => {
+                                           "argument_name" => 1
+                                         },
                               "setter" => {
                                           "argument_name" => 1
                                         },
@@ -3493,9 +3638,6 @@ $Web::IDL::_Defs = {
                           "EnforceRange" => {
                                             "no" => 1
                                           },
-                          "EnsureUTF16" => {
-                                           "no" => 1
-                                         },
                           "Exposed" => {
                                        "id" => 1,
                                        "id_list" => 1
@@ -3511,9 +3653,6 @@ $Web::IDL::_Defs = {
                           "LenientThis" => {
                                            "no" => 1
                                          },
-                          "MapClass" => {
-                                        "pair" => 1
-                                      },
                           "NamedConstructor" => {
                                                 "id" => 1,
                                                 "named_args" => 1
@@ -3559,10 +3698,6 @@ $Web::IDL::_Defs = {
                         },
           "xattr_disallowed" => [
                                 [
-                                  "ArrayClass",
-                                  "MapClass"
-                                ],
-                                [
                                   "Clamp",
                                   "EnforceRange"
                                 ],
@@ -3572,18 +3707,10 @@ $Web::IDL::_Defs = {
                                 ],
                                 [
                                   "Global",
-                                  "MapClass"
-                                ],
-                                [
-                                  "Global",
                                   "OverrideBuiltins"
                                 ],
                                 [
                                   "Global",
-                                  "PrimaryGlobal"
-                                ],
-                                [
-                                  "MapClass",
                                   "PrimaryGlobal"
                                 ],
                                 [

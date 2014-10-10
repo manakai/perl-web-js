@@ -617,6 +617,8 @@ PrimitiveType TypeSuffix
 |
 'DOMString'="type" TypeSuffix
 |
+'USVString'="type" TypeSuffix
+|
 _IDInSpecDirectiveIgnored
 identifier="type_name" TypeSuffix
 |
@@ -627,6 +629,12 @@ _SequenceType=type_parameterized Null
 'Date'="type" TypeSuffix
 |
 'RegExp'="type" TypeSuffix
+|
+'Error'="type" TypeSuffix
+|
+'DOMException'="type" TypeSuffix
+|
+BufferRelatedtype TypeSuffix
 |
 PromiseType=type_parameterized Null
 
@@ -647,6 +655,30 @@ _ObsPromiseType=type_parameterized
 'Promise'="type_outer" TypeSuffix
 
 +type="any"
+
+* BufferRelatedType
+
+'ArrayBuffer'="type"
+|
+'DataView'="type"
+|
+'Int8Array'="type"
+|
+'Int161Array'="type"
+|
+'Int32Array'="type"
+|
+'Uint8Array'="type"
+|
+'Uint16Array'="type"
+|
+'Uint32Array'="type"
+|
+'Uint8ClampedArray'="type"
+|
+'Float32Array'="type"
+|
+'Float64Array'="type"
 
 * ConstType
 
