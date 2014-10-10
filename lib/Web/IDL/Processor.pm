@@ -595,21 +595,6 @@ sub _extended_attributes ($$$$$) {
           $dest->{ArrayClass} = 1;
           next;
         }
-      } elsif ($attr->{name} eq 'MapClass') {
-        if (defined $src->{super_name}) {
-          #
-        } else {
-          my $t = $attr->{value_types};
-          if (defined $t) {
-            $dest->{MapClass}->{key_type} = $self->_type
-                ($di, {index => $attr->{index}, %{$t->[0]}});
-            $dest->{MapClass}->{value_type} = $self->_type
-                ($di, {index => $attr->{index}, %{$t->[1]}});
-
-            # XXX interface members' restrictions
-          }
-          next;
-        }
       } elsif ($attr->{name} eq 'Clamp' or
                $attr->{name} eq 'EnforceRange') {
         if ($src->{readonly}) {
@@ -625,11 +610,6 @@ sub _extended_attributes ($$$$$) {
       } elsif ($attr->{name} eq 'NamedConstructor') {
         push @{$named_constructors->{$attr->{value_names}->[0]} ||= []}, $attr
             if @{$attr->{value_names} or []};
-        next;
-      } elsif ($attr->{name} eq 'EnsureUTF16') {
-        $dest->{EnsureUTF16} = 1;
-        # XXX warn unless type is DOMString
-        # XXX warn if readonly
         next;
       } elsif ($attr->{name} eq 'ImplicitThis') {
         $dest->{$attr->{name}} = 1;
