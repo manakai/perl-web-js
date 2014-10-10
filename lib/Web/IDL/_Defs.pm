@@ -1700,7 +1700,7 @@ $Web::IDL::_Defs = {
                                                      [
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "BufferRelatedtype"
+                                                         "value" => "BufferRelatedType"
                                                        },
                                                        {
                                                          "type" => "rule",

@@ -634,7 +634,7 @@ _SequenceType=type_parameterized Null
 |
 'DOMException'="type" TypeSuffix
 |
-BufferRelatedtype TypeSuffix
+BufferRelatedType TypeSuffix
 |
 PromiseType=type_parameterized Null
 
