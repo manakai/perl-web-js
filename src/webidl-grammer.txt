@@ -532,8 +532,6 @@ SetlikeRest
 
 ExtendedAttributeArgList
 |
-ExtendedAttributeTypePair
-|
 ExtendedAttributeNamedArgList
 |
 ExtendedAttributeIdentList
@@ -816,8 +814,3 @@ _IDInSpecDirective
 identifier="name" '='
 _IDInSpecDirective
 identifier="value_names"[] '(' ArgumentList ')'
-
-* ExtendedAttributeTypePair
-
-_IDInSpecDirective
-identifier="name" '(' Type=value_types[] ',' Type=value_types[] ')'
