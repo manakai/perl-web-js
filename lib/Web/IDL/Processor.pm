@@ -32,7 +32,6 @@ sub process_parsed_struct ($$$) {
   for my $def (@{$in->{definitions} or []}) {
     if ($def->{definition_type} eq 'interface' or
         $def->{definition_type} eq 'class' or
-        $def->{definition_type} eq 'exception' or
         $def->{definition_type} eq 'dictionary' or
         $def->{definition_type} eq 'callback' or
         $def->{definition_type} eq 'enum' or
@@ -93,12 +92,9 @@ sub process_parsed_struct ($$$) {
         }
         my $props = $self->{processed}->{idl_defs}->{$def->{name}}->[1] ||= {};
 
-        # XXX exception SHOULD NOT be used
-
         ## Inheritance
         if ($def->{definition_type} eq 'interface' or
             $def->{definition_type} eq 'class' or
-            $def->{definition_type} eq 'exception' or
             $def->{definition_type} eq 'dictionary') {
           if (defined $def->{super_name}) {
             push @{$self->{state}->{inherits} ||= []},
@@ -145,7 +141,6 @@ sub process_parsed_struct ($$$) {
 
         if ($def->{definition_type} eq 'interface' or
             $def->{definition_type} eq 'class' or
-            $def->{definition_type} eq 'exception' or
             $def->{definition_type} eq 'dictionary') {
           my @mem = grep {
             not $_->{member_type} eq 'operation';
@@ -354,7 +349,6 @@ sub process_parsed_struct ($$$) {
               }
             } elsif ($mem->{member_type} eq 'const' or
                      $mem->{member_type} eq 'attribute' or
-                     $mem->{member_type} eq 'field' or
                      $mem->{member_type} eq 'dictionary_member') {
               if (defined $props->{members}->{$mem->{name}}) {
                 $self->onerror->(type => 'webidl:duplicate',
@@ -391,7 +385,6 @@ sub process_parsed_struct ($$$) {
                 # XXX const: type check; MUST NOT use dictionary; MUST NOT use callback function; MUST NOT use sequence
                 # XXX attribute: type check; MUST NOT use dictionary; MUST NOT use sequence
                 # XXX dictionary member: type check
-                # XXX exception field: type check; MUST NOT use dictionary; MUST NOT use sequence
 
                 if ($mem->{member_type} eq 'attribute') {
                   if ($mem->{readonly}) {
@@ -480,42 +473,33 @@ sub process_parsed_struct ($$$) {
                     if defined $xattr_opts->{Exposed};
                 $self->_extended_attributes ($di, $mem => $mem_props, {});
               }
-            } elsif ($mem->{member_type} eq 'iterator') {
-              if (defined $props->{iterator}) {
+            } elsif ($mem->{member_type} eq 'iterable' or
+                     $mem->{member_type} eq 'legacyiterable' or
+                     $mem->{member_type} eq 'maplike' or
+                     $mem->{member_type} eq 'setlike') {
+              if (defined $props->{iterable}) {
                 $self->onerror->(type => 'webidl:duplicate',
-                                 value => 'iterator',
+                                 value => 'iterable',
                                  di => $di,
                                  index => $mem->{index},
                                  level => 'm');
               } else {
-                $props->{iterator}->[0] = $mem->{member_type};
-                my $mem_props = $props->{iterator}->[1] ||= {};
+                $props->{iterable}->[0] = $mem->{member_type};
+                my $mem_props = $props->{iterable}->[1] ||= {};
 
-                $mem_props->{type} = $self->_type ($di, $mem);
-                
-                $mem_props->{value} = $self->_value
-                    ($di, $mem, optional => 1, context => 'iterator');
-                delete $mem_props->{value} unless defined $mem_props->{value};
+                if (defined $mem->{type2}) {
+                  $mem_props->{keys_type} = $self->_type ($di, $mem->{type1});
+                  $mem_props->{values_type} = $self->_type ($di, $mem->{type2});
+                } else {
+                  $mem_props->{values_type} = $self->_type ($di, $mem->{type1});
+                }
 
-                # XXX if {value} is not undef, its "iterator object"'s
-                # return type MUST be $self->{type}.
+                unless ($mem->{member_type} =~ /iterable/) {
+                  $mem_props->{read} = 1;
+                  $mem_props->{write} = 1 unless $mem->{readonly};
+                }
 
-                $mem_props->{_exposed} = $xattr_opts->{Exposed}
-                    if defined $xattr_opts->{Exposed};
-                $self->_extended_attributes ($di, $mem => $mem_props, {});
-              }
-            } elsif ($mem->{member_type} eq 'iterator_object') {
-              if (defined $props->{iterator_object}) {
-                $self->onerror->(type => 'webidl:duplicate',
-                                 value => 'iterator object',
-                                 di => $di,
-                                 index => $mem->{index},
-                                 level => 'm');
-              } else {
-                $props->{iterator_object}->[0] = $mem->{member_type};
-                my $mem_props = $props->{iterator_object}->[1] ||= {};
-
-                $mem_props->{type} = $self->_type ($di, $mem);
+                # XXX warn if legacyiterable
 
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
@@ -720,7 +704,7 @@ sub _extended_attributes ($$$$$) {
           }
         }
         # XXX If partial interface, it MUST have named getter.
-        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, serializers, iterators
+        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, serializers, iterable, legacyiterable, maplike, setlike
         # XXX MUST NOT have named setter, creattor, deleter
         # XXX MUST NOT inherit interface with OverrideBuiltins
         # XXX MUST NOT inherit this interface
@@ -735,7 +719,6 @@ sub _extended_attributes ($$$$$) {
                              level => 'm');
           }
           $dest->{_exposed} = $attr->{value_names} || [];
-          # XXX MUST NOT be specified for exception's const
           # XXX MUST be subset of interface's exposure set
         } else { # interface
           if ($src->{partial}) {
@@ -873,10 +856,6 @@ sub _value ($$$;%) {
            defined $args{context} and $args{context} eq 'serializer') {
     return ['ref_attribute', $obj->{value_name}];
     # XXX MUST be an attribute of serializable type
-  } elsif (defined $obj->{value_name} and
-           defined $args{context} and $args{context} eq 'iterator') {
-    return ['ref_interface', $obj->{value_name}];
-    # XXX MUST be an iterator object interface
   } elsif (defined $obj->{value}) {
     return $obj->{value};
   } elsif (defined $obj->{value_map} or defined $obj->{value_list}) {
@@ -1482,15 +1461,6 @@ sub end_processing ($) {
           }
         }
       }
-    } elsif ($def->[0] eq 'exception') {
-      if (defined $self->{processed}->{global_names}) {
-        $def->[1]->{Exposed} = {};
-        for (values %{$self->{processed}->{global_names}}) {
-          $def->[1]->{Exposed}->{$_} = 1 for keys %$_;
-        }
-      } else {
-        #
-      }
     }
   } # idl_defs
   # XXX error if interfaces in {implements} are not Exposed to same set
@@ -1502,7 +1472,6 @@ sub end_processing ($) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or
         $def->[0] eq 'callback_interface' or
-        $def->[0] eq 'exception' or
         $def->[0] eq 'dictionary') {
       my @key;
       for (sort { $a cmp $b } keys %{$def->[1]->{NamedConstructor} or {}}) {
@@ -1553,9 +1522,6 @@ sub end_processing ($) {
         # XXX If there is named*, there MUST be namedGetter
         # XXX If there is indexed*, there MUST be indexedGetter
         # XXX no special operation on callback interface
-        # XXX MUST NOT use "next" as an interface member on iterator object interface or its consequential interface
-        # XXX no duplicate iterator amongst consequential interfaces
-        # XXX no duplicate iterator object amongst consequential interfaces
         # XXX inherited dictionary's member's name MUST NOT be used
         # XXX there MUST NOT be identifier conflicting member on consequential interfaces
 } # end_processing

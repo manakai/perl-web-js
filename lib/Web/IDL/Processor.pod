@@ -82,6 +82,26 @@ A sequence value.  The C<1>st item is an array reference containing
 the items of the value.  If it is an empty array reference, this is an
 empty sequence.
 
+=item iterable
+
+An C<iterable> declaration.  The C<1>st item is a hash reference
+describing the declaration.
+
+=item legacyiterable
+
+An C<legacyiterable> declaration.  The C<1>st item is a hash reference
+describing the declaration.
+
+=item maplike
+
+An C<maplike> declaration.  The C<1>st item is a hash reference
+describing the declaration.
+
+=item setlike
+
+An C<setlike> declaration.  The C<1>st item is a hash reference
+describing the declaration.
+
 =back
 
 =over 4
@@ -89,6 +109,24 @@ empty sequence.
 =item required (boolean)
 
 Whether the dictionary member is required or not.
+
+=item read (boolean)
+
+Always true for C<maplike> or C<setlike> declaration.
+
+=item write (boolean)
+
+Whether the C<maplike> or C<setlike> declaration is I<not> read-only.
+
+=item keys_type (type)
+
+The first type in the C<maplike> or C<iterable> declaration when two
+types are specified.
+
+=item values_type (type)
+
+The last type in the C<maplike>, C<setlike>, C<iterable>, or
+C<legacyiterable> declaration.
 
 =back
 

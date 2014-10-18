@@ -29,8 +29,6 @@ Partial
 |
 Dictionary
 |
-Exception
-|
 Enum
 |
 Typedef
@@ -116,7 +114,23 @@ ExtendedAttributeList InterfaceMember
 
 Const
 |
-AttributeOrOperationOrIterator
+Operation
+|
+Serializer
+|
+Stringifier
+|
+StaticMember
+|
+Iterable
+|
+ReadonlyMember
+|
+ReadWriteAttribute
+|
+ReadWriteMaplike
+|
+ReadWriteSetlike
 
 * Dictionary
 
@@ -158,19 +172,6 @@ _IDInSpecDirectiveIgnored
 string="value_string"
 |
 '[' ']'=value_empty_sequence?
-
-* Exception
-
-'exception'="definition_type" _Name Inheritance '{' ExceptionMembers '}' ';'
-
-* ExceptionMembers
-
-_ExceptionMember*=members[]
-
-* _ExceptionMember
-
-+pos
-ExtendedAttributeList ExceptionMember
 
 * Inheritance
 
@@ -252,18 +253,6 @@ float="value_float"
 'Infinity'="value"
 |
 'NaN'="value"
-
-* AttributeOrOperationOrIterator
-
-Serializer
-|
-Stringifier
-|
-StaticMember
-|
-Attribute
-|
-OperationOrIterator
 
 * Serializer
 
@@ -362,9 +351,23 @@ AttributeRest
 |
 ReturnType OperationRest
 
-* Attribute
+* ReadonlyMember
 
-Inherit AttributeRest
+'readonly'=readonly? ReadonlyMemberRest
+
+* ReadonlyMemberRest
+
+AttributeRest
+|
+MaplikeRest
+|
+SetlikeRest
+
+* ReadWriteAttribute
+
+'inherit'=inherit? ReadOnly AttributeRest
+|
+AttributeRest
 
 * AttributeRest
 
@@ -386,9 +389,9 @@ AttributeNameKeyword
 'readonly'=readonly?
 ?
 
-* OperationOrIterator
+* Operation
 
-ReturnType OperationOrIteratorRest
+ReturnType OperationRest
 |
 SpecialOperation
 
@@ -429,36 +432,6 @@ Special Specials
 |
 '[' other:'*' identifier:'id' '=' string="legacycaller_id" other:'*' ']'
 'legacycaller'=legacycaller?
-
-* OperationOrIteratorRest
-
-IteratorRest
-|
-OperationRest
-
-* IteratorRest
-
-#'iterator'="member_type" OperationIteratorInterfaceOrObject ';'
-
-'iterator'="member_type" OptionalIteratorInterface ';'
-|
-_IteratorObject
-
-* OperationIteratorInterfaceOrObject
-
-OptionalIteratorInterface
-|
-'object'=object?
-
-* _IteratorObject
-
-+member_type="iterator_object"
-'iterator' 'object' ';'
-
-* OptionalIteratorInterface
-
-'=' identifier="value_name"
-?
 
 * OperationRest
 
@@ -508,16 +481,32 @@ _Name
 '...'=variadic?
 ?
 
-* ExceptionMember
+* Iterable
 
-Const
+'iterable'="member_type" '<' Type=type1 OptionalType '>' ';'
 |
-ExceptionField
+'legacyiterable'="member_type" '<' Type=type1 '>' ';'
 
-* ExceptionField
+* OptionalType
 
-+member_type="field"
-Type _Name ';'
+',' Type=type2
+?
+
+* ReadWriteMaplike
+
+MaplikeRest
+
+* ReadWriteSetlike
+
+SetlikeRest
+
+* MaplikeRest
+
+'maplike'="member_type" '<' Type=type1 ',' Type=type2 '>' ';'
+
+* SetlikeRest
+
+'setlike'="member_type" '<' Type=type1 '>' ';'
 
 * ExtendedAttributeList
 

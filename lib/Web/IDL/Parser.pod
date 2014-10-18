@@ -71,8 +71,8 @@ for the definition appears.
 
 =item definition_name
 
-Type of the definition: C<interface>, C<class>, C<exception>,
-C<dictionary>, C<enum>, or C<callback>.
+Type of the definition: C<interface>, C<class>, C<dictionary>,
+C<enum>, or C<callback>.
 
 Note that the C<definition_name> for a C<callback interface> is
 C<interface>.
@@ -133,7 +133,8 @@ for the member appears.
 =item member_type
 
 The type of the member: C<attribute>, C<operation>, C<const>,
-C<field>, or C<dictionary_member>.
+C<serializer>, C<iterable>, C<legacyiterable>, C<maplike>, C<setlike>,
+or C<dictionary_member>.
 
 =item name
 
@@ -183,6 +184,15 @@ The serialization pattern (list) of the member, if applicable.
 =item arguments
 
 The array reference of the arguments for the member, if applicable.
+
+=item type1
+
+=item type2
+
+The type(s) specified in the member, in an C<iterable> or similar kind
+of member, if any.  If specified, the value is a hash reference whose
+key/value pairs are the type key/value pairs whose target is the first
+or second type of the member.
 
 =item extended_attributes
 
