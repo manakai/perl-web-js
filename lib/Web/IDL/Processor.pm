@@ -562,8 +562,6 @@ sub _extended_attributes ($$$$$) {
         }
       } elsif (defined $attr->{value_names}) {
         $args_type = @{$attr->{value_names}} == 1 ? 'id' : 'id_list';
-      } elsif (defined $attr->{value_types}) {
-        $args_type = 'pair';
       }
       unless ($Web::IDL::_Defs->{xattr_args}->{$attr->{name}}->{$args_type}) {
         $self->onerror->(type => 'webidl:bad args',

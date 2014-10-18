@@ -864,12 +864,6 @@ $Web::IDL::_Defs = {
                                                             [
                                                               {
                                                                 "type" => "rule",
-                                                                "value" => "ExtendedAttributeTypePair"
-                                                              }
-                                                            ],
-                                                            [
-                                                              {
-                                                                "type" => "rule",
                                                                 "value" => "ExtendedAttributeNamedArgList"
                                                               }
                                                             ],
@@ -1127,39 +1121,6 @@ $Web::IDL::_Defs = {
                                                                 ]
                                                               ]
                                                 },
-                       "ExtendedAttributeTypePair" => {
-                                                      "patterns" => [
-                                                                    [
-                                                                      {
-                                                                        "type" => "rule",
-                                                                        "value" => "_IDInSpecDirective"
-                                                                      },
-                                                                      {
-                                                                        "set_value" => "name",
-                                                                        "type" => "identifier"
-                                                                      },
-                                                                      {
-                                                                        "type" => "("
-                                                                      },
-                                                                      {
-                                                                        "append" => "value_types",
-                                                                        "type" => "rule",
-                                                                        "value" => "Type"
-                                                                      },
-                                                                      {
-                                                                        "type" => ","
-                                                                      },
-                                                                      {
-                                                                        "append" => "value_types",
-                                                                        "type" => "rule",
-                                                                        "value" => "Type"
-                                                                      },
-                                                                      {
-                                                                        "type" => ")"
-                                                                      }
-                                                                    ]
-                                                                  ]
-                                                    },
                        "ExtendedAttributes" => {
                                                "can_be_empty" => 1,
                                                "patterns" => [
