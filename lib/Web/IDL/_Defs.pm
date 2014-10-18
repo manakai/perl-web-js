@@ -3474,24 +3474,6 @@ $Web::IDL::_Defs = {
                                        "toJSON" => 1,
                                        "toString" => 1
                                      },
-                        "iterable" => {
-                                      "entries" => 1,
-                                      "keys" => 1,
-                                      "values" => 1
-                                    },
-                        "legacyiterable" => {
-                                            "entries" => 1,
-                                            "keys" => 1,
-                                            "values" => 1
-                                          },
-                        "maplike" => {
-                                     "entries" => 1,
-                                     "forEach" => 1,
-                                     "get" => 1,
-                                     "has" => 1,
-                                     "keys" => 1,
-                                     "values" => 1
-                                   },
                         "operation" => {
                                        "constructor" => 1,
                                        "iterator" => 1,
@@ -3511,13 +3493,6 @@ $Web::IDL::_Defs = {
                                                "toJSON" => 1,
                                                "toString" => 1
                                              },
-                        "setlike" => {
-                                     "entries" => 1,
-                                     "forEach" => 1,
-                                     "has" => 1,
-                                     "keys" => 1,
-                                     "values" => 1
-                                   },
                         "static_attribute" => {
                                               "constructor" => 1,
                                               "iterator" => 1,
