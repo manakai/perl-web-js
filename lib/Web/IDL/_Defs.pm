@@ -42,9 +42,6 @@ $Web::IDL::_Defs = {
                                                      "Clamp" => 1,
                                                      "EnforceRange" => 1
                                                    },
-                              "exception" => {
-                                             "NoInterfaceObject" => 1
-                                           },
                               "interface" => {
                                              "ArrayClass" => 1,
                                              "Constructor" => 1,
@@ -57,9 +54,12 @@ $Web::IDL::_Defs = {
                                              "PrimaryGlobal" => 1,
                                              "Unforgeable" => 1
                                            },
-                              "iterator" => {
+                              "iterable" => {
                                             "Exposed" => 1
                                           },
+                              "legacyiterable" => {
+                                                  "Exposed" => 1
+                                                },
                               "operation" => {
                                              "Exposed" => 1,
                                              "NewObject" => 1,
@@ -314,20 +314,6 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
-                       "Attribute" => {
-                                      "patterns" => [
-                                                    [
-                                                      {
-                                                        "type" => "rule",
-                                                        "value" => "Inherit"
-                                                      },
-                                                      {
-                                                        "type" => "rule",
-                                                        "value" => "AttributeRest"
-                                                      }
-                                                    ]
-                                                  ]
-                                    },
                        "AttributeName" => {
                                           "patterns" => [
                                                         [
@@ -354,40 +340,6 @@ $Web::IDL::_Defs = {
                                                                ]
                                                              ]
                                                },
-                       "AttributeOrOperationOrIterator" => {
-                                                           "patterns" => [
-                                                                         [
-                                                                           {
-                                                                             "type" => "rule",
-                                                                             "value" => "Serializer"
-                                                                           }
-                                                                         ],
-                                                                         [
-                                                                           {
-                                                                             "type" => "rule",
-                                                                             "value" => "Stringifier"
-                                                                           }
-                                                                         ],
-                                                                         [
-                                                                           {
-                                                                             "type" => "rule",
-                                                                             "value" => "StaticMember"
-                                                                           }
-                                                                         ],
-                                                                         [
-                                                                           {
-                                                                             "type" => "rule",
-                                                                             "value" => "Attribute"
-                                                                           }
-                                                                         ],
-                                                                         [
-                                                                           {
-                                                                             "type" => "rule",
-                                                                             "value" => "OperationOrIterator"
-                                                                           }
-                                                                         ]
-                                                                       ]
-                                                         },
                        "AttributeRest" => {
                                           "patterns" => [
                                                         [
@@ -707,12 +659,6 @@ $Web::IDL::_Defs = {
                                                      [
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "Exception"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "type" => "rule",
                                                          "value" => "Enum"
                                                        }
                                                      ],
@@ -907,88 +853,6 @@ $Web::IDL::_Defs = {
                                                               ]
                                                             ]
                                               },
-                       "Exception" => {
-                                      "patterns" => [
-                                                    [
-                                                      {
-                                                        "set_type" => "definition_type",
-                                                        "type" => "exception"
-                                                      },
-                                                      {
-                                                        "type" => "rule",
-                                                        "value" => "_Name"
-                                                      },
-                                                      {
-                                                        "type" => "rule",
-                                                        "value" => "Inheritance"
-                                                      },
-                                                      {
-                                                        "type" => "{"
-                                                      },
-                                                      {
-                                                        "type" => "rule",
-                                                        "value" => "ExceptionMembers"
-                                                      },
-                                                      {
-                                                        "type" => "}"
-                                                      },
-                                                      {
-                                                        "type" => ";"
-                                                      }
-                                                    ]
-                                                  ]
-                                    },
-                       "ExceptionField" => {
-                                           "patterns" => [
-                                                         [
-                                                           {
-                                                             "type" => "rule",
-                                                             "value" => "Type"
-                                                           },
-                                                           {
-                                                             "type" => "rule",
-                                                             "value" => "_Name"
-                                                           },
-                                                           {
-                                                             "type" => ";"
-                                                           }
-                                                         ]
-                                                       ],
-                                           "set_fields" => [
-                                                           [
-                                                             "member_type",
-                                                             "field"
-                                                           ]
-                                                         ]
-                                         },
-                       "ExceptionMember" => {
-                                            "patterns" => [
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "Const"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "ExceptionField"
-                                                            }
-                                                          ]
-                                                        ]
-                                          },
-                       "ExceptionMembers" => {
-                                             "patterns" => [
-                                                           [
-                                                             {
-                                                               "append" => "members",
-                                                               "multiple" => 1,
-                                                               "type" => "rule",
-                                                               "value" => "_ExceptionMember"
-                                                             }
-                                                           ]
-                                                         ]
-                                           },
                        "ExtendedAttribute" => {
                                               "patterns" => [
                                                             [
@@ -1509,7 +1373,55 @@ $Web::IDL::_Defs = {
                                                           [
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "AttributeOrOperationOrIterator"
+                                                              "value" => "Operation"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "Serializer"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "Stringifier"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "StaticMember"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "Iterable"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "ReadonlyMember"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "ReadWriteAttribute"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "ReadWriteMaplike"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "ReadWriteSetlike"
                                                             }
                                                           ]
                                                         ]
@@ -1526,29 +1438,86 @@ $Web::IDL::_Defs = {
                                                            ]
                                                          ]
                                            },
-                       "IteratorRest" => {
-                                         "patterns" => [
-                                                       [
-                                                         {
-                                                           "set_type" => "member_type",
-                                                           "type" => "iterator"
-                                                         },
-                                                         {
-                                                           "type" => "rule",
-                                                           "value" => "OptionalIteratorInterface"
-                                                         },
-                                                         {
-                                                           "type" => ";"
-                                                         }
-                                                       ],
-                                                       [
-                                                         {
-                                                           "type" => "rule",
-                                                           "value" => "_IteratorObject"
-                                                         }
-                                                       ]
-                                                     ]
-                                       },
+                       "Iterable" => {
+                                     "patterns" => [
+                                                   [
+                                                     {
+                                                       "set_type" => "member_type",
+                                                       "type" => "iterable"
+                                                     },
+                                                     {
+                                                       "type" => "<"
+                                                     },
+                                                     {
+                                                       "set" => "type1",
+                                                       "type" => "rule",
+                                                       "value" => "Type"
+                                                     },
+                                                     {
+                                                       "type" => "rule",
+                                                       "value" => "OptionalType"
+                                                     },
+                                                     {
+                                                       "type" => ">"
+                                                     },
+                                                     {
+                                                       "type" => ";"
+                                                     }
+                                                   ],
+                                                   [
+                                                     {
+                                                       "set_type" => "member_type",
+                                                       "type" => "legacyiterable"
+                                                     },
+                                                     {
+                                                       "type" => "<"
+                                                     },
+                                                     {
+                                                       "set" => "type1",
+                                                       "type" => "rule",
+                                                       "value" => "Type"
+                                                     },
+                                                     {
+                                                       "type" => ">"
+                                                     },
+                                                     {
+                                                       "type" => ";"
+                                                     }
+                                                   ]
+                                                 ]
+                                   },
+                       "MaplikeRest" => {
+                                        "patterns" => [
+                                                      [
+                                                        {
+                                                          "set_type" => "member_type",
+                                                          "type" => "maplike"
+                                                        },
+                                                        {
+                                                          "type" => "<"
+                                                        },
+                                                        {
+                                                          "set" => "type1",
+                                                          "type" => "rule",
+                                                          "value" => "Type"
+                                                        },
+                                                        {
+                                                          "type" => ","
+                                                        },
+                                                        {
+                                                          "set" => "type2",
+                                                          "type" => "rule",
+                                                          "value" => "Type"
+                                                        },
+                                                        {
+                                                          "type" => ">"
+                                                        },
+                                                        {
+                                                          "type" => ";"
+                                                        }
+                                                      ]
+                                                    ]
+                                      },
                        "NonAnyType" => {
                                        "patterns" => [
                                                      [
@@ -1707,58 +1676,26 @@ $Web::IDL::_Defs = {
                                                ]
                                              ]
                                },
-                       "OperationIteratorInterfaceOrObject" => {
-                                                               "patterns" => [
-                                                                             [
-                                                                               {
-                                                                                 "type" => "rule",
-                                                                                 "value" => "OptionalIteratorInterface"
-                                                                               }
-                                                                             ],
-                                                                             [
-                                                                               {
-                                                                                 "set_true" => "object",
-                                                                                 "type" => "object"
-                                                                               }
-                                                                             ]
-                                                                           ]
-                                                             },
-                       "OperationOrIterator" => {
-                                                "patterns" => [
-                                                              [
-                                                                {
-                                                                  "type" => "rule",
-                                                                  "value" => "ReturnType"
-                                                                },
-                                                                {
-                                                                  "type" => "rule",
-                                                                  "value" => "OperationOrIteratorRest"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "type" => "rule",
-                                                                  "value" => "SpecialOperation"
-                                                                }
-                                                              ]
-                                                            ]
-                                              },
-                       "OperationOrIteratorRest" => {
-                                                    "patterns" => [
-                                                                  [
-                                                                    {
-                                                                      "type" => "rule",
-                                                                      "value" => "IteratorRest"
-                                                                    }
-                                                                  ],
-                                                                  [
-                                                                    {
-                                                                      "type" => "rule",
-                                                                      "value" => "OperationRest"
-                                                                    }
-                                                                  ]
-                                                                ]
-                                                  },
+                       "Operation" => {
+                                      "patterns" => [
+                                                    [
+                                                      {
+                                                        "type" => "rule",
+                                                        "value" => "ReturnType"
+                                                      },
+                                                      {
+                                                        "type" => "rule",
+                                                        "value" => "OperationRest"
+                                                      }
+                                                    ],
+                                                    [
+                                                      {
+                                                        "type" => "rule",
+                                                        "value" => "SpecialOperation"
+                                                      }
+                                                    ]
+                                                  ]
+                                    },
                        "OperationRest" => {
                                           "patterns" => [
                                                         [
@@ -1799,20 +1736,6 @@ $Web::IDL::_Defs = {
                                                              ]
                                                            ]
                                              },
-                       "OptionalIteratorInterface" => {
-                                                      "can_be_empty" => 1,
-                                                      "patterns" => [
-                                                                    [
-                                                                      {
-                                                                        "type" => "="
-                                                                      },
-                                                                      {
-                                                                        "set_value" => "value_name",
-                                                                        "type" => "identifier"
-                                                                      }
-                                                                    ]
-                                                                  ]
-                                                    },
                        "OptionalLong" => {
                                          "can_be_empty" => 1,
                                          "patterns" => [
@@ -1876,6 +1799,21 @@ $Web::IDL::_Defs = {
                                                                      ]
                                                                    ]
                                                      },
+                       "OptionalType" => {
+                                         "can_be_empty" => 1,
+                                         "patterns" => [
+                                                       [
+                                                         {
+                                                           "type" => ","
+                                                         },
+                                                         {
+                                                           "set" => "type2",
+                                                           "type" => "rule",
+                                                           "value" => "Type"
+                                                         }
+                                                       ]
+                                                     ]
+                                       },
                        "Partial" => {
                                     "patterns" => [
                                                   [
@@ -2025,6 +1963,86 @@ $Web::IDL::_Defs = {
                                                    ]
                                                  ]
                                    },
+                       "ReadWriteAttribute" => {
+                                               "patterns" => [
+                                                             [
+                                                               {
+                                                                 "set_true" => "inherit",
+                                                                 "type" => "inherit"
+                                                               },
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "ReadOnly"
+                                                               },
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "AttributeRest"
+                                                               }
+                                                             ],
+                                                             [
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "AttributeRest"
+                                                               }
+                                                             ]
+                                                           ]
+                                             },
+                       "ReadWriteMaplike" => {
+                                             "patterns" => [
+                                                           [
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "MaplikeRest"
+                                                             }
+                                                           ]
+                                                         ]
+                                           },
+                       "ReadWriteSetlike" => {
+                                             "patterns" => [
+                                                           [
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "SetlikeRest"
+                                                             }
+                                                           ]
+                                                         ]
+                                           },
+                       "ReadonlyMember" => {
+                                           "patterns" => [
+                                                         [
+                                                           {
+                                                             "set_true" => "readonly",
+                                                             "type" => "readonly"
+                                                           },
+                                                           {
+                                                             "type" => "rule",
+                                                             "value" => "ReadonlyMemberRest"
+                                                           }
+                                                         ]
+                                                       ]
+                                         },
+                       "ReadonlyMemberRest" => {
+                                               "patterns" => [
+                                                             [
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "AttributeRest"
+                                                               }
+                                                             ],
+                                                             [
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "MaplikeRest"
+                                                               }
+                                                             ],
+                                                             [
+                                                               {
+                                                                 "type" => "rule",
+                                                                 "value" => "SetlikeRest"
+                                                               }
+                                                             ]
+                                                           ]
+                                             },
                        "Required" => {
                                      "can_be_empty" => 1,
                                      "patterns" => [
@@ -2206,6 +2224,30 @@ $Web::IDL::_Defs = {
                                                          ]
                                                        ]
                                          },
+                       "SetlikeRest" => {
+                                        "patterns" => [
+                                                      [
+                                                        {
+                                                          "set_type" => "member_type",
+                                                          "type" => "setlike"
+                                                        },
+                                                        {
+                                                          "type" => "<"
+                                                        },
+                                                        {
+                                                          "set" => "type1",
+                                                          "type" => "rule",
+                                                          "value" => "Type"
+                                                        },
+                                                        {
+                                                          "type" => ">"
+                                                        },
+                                                        {
+                                                          "type" => ";"
+                                                        }
+                                                      ]
+                                                    ]
+                                      },
                        "SingleType" => {
                                        "patterns" => [
                                                      [
@@ -2853,21 +2895,6 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
-                       "_ExceptionMember" => {
-                                             "patterns" => [
-                                                           [
-                                                             {
-                                                               "type" => "rule",
-                                                               "value" => "ExtendedAttributeList"
-                                                             },
-                                                             {
-                                                               "type" => "rule",
-                                                               "value" => "ExceptionMember"
-                                                             }
-                                                           ]
-                                                         ],
-                                             "set_index" => 1
-                                           },
                        "_IDInSpecDirective" => {
                                                "can_be_empty" => 1,
                                                "patterns" => [
@@ -2946,27 +2973,6 @@ $Web::IDL::_Defs = {
                                                          ],
                                              "set_index" => 1
                                            },
-                       "_IteratorObject" => {
-                                            "patterns" => [
-                                                          [
-                                                            {
-                                                              "type" => "iterator"
-                                                            },
-                                                            {
-                                                              "type" => "object"
-                                                            },
-                                                            {
-                                                              "type" => ";"
-                                                            }
-                                                          ]
-                                                        ],
-                                            "set_fields" => [
-                                                            [
-                                                              "member_type",
-                                                              "iterator_object"
-                                                            ]
-                                                          ]
-                                          },
                        "_Long" => {
                                   "patterns" => [
                                                 [
@@ -3501,33 +3507,30 @@ $Web::IDL::_Defs = {
                                   "toJSON" => 1,
                                   "toString" => 1
                                 },
-                        "exception" => {
-                                       "Error" => 1,
-                                       "EvalError" => 1,
-                                       "RangeError" => 1,
-                                       "ReferenceError" => 1,
-                                       "SyntaxError" => 1,
-                                       "TypeError" => 1,
-                                       "URIError" => 1,
-                                       "constructor" => 1,
-                                       "iterator" => 1,
-                                       "toJSON" => 1,
-                                       "toString" => 1
-                                     },
-                        "field" => {
-                                   "constructor" => 1,
-                                   "iterator" => 1,
-                                   "message" => 1,
-                                   "name" => 1,
-                                   "toJSON" => 1,
-                                   "toString" => 1
-                                 },
                         "interface" => {
                                        "constructor" => 1,
                                        "iterator" => 1,
                                        "toJSON" => 1,
                                        "toString" => 1
                                      },
+                        "iterable" => {
+                                      "entries" => 1,
+                                      "keys" => 1,
+                                      "values" => 1
+                                    },
+                        "legacyiterable" => {
+                                            "entries" => 1,
+                                            "keys" => 1,
+                                            "values" => 1
+                                          },
+                        "maplike" => {
+                                     "entries" => 1,
+                                     "forEach" => 1,
+                                     "get" => 1,
+                                     "has" => 1,
+                                     "keys" => 1,
+                                     "values" => 1
+                                   },
                         "operation" => {
                                        "constructor" => 1,
                                        "iterator" => 1,
@@ -3547,6 +3550,13 @@ $Web::IDL::_Defs = {
                                                "toJSON" => 1,
                                                "toString" => 1
                                              },
+                        "setlike" => {
+                                     "entries" => 1,
+                                     "forEach" => 1,
+                                     "has" => 1,
+                                     "keys" => 1,
+                                     "values" => 1
+                                   },
                         "static_attribute" => {
                                               "constructor" => 1,
                                               "iterator" => 1,
