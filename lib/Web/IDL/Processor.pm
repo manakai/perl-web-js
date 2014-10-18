@@ -500,6 +500,7 @@ sub process_parsed_struct ($$$) {
                 }
 
                 # XXX warn if legacyiterable
+                # XXX reserved interface member
 
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
