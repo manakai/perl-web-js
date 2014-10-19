@@ -404,7 +404,7 @@ $Web::IDL::_Defs = {
                                                             [
                                                               {
                                                                 "set_type" => "type",
-                                                                "type" => "Int161Array"
+                                                                "type" => "Int16Array"
                                                               }
                                                             ],
                                                             [

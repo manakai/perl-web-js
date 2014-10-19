@@ -640,7 +640,7 @@ _ObsPromiseType=type_parameterized
 |
 'Int8Array'="type"
 |
-'Int161Array'="type"
+'Int16Array'="type"
 |
 'Int32Array'="type"
 |
