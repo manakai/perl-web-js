@@ -1,7 +1,7 @@
 Scalar::Util~1.41
 Capture::Tiny~0.25
 File::Spec~3.47
-JE~0.065
+JE~0.066
 Algorithm::Diff~1.1902
 Path::Tiny~0.059
 parent~0.228
