@@ -1993,13 +1993,13 @@ $Web::IDL::_Defs = {
                                                              [
                                                                {
                                                                  "type" => "rule",
-                                                                 "value" => "MaplikeRest"
+                                                                 "value" => "ReadWriteMaplike"
                                                                }
                                                              ],
                                                              [
                                                                {
                                                                  "type" => "rule",
-                                                                 "value" => "SetlikeRest"
+                                                                 "value" => "ReadWriteSetlike"
                                                                }
                                                              ]
                                                            ]
