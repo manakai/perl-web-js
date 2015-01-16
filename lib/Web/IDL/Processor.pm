@@ -602,14 +602,6 @@ sub _extended_attributes ($$$$$) {
         $dest->{$attr->{name}} = 1;
         # XXX SHOULD NOT be used
         next;
-      } elsif ($attr->{name} eq 'TreatNonCallableAsNull') {
-        $dest->{TreatNonObjectAsNull} = 1;
-        $self->onerror->(type => 'webidl:obsolete',
-                         value => $attr->{name},
-                         di => $di,
-                         index => $attr->{index},
-                         level => 'm');
-        next;
       } elsif ($attr->{name} eq 'NewObject') {
         if (not defined $src->{name}) {
           #
@@ -1533,7 +1525,7 @@ sub processed ($) {
 
 =head1 LICENSE
 
-Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2015 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
