@@ -3,7 +3,7 @@ Capture::Tiny~0.28
 File::Spec~3.47
 JE~0.066
 Algorithm::Diff~1.1903
-Path::Tiny~0.061
+Path::Tiny~0.065
 parent~0.228
 AnyEvent~7.08
 Term::ANSIColor~4.03
