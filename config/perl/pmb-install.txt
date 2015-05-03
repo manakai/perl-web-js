@@ -5,7 +5,7 @@ JE~0.066
 Algorithm::Diff~1.1903
 Path::Tiny~0.068
 parent~0.232
-AnyEvent~7.08
+AnyEvent~7.09
 Term::ANSIColor~4.03
 Exporter::Lite~0.06
 Data::Dumper~2.154
