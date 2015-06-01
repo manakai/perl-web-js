@@ -726,6 +726,7 @@ sub _extended_attributes ($$$$$) {
         }
         # XXX for dictionary, there MUST be Constructor
         # XXX exposure sets MUST be subset of consequential's exposure sets
+        # XXX exposure sets MUST be subset of super-interface's exposure set
         next;
       } elsif ($attr->{name} eq 'Unscopeable') {
         $dest->{Unscopeable} = 1;
@@ -1318,6 +1319,7 @@ sub end_processing ($) {
            ($_->{type}->[0] eq 'union' and
             $_->{type}->[1]->{has_dictionary}))) {
         if ($_->{optionality} eq 'required') {
+          # XXX allow required if the dictionary (or its ancestor) has required member
           $self->onerror->(type => 'webidl:bad optionality',
                            di => $di,
                            index => $index,
