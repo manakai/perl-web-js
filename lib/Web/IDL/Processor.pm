@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '5.0';
+our $VERSION = '6.0';
 use Web::IDL::_Defs;
 
 sub new ($) {
@@ -153,8 +153,7 @@ sub process_parsed_struct ($$$) {
             push @key, 'legacycaller' if $mem->{legacycaller};
             push @key, 'stringifier' if $mem->{stringifier};
             push @key, 'serializer' if $mem->{serializer};
-            if ($mem->{getter} or $mem->{setter} or
-                $mem->{creator} or $mem->{deleter}) {
+            if ($mem->{getter} or $mem->{setter} or $mem->{deleter}) {
               if (@{$mem->{arguments} or []} and
                   defined $mem->{arguments}->[0]->{type}) {
                 if ($mem->{arguments}->[0]->{type} eq 'unsigned long' and
@@ -162,7 +161,6 @@ sub process_parsed_struct ($$$) {
                     not defined $mem->{arguments}->[0]->{type_array}) {
                   push @key, 'indexed_getter' if $mem->{getter};
                   push @key, 'indexed_setter' if $mem->{setter};
-                  push @key, 'indexed_creator' if $mem->{creator};
                   if ($mem->{deleter}) {
                     $self->onerror->(type => 'webidl:bad args',
                                      di => $di,
@@ -175,7 +173,6 @@ sub process_parsed_struct ($$$) {
                          not defined $mem->{arguments}->[0]->{type_array}) {
                   push @key, 'named_getter' if $mem->{getter};
                   push @key, 'named_setter' if $mem->{setter};
-                  push @key, 'named_creator' if $mem->{creator};
                   push @key, 'named_deleter' if $mem->{deleter};
                 } else {
                   $self->onerror->(type => 'webidl:bad args',
@@ -630,6 +627,7 @@ sub _extended_attributes ($$$$$) {
         # XXX SHOULD NOT be used
         # XXX MUST NOT be used if there is any static operation
         # XXX MUST NOT be used on callback interface with no constant
+        # XXX Any super interface MUST have [NoInterfaceObject]
         next;
       } elsif ($attr->{name} eq 'OverrideBuiltins') {
         $dest->{$attr->{name}} = 1;
@@ -1015,8 +1013,7 @@ sub _overload_set ($$$;%) {
     } elsif ($args{special} eq 'getter' or
              $args{special} eq 'deleter') {
       $expected_length = 1;
-    } elsif ($args{special} eq 'setter' or
-             $args{special} eq 'creator') {
+    } elsif ($args{special} eq 'setter') {
       $expected_length = 2;
     } # $args{special}
     if (defined $expected_length and not $n == $expected_length) {

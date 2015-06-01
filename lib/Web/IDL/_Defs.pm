@@ -18,7 +18,6 @@ $Web::IDL::_Defs = {
                                              "Unscopeable" => 1
                                            },
                               "callback" => {
-                                            "TreatNonCallableAsNull" => 1,
                                             "TreatNonObjectAsNull" => 1
                                           },
                               "callback_interface" => {
@@ -231,12 +230,6 @@ $Web::IDL::_Defs = {
                                                                 {
                                                                   "set_type" => "name",
                                                                   "type" => "setter"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "creator"
                                                                 }
                                                               ],
                                                               [
@@ -2245,12 +2238,6 @@ $Web::IDL::_Defs = {
                                                   ],
                                                   [
                                                     {
-                                                      "set_true" => "creator",
-                                                      "type" => "creator"
-                                                    }
-                                                  ],
-                                                  [
-                                                    {
                                                       "set_true" => "deleter",
                                                       "type" => "deleter"
                                                     }
@@ -2321,37 +2308,6 @@ $Web::IDL::_Defs = {
                                                     {
                                                       "set_true" => "setter",
                                                       "type" => "setter"
-                                                    }
-                                                  ],
-                                                  [
-                                                    {
-                                                      "type" => "["
-                                                    },
-                                                    {
-                                                      "type" => "other",
-                                                      "value" => "*"
-                                                    },
-                                                    {
-                                                      "type" => "identifier",
-                                                      "value" => "id"
-                                                    },
-                                                    {
-                                                      "type" => "="
-                                                    },
-                                                    {
-                                                      "set_value" => "creator_id",
-                                                      "type" => "string"
-                                                    },
-                                                    {
-                                                      "type" => "other",
-                                                      "value" => "*"
-                                                    },
-                                                    {
-                                                      "type" => "]"
-                                                    },
-                                                    {
-                                                      "set_true" => "creator",
-                                                      "type" => "creator"
                                                     }
                                                   ],
                                                   [
@@ -3311,9 +3267,6 @@ $Web::IDL::_Defs = {
                               "const" => {
                                          "argument_name" => 1
                                        },
-                              "creator" => {
-                                           "argument_name" => 1
-                                         },
                               "deleter" => {
                                            "argument_name" => 1
                                          },
@@ -3570,9 +3523,6 @@ $Web::IDL::_Defs = {
                           "SameObject" => {
                                           "no" => 1
                                         },
-                          "TreatNonCallableAsNull" => {
-                                                      "no" => 1
-                                                    },
                           "TreatNonObjectAsNull" => {
                                                     "no" => 1
                                                   },

@@ -410,8 +410,6 @@ Special Specials
 |
 'setter'=setter?
 |
-'creator'=creator?
-|
 'deleter'=deleter?
 |
 'legacycaller'=legacycaller?
@@ -423,9 +421,6 @@ Special Specials
 |
 '[' other:'*' identifier:'id' '=' string="setter_id" other:'*' ']'
 'setter'=setter?
-|
-'[' other:'*' identifier:'id' '=' string="creator_id" other:'*' ']'
-'creator'=creator?
 |
 '[' other:'*' identifier:'id' '=' string="deleter_id" other:'*' ']'
 'deleter'=deleter?
