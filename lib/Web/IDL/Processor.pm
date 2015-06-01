@@ -163,7 +163,13 @@ sub process_parsed_struct ($$$) {
                   push @key, 'indexed_getter' if $mem->{getter};
                   push @key, 'indexed_setter' if $mem->{setter};
                   push @key, 'indexed_creator' if $mem->{creator};
-                  push @key, 'indexed_deleter' if $mem->{deleter};
+                  if ($mem->{deleter}) {
+                    $self->onerror->(type => 'webidl:bad args',
+                                     di => $di,
+                                     index => $mem->{index},
+                                     value => $mem->{name},
+                                     level => 'm');
+                  }
                 } elsif ($mem->{arguments}->[0]->{type} eq 'DOMString' and
                          not $mem->{arguments}->[0]->{type_nullable} and
                          not defined $mem->{arguments}->[0]->{type_array}) {
