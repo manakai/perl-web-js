@@ -142,7 +142,7 @@ The name of the member, if applicable.
 
 =item readonly, inherit, static
 
-=item creator, getter, setter, deleter, stringifier, serializer
+=item getter, setter, deleter, stringifier, serializer
 
 =item required
 
@@ -366,11 +366,6 @@ This implementation also supports C<Promise> type (without following
 C<< <T> >> part) for backward compatibility.  It is interpreted as C<<
 Promise<any> >>.  This will be removed in due course.
 
-This implementation also supports old syntax for extended attributes
-which take an identifier list
-<https://github.com/heycam/webidl/commit/0527ec461492849d310257c50a7d2c54b4632b91>,
-for backward compatibility.  This will be removed in due course.
-
 In this implementation, extended attributes MUST be in one of six
 forms shown in the Web IDL specification.
 
@@ -380,7 +375,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2015 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

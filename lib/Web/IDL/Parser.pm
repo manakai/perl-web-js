@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '2.0';
+our $VERSION = '3.0';
 use Web::IDL::_Defs;
 
 sub new ($) {
@@ -264,7 +264,7 @@ sub parsed_struct ($) {
 
 =head1 LICENSE
 
-Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2015 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
