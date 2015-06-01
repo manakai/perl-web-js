@@ -421,7 +421,8 @@ sub process_parsed_struct ($$$) {
                                        level => 'm');
                     } else {
                       if (not ref $mem_props->{type} and
-                          $mem_props->{type} eq 'DOMString') {
+                          ($mem_props->{type} eq 'DOMString' or
+                           $mem_props->{type} eq 'USVString')) {
                         #
                       } else {
                         $self->onerror->(type => 'webidl:bad type',
@@ -992,7 +993,7 @@ sub _overload_set ($$$;%) {
                          level => 'm');
       }
     } elsif ($args{special} eq 'stringifier') {
-      if (not ref $type and $type eq 'DOMString') {
+      if (not ref $type and $type eq 'DOMString') { # |USVString| not allowed
         #
       } else {
         $self->onerror->(type => 'webidl:bad type',
