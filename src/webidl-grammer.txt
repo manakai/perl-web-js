@@ -555,13 +555,13 @@ OtherOrComma ExtendedAttributeInner
 
 SingleType
 |
-UnionType TypeSuffix
+UnionType Null
 
 * SingleType
 
 NonAnyType
 |
-'any'="type" TypeSuffixStartingWithArray
+'any'="type"
 
 * UnionType
 
@@ -571,9 +571,7 @@ NonAnyType
 
 NonAnyType
 |
-UnionType TypeSuffix
-|
-'any'="type" _TypeArray=type_array
+UnionType Null
 
 * UnionMemberTypes
 
@@ -582,30 +580,30 @@ UnionType TypeSuffix
 
 * NonAnyType
 
-PrimitiveType TypeSuffix
+PrimitiveType Null
 |
-'ByteString'="type" TypeSuffix
+'ByteString'="type" Null
 |
-'DOMString'="type" TypeSuffix
+'DOMString'="type" Null
 |
-'USVString'="type" TypeSuffix
+'USVString'="type" Null
 |
 _IDInSpecDirectiveIgnored
-identifier="type_name" TypeSuffix
+identifier="type_name" Null
 |
 _SequenceType=type_parameterized Null
 |
-'object'="type" TypeSuffix
+'object'="type" Null
 |
-'Date'="type" TypeSuffix
+'Date'="type" Null
 |
-'RegExp'="type" TypeSuffix
+'RegExp'="type" Null
 |
-'Error'="type" TypeSuffix
+'Error'="type" Null
 |
-'DOMException'="type" TypeSuffix
+'DOMException'="type" Null
 |
-BufferRelatedType TypeSuffix
+BufferRelatedType Null
 |
 PromiseType=type_parameterized Null
 
@@ -623,7 +621,7 @@ _ObsPromiseType=type_parameterized
 * _ObsPromiseType
 
 ## Not in spec
-'Promise'="type_outer" TypeSuffix
+'Promise'="type_outer" Null
 
 +type="any"
 
@@ -744,22 +742,6 @@ _Long
 
 +type="unsigned long long"
 'unsigned' 'long' 'long'
-
-* TypeSuffix
-
-_TypeArray=type_array
-|
-'?'=type_nullable? TypeSuffixStartingWithArray
-?
-
-* TypeSuffixStartingWithArray
-
-_TypeArray=type_array
-?
-
-* _TypeArray
-
-'[' ']' TypeSuffix
 
 * Null
 

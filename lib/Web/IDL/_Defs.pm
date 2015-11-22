@@ -1481,7 +1481,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1491,7 +1491,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1501,7 +1501,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1511,7 +1511,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1525,7 +1525,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1546,7 +1546,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1556,7 +1556,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1566,7 +1566,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1576,7 +1576,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1586,7 +1586,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -1596,7 +1596,7 @@ $Web::IDL::_Defs = {
                                                        },
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "TypeSuffix"
+                                                         "value" => "Null"
                                                        }
                                                      ],
                                                      [
@@ -2214,10 +2214,6 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "set_type" => "type",
                                                          "type" => "any"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "TypeSuffixStartingWithArray"
                                                        }
                                                      ]
                                                    ]
@@ -2504,45 +2500,11 @@ $Web::IDL::_Defs = {
                                                  },
                                                  {
                                                    "type" => "rule",
-                                                   "value" => "TypeSuffix"
+                                                   "value" => "Null"
                                                  }
                                                ]
                                              ]
                                },
-                       "TypeSuffix" => {
-                                       "can_be_empty" => 1,
-                                       "patterns" => [
-                                                     [
-                                                       {
-                                                         "set" => "type_array",
-                                                         "type" => "rule",
-                                                         "value" => "_TypeArray"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_true" => "type_nullable",
-                                                         "type" => "?"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "TypeSuffixStartingWithArray"
-                                                       }
-                                                     ]
-                                                   ]
-                                     },
-                       "TypeSuffixStartingWithArray" => {
-                                                        "can_be_empty" => 1,
-                                                        "patterns" => [
-                                                                      [
-                                                                        {
-                                                                          "set" => "type_array",
-                                                                          "type" => "rule",
-                                                                          "value" => "_TypeArray"
-                                                                        }
-                                                                      ]
-                                                                    ]
-                                                      },
                        "Typedef" => {
                                     "patterns" => [
                                                   [
@@ -2579,18 +2541,7 @@ $Web::IDL::_Defs = {
                                                             },
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "TypeSuffix"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "set_type" => "type",
-                                                              "type" => "any"
-                                                            },
-                                                            {
-                                                              "set" => "type_array",
-                                                              "type" => "rule",
-                                                              "value" => "_TypeArray"
+                                                              "value" => "Null"
                                                             }
                                                           ]
                                                         ]
@@ -2942,7 +2893,7 @@ $Web::IDL::_Defs = {
                                                             },
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "TypeSuffix"
+                                                              "value" => "Null"
                                                             }
                                                           ]
                                                         ],
@@ -3116,22 +3067,6 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "set_value" => "super_name",
                                                          "type" => "identifier"
-                                                       }
-                                                     ]
-                                                   ]
-                                     },
-                       "_TypeArray" => {
-                                       "patterns" => [
-                                                     [
-                                                       {
-                                                         "type" => "["
-                                                       },
-                                                       {
-                                                         "type" => "]"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "TypeSuffix"
                                                        }
                                                      ]
                                                    ]
