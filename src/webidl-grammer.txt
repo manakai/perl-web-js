@@ -283,8 +283,6 @@ _IDInSpecDirective
 _IDInSpecDirective
 'serializer'="member_type" ';'
 
-## ';' is missing in spec
-
 * SerializationPattern
 
 '{' SerializationPatternMap=value_map '}'
@@ -479,8 +477,6 @@ _Name
 * Iterable
 
 'iterable'="member_type" '<' Type=type1 OptionalType '>' ';'
-|
-'legacyiterable'="member_type" '<' Type=type1 '>' ';'
 
 * OptionalType
 

@@ -478,7 +478,6 @@ sub process_parsed_struct ($$$) {
                 $self->_extended_attributes ($di, $mem => $mem_props, {});
               }
             } elsif ($mem->{member_type} eq 'iterable' or
-                     $mem->{member_type} eq 'legacyiterable' or
                      $mem->{member_type} eq 'maplike' or
                      $mem->{member_type} eq 'setlike') {
               if (defined $props->{iterable}) {
@@ -503,7 +502,6 @@ sub process_parsed_struct ($$$) {
                   $mem_props->{write} = 1 unless $mem->{readonly};
                 }
 
-                # XXX warn if legacyiterable
                 # XXX reserved interface member
 
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
@@ -701,7 +699,7 @@ sub _extended_attributes ($$$$$) {
           }
         }
         # XXX If partial interface, it MUST have named getter.
-        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, serializers, iterable, legacyiterable, maplike, setlike
+        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, serializers, iterable, maplike, setlike
         # XXX MUST NOT have named setter, creattor, deleter
         # XXX MUST NOT inherit interface with OverrideBuiltins
         # XXX MUST NOT inherit this interface

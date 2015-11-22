@@ -1419,26 +1419,6 @@ $Web::IDL::_Defs = {
                                                      {
                                                        "type" => ";"
                                                      }
-                                                   ],
-                                                   [
-                                                     {
-                                                       "set_type" => "member_type",
-                                                       "type" => "legacyiterable"
-                                                     },
-                                                     {
-                                                       "type" => "<"
-                                                     },
-                                                     {
-                                                       "set" => "type1",
-                                                       "type" => "rule",
-                                                       "value" => "Type"
-                                                     },
-                                                     {
-                                                       "type" => ">"
-                                                     },
-                                                     {
-                                                       "type" => ";"
-                                                     }
                                                    ]
                                                  ]
                                    },
