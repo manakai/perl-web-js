@@ -1616,6 +1616,17 @@ $Web::IDL::_Defs = {
                                                        {
                                                          "set" => "type_parameterized",
                                                          "type" => "rule",
+                                                         "value" => "_FrozenArrayType"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "Null"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set" => "type_parameterized",
+                                                         "type" => "rule",
                                                          "value" => "_ObsPromiseType"
                                                        }
                                                      ]
@@ -2765,6 +2776,26 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "_FrozenArrayType" => {
+                                             "patterns" => [
+                                                           [
+                                                             {
+                                                               "set_type" => "type_outer",
+                                                               "type" => "FrozenArray"
+                                                             },
+                                                             {
+                                                               "type" => "<"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "Type"
+                                                             },
+                                                             {
+                                                               "type" => ">"
+                                                             }
+                                                           ]
+                                                         ]
+                                           },
                        "_IDInSpecDirective" => {
                                                "can_be_empty" => 1,
                                                "patterns" => [
@@ -3177,6 +3208,7 @@ $Web::IDL::_Defs = {
                               "Error" => {},
                               "Float32Array" => {},
                               "Float64Array" => {},
+                              "FrozenArray" => {},
                               "Infinity" => {},
                               "Int16Array" => {},
                               "Int32Array" => {},

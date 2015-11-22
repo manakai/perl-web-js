@@ -606,6 +606,8 @@ _SequenceType=type_parameterized Null
 BufferRelatedType Null
 |
 PromiseType=type_parameterized Null
+|
+_FrozenArrayType=type_parameterized Null
 
 |
 _ObsPromiseType=type_parameterized
@@ -624,6 +626,10 @@ _ObsPromiseType=type_parameterized
 'Promise'="type_outer" Null
 
 +type="any"
+
+* _FrozenArrayType
+
+'FrozenArray'="type_outer" '<' Type '>'
 
 * BufferRelatedType
 
