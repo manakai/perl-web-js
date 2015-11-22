@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no warnings 'utf8';
 use warnings FATAL => 'recursion';
-our $VERSION = '6.0';
+our $VERSION = '7.0';
 use Web::IDL::_Defs;
 
 sub new ($) {
@@ -575,7 +575,8 @@ sub _extended_attributes ($$$$$) {
                          level => 'm');
       }
 
-      if ($attr->{name} eq 'ArrayClass') {
+      if ($attr->{name} eq 'ArrayClass' or
+          $attr->{name} eq 'LegacyArrayClass') {
         if (defined $src->{super_name}) {
           #
         } else {

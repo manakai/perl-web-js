@@ -25,6 +25,7 @@ $Web::IDL::_Defs = {
                                                       "Exposed" => 1,
                                                       "Global" => 1,
                                                       "ImplicitThis" => 1,
+                                                      "LegacyArrayClass" => 1,
                                                       "NoInterfaceObject" => 1,
                                                       "OverrideBuiltins" => 1,
                                                       "PrimaryGlobal" => 1,
@@ -47,6 +48,7 @@ $Web::IDL::_Defs = {
                                              "Exposed" => 1,
                                              "Global" => 1,
                                              "ImplicitThis" => 1,
+                                             "LegacyArrayClass" => 1,
                                              "NamedConstructor" => 1,
                                              "NoInterfaceObject" => 1,
                                              "OverrideBuiltins" => 1,
@@ -3428,6 +3430,9 @@ $Web::IDL::_Defs = {
                           "ImplicitThis" => {
                                             "no" => 1
                                           },
+                          "LegacyArrayClass" => {
+                                                "no" => 1
+                                              },
                           "LenientThis" => {
                                            "no" => 1
                                          },

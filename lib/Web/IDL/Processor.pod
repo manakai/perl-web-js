@@ -142,6 +142,9 @@ Web IDL "class"
 <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
 <http://dom.spec.whatwg.org/#elements>.
 
+Web IDL [ArrayClass]
+<https://github.com/heycam/webidl/commit/853137810af373668b8fd2e9418eaade05778e9b>.
+
 =back
 
 This implementation does not allow use of extended attributes not
