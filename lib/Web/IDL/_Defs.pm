@@ -58,9 +58,6 @@ $Web::IDL::_Defs = {
                               "iterable" => {
                                             "Exposed" => 1
                                           },
-                              "legacyiterable" => {
-                                                  "Exposed" => 1
-                                                },
                               "operation" => {
                                              "Exposed" => 1,
                                              "NewObject" => 1,
@@ -244,12 +241,6 @@ $Web::IDL::_Defs = {
                                                                 {
                                                                   "set_type" => "name",
                                                                   "type" => "interface"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "legacyiterable"
                                                                 }
                                                               ],
                                                               [
@@ -3249,9 +3240,6 @@ $Web::IDL::_Defs = {
                               "legacycaller" => {
                                                 "argument_name" => 1
                                               },
-                              "legacyiterable" => {
-                                                  "argument_name" => 1
-                                                },
                               "long" => {},
                               "maplike" => {
                                            "argument_name" => 1
