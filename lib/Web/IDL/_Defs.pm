@@ -49,6 +49,7 @@ $Web::IDL::_Defs = {
                                              "Global" => 1,
                                              "ImplicitThis" => 1,
                                              "LegacyArrayClass" => 1,
+                                             "LegacyUnenumerableNamedProperties" => 1,
                                              "NamedConstructor" => 1,
                                              "NoInterfaceObject" => 1,
                                              "OverrideBuiltins" => 1,
@@ -3433,6 +3434,9 @@ $Web::IDL::_Defs = {
                           "LegacyArrayClass" => {
                                                 "no" => 1
                                               },
+                          "LegacyUnenumerableNamedProperties" => {
+                                                                 "no" => 1
+                                                               },
                           "LenientThis" => {
                                            "no" => 1
                                          },

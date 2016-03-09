@@ -703,6 +703,7 @@ sub _extended_attributes ($$$$$) {
         # XXX MUST NOT have named setter, creattor, deleter
         # XXX MUST NOT inherit interface with OverrideBuiltins
         # XXX MUST NOT inherit this interface
+        # XXX iterable restrictions
         next;
       } elsif ($attr->{name} eq 'Exposed') {
         if (defined $src->{member_type}) { # member
@@ -729,6 +730,10 @@ sub _extended_attributes ($$$$$) {
         next;
       } elsif ($attr->{name} eq 'Unscopeable') {
         $dest->{Unscopeable} = 1;
+        next;
+      } elsif ($attr->{name} eq 'LegacyUnenumerableNamedProperties') {
+        $dest->{LegacyUnenumerableNamedProperties} = 1;
+        # XXX the interface MUST have a named getter
         next;
       } # $attr->{name}
     }
@@ -1530,7 +1535,7 @@ sub processed ($) {
 
 =head1 LICENSE
 
-Copyright 2014-2015 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

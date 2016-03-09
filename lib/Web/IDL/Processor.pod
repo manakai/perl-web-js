@@ -104,6 +104,8 @@ describing the declaration.
 
 =back
 
+XXX
+
 =over 4
 
 =item required (boolean)
@@ -130,17 +132,28 @@ C<legacyiterable> declaration.
 
 =back
 
+XXX
+
+=over 4
+
+=item LegacyUnenumerableNamedProperties (boolean)
+
+Whether the interface is annotated with the
+[LegacyUnenumerableNamedProperties] extended attribute or not.
+
+=back
+
 =head1 SPECIFICATIONS
 
 =over 4
 
 =item WEBIDL
 
-Web IDL <http://heycam.github.io/webidl/>.
+Web IDL <https://heycam.github.io/webidl/>.
 
 Web IDL "class"
 <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
-<http://dom.spec.whatwg.org/#elements>.
+<https://dom.spec.whatwg.org/#elements>.
 
 Web IDL [ArrayClass]
 <https://github.com/heycam/webidl/commit/853137810af373668b8fd2e9418eaade05778e9b>.
@@ -156,7 +169,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2014-2015 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

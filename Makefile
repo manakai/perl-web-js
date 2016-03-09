@@ -41,6 +41,8 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 
 ## ------ Build ------
 
+data: generated
+
 generated: lib/Web/IDL/_Defs.pm
 
 lib/Web/IDL/_Defs.pm: bin/generate-webidl-defs.pl local/webidl-grammer.json \
