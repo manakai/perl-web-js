@@ -1,6 +1,6 @@
 Scalar::Util~1.44
 AnyEvent~7.12
-Term::ANSIColor~4.04
+Term::ANSIColor~4.05
 Capture::Tiny~0.36
 Data::Dumper~2.154
 JE~0.066
