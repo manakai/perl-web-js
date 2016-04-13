@@ -15,7 +15,7 @@ $Web::IDL::_Defs = {
                                              "SameObject" => 1,
                                              "TreatNullAs" => 1,
                                              "Unforgeable" => 1,
-                                             "Unscopeable" => 1
+                                             "Unscopable" => 1
                                            },
                               "callback" => {
                                             "TreatNonObjectAsNull" => 1
@@ -64,7 +64,7 @@ $Web::IDL::_Defs = {
                                              "NewObject" => 1,
                                              "TreatNullAs" => 1,
                                              "Unforgeable" => 1,
-                                             "Unscopeable" => 1
+                                             "Unscopable" => 1
                                            },
                               "partial_interface" => {
                                                      "Exposed" => 1,
@@ -3476,9 +3476,9 @@ $Web::IDL::_Defs = {
                           "Unforgeable" => {
                                            "no" => 1
                                          },
-                          "Unscopeable" => {
-                                           "no" => 1
-                                         }
+                          "Unscopable" => {
+                                          "no" => 1
+                                        }
                         },
           "xattr_disallowed" => [
                                 [

@@ -141,6 +141,11 @@ XXX
 Whether the interface is annotated with the
 [LegacyUnenumerableNamedProperties] extended attribute or not.
 
+=item Unscopable (boolean)
+
+Whether the member is annotated with the [Unscopable] extended
+attribute or not.
+
 =back
 
 =head1 SPECIFICATIONS

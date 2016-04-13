@@ -254,9 +254,9 @@ sub process_parsed_struct ($$$) {
               for my $key (qw(obsolete spec id)) {
                 $mem->{$key} = delete $v->{$key} if defined $v->{$key};
               }
-              if (delete $v->{Unscopeable}) {
+              if (delete $v->{Unscopable}) {
                 # XXX warn if inconsistent
-                $mem->{Unscopeable} = 1;
+                $mem->{Unscopable} = 1;
               }
             } # $v
             $mem->{id} = $id if defined $id;
@@ -306,9 +306,9 @@ sub process_parsed_struct ($$$) {
                     
                   }
 
-                  if (not defined $mem->{name} and $mem->{Unscopeable}) {
+                  if (not defined $mem->{name} and $mem->{Unscopable}) {
                     $self->onerror->(type => 'webidl:not allowed',
-                                     value => '[Unscopeable]',
+                                     value => '[Unscopable]',
                                      di => $di,
                                      index => $mem->{index},
                                      level => 'm');
@@ -345,7 +345,7 @@ sub process_parsed_struct ($$$) {
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
                   for (qw(overload_set Unforgeable _exposed
-                          obsolete spec id Unscopeable)) {
+                          obsolete spec id Unscopable)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
                 }
@@ -728,8 +728,8 @@ sub _extended_attributes ($$$$$) {
         # XXX exposure sets MUST be subset of consequential's exposure sets
         # XXX exposure sets MUST be subset of super-interface's exposure set
         next;
-      } elsif ($attr->{name} eq 'Unscopeable') {
-        $dest->{Unscopeable} = 1;
+      } elsif ($attr->{name} eq 'Unscopable') {
+        $dest->{Unscopable} = 1;
         next;
       } elsif ($attr->{name} eq 'LegacyUnenumerableNamedProperties') {
         $dest->{LegacyUnenumerableNamedProperties} = 1;
