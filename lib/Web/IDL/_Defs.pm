@@ -13,6 +13,7 @@ $Web::IDL::_Defs = {
                                              "PutForwards" => 1,
                                              "Replaceable" => 1,
                                              "SameObject" => 1,
+                                             "SecureContext" => 1,
                                              "TreatNullAs" => 1,
                                              "Unforgeable" => 1,
                                              "Unscopable" => 1
@@ -29,14 +30,17 @@ $Web::IDL::_Defs = {
                                                       "NoInterfaceObject" => 1,
                                                       "OverrideBuiltins" => 1,
                                                       "PrimaryGlobal" => 1,
+                                                      "SecureContext" => 1,
                                                       "Unforgeable" => 1
                                                     },
                               "const" => {
-                                         "Exposed" => 1
+                                         "Exposed" => 1,
+                                         "SecureContext" => 1
                                        },
                               "dictionary" => {
                                               "Constructor" => 1,
-                                              "Exposed" => 1
+                                              "Exposed" => 1,
+                                              "SecureContext" => 1
                                             },
                               "dictionary_member" => {
                                                      "Clamp" => 1,
@@ -54,14 +58,20 @@ $Web::IDL::_Defs = {
                                              "NoInterfaceObject" => 1,
                                              "OverrideBuiltins" => 1,
                                              "PrimaryGlobal" => 1,
+                                             "SecureContext" => 1,
                                              "Unforgeable" => 1
                                            },
                               "iterable" => {
-                                            "Exposed" => 1
+                                            "Exposed" => 1,
+                                            "SecureContext" => 1
                                           },
+                              "maplike" => {
+                                           "SecureContext" => 1
+                                         },
                               "operation" => {
                                              "Exposed" => 1,
                                              "NewObject" => 1,
+                                             "SecureContext" => 1,
                                              "TreatNullAs" => 1,
                                              "Unforgeable" => 1,
                                              "Unscopable" => 1
@@ -71,17 +81,26 @@ $Web::IDL::_Defs = {
                                                      "Global" => 1,
                                                      "OverrideBuiltins" => 1,
                                                      "PrimaryGlobal" => 1,
+                                                     "SecureContext" => 1,
                                                      "Unforgeable" => 1
                                                    },
+                              "serializer" => {
+                                              "SecureContext" => 1
+                                            },
+                              "setlike" => {
+                                           "SecureContext" => 1
+                                         },
                               "static_attribute" => {
                                                     "Clamp" => 1,
                                                     "Exposed" => 1,
                                                     "SameObject" => 1,
+                                                    "SecureContext" => 1,
                                                     "TreatNullAs" => 1
                                                   },
                               "static_operation" => {
                                                     "Exposed" => 1,
                                                     "NewObject" => 1,
+                                                    "SecureContext" => 1,
                                                     "TreatNullAs" => 1
                                                   }
                             },
@@ -3467,6 +3486,9 @@ $Web::IDL::_Defs = {
                           "SameObject" => {
                                           "no" => 1
                                         },
+                          "SecureContext" => {
+                                             "no" => 1
+                                           },
                           "TreatNonObjectAsNull" => {
                                                     "no" => 1
                                                   },

@@ -232,6 +232,8 @@ sub process_parsed_struct ($$$) {
             my $non_unforgeable;
             my $exposed;
             my $bad_exposed;
+            my $secure;
+            my $insecure;
             for (sort { $a cmp $b } keys %{$mem->{overload_set}}) {
               my $v = $mem->{overload_set}->{$_};
               if (delete $v->{Unforgeable}) {
@@ -258,6 +260,12 @@ sub process_parsed_struct ($$$) {
                 # XXX warn if inconsistent
                 $mem->{Unscopable} = 1;
               }
+              if (delete $v->{SecureContext}) {
+                $secure = $key;
+                $mem->{SecureContext} = 1;
+              } else {
+                $insecure = $key;
+              }
             } # $v
             $mem->{id} = $id if defined $id;
             if ($unforgeable) {
@@ -279,6 +287,13 @@ sub process_parsed_struct ($$$) {
                                  level => 'm');
               }
             }
+            if (defined $secure and defined $insecure) {
+              $self->onerror->(type => 'webidl:inconsistent',
+                               di => $di,
+                               index => $op{$secure}->[0]->{index},
+                               value => '[SecureContext]',
+                               level => 'm');
+            }
 
             push @mem, $mem;
           } # %op
@@ -297,9 +312,10 @@ sub process_parsed_struct ($$$) {
                   $props->{$mem->{special}}->[0] = $mem->{member_type};
                   my $mem_props = $props->{$mem->{special}}->[1] ||= {};
                   for (qw(overload_set Unforgeable _exposed
-                          obsolete spec id)) {
+                          obsolete spec id SecureContext)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
+                  $mem_props->{SecureContext} = 1 if $def->{SecureContext};
 
                   if ($mem->{special} eq 'legacycaller') {
                     # XXX legacycaller SHOULD NOT be used
@@ -345,9 +361,10 @@ sub process_parsed_struct ($$$) {
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
                   for (qw(overload_set Unforgeable _exposed
-                          obsolete spec id Unscopable)) {
+                          obsolete spec id Unscopable SecureContext)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
+                  $mem_props->{SecureContext} = 1 if $def->{SecureContext};
                 }
               }
             } elsif ($mem->{member_type} eq 'const' or
@@ -457,6 +474,7 @@ sub process_parsed_struct ($$$) {
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
                 $self->_extended_attributes ($di, $mem => $mem_props, {});
+                $mem_props->{SecureContext} = 1 if $def->{SecureContext} and not $mem->{member_type} eq 'dictionary_member';
               }
             } elsif ($mem->{member_type} eq 'serializer') {
               if (defined $props->{serializer}) {
@@ -476,6 +494,7 @@ sub process_parsed_struct ($$$) {
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
                 $self->_extended_attributes ($di, $mem => $mem_props, {});
+                $mem_props->{SecureContext} = 1 if $def->{SecureContext};
               }
             } elsif ($mem->{member_type} eq 'iterable' or
                      $mem->{member_type} eq 'maplike' or
@@ -507,6 +526,7 @@ sub process_parsed_struct ($$$) {
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
                 $self->_extended_attributes ($di, $mem => $mem_props, {});
+                $mem_props->{SecureContext} = 1 if $def->{SecureContext};
               }
             } else {
               $self->onerror->(type => 'webidl:unknown',
@@ -735,6 +755,23 @@ sub _extended_attributes ($$$$$) {
         $dest->{LegacyUnenumerableNamedProperties} = 1;
         # XXX the interface MUST have a named getter
         next;
+      } elsif ($attr->{name} eq 'SecureContext') {
+        # XXX context validation
+        if (defined $src->{definition_type} and $src->{definition_type} eq 'interface') {
+          $dest->{SecureContext} = 1 unless $src->{partial};
+          $src->{SecureContext} = 1;
+          next;
+        } elsif (defined $src->{definition_type} and $src->{definition_type} eq 'dictionary') {
+          if (grep { $_->{name} eq 'Constructor' } @{$src->{extended_attributes}}) {
+            $src->{SecureContext} = 1;
+            next;
+          } else {
+            #
+          }
+        } elsif (defined $src->{member_type}) {
+          $dest->{SecureContext} = 1;
+          next;
+        }
       } # $attr->{name}
     }
     $self->onerror->(type => 'webidl:not allowed',
@@ -749,6 +786,7 @@ sub _extended_attributes ($$$$$) {
       overload_set => $self->_overload_set
           ($di, \@constructor, type_optional => 1),
     }];
+    $dest->{Constructor}->[1]->{SecureContext} = 1 if $src->{SecureContext};
     my $type = $self->_type
         ($di, {type_name => $src->{name}, index => $src->{index}});
     for (values %{$dest->{Constructor}->[1]->{overload_set}}) {
@@ -759,6 +797,7 @@ sub _extended_attributes ($$$$$) {
     $dest->{NamedConstructor}->{$_} = ['operation', {
       overload_set => $self->_overload_set
           ($di, $named_constructors->{$_}, type_optional => 1),
+      ($src->{SecureContext} ? (SecureContext => 1) : ()),
     }];
     my $type = $self->_type
         ($di, {type_name => $src->{name}, index => $src->{index}});
@@ -885,7 +924,7 @@ sub _value ($$$;%) {
   return 'null';
 } # _value
 
-## <http://heycam.github.io/webidl/#dfn-effective-overload-set> but m
+## <https://heycam.github.io/webidl/#dfn-effective-overload-set> but m
 ## := n
 sub _overload_set ($$$;%) {
   ## 2.

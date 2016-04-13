@@ -136,6 +136,11 @@ XXX
 
 =over 4
 
+=item SecureContext (boolean)
+
+Whether the object is annotated (directly or indirectly) with the
+[SecureContext] extended attribute or not.
+
 =item LegacyUnenumerableNamedProperties (boolean)
 
 Whether the interface is annotated with the
