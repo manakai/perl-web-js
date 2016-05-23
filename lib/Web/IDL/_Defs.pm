@@ -6,6 +6,7 @@ $Web::IDL::_Defs = {
                                             "TreatNullAs" => 1
                                           },
                               "attribute" => {
+                                             "CEReactions" => 1,
                                              "Clamp" => 1,
                                              "EnforceRange" => 1,
                                              "Exposed" => 1,
@@ -65,6 +66,7 @@ $Web::IDL::_Defs = {
                                            "SecureContext" => 1
                                          },
                               "operation" => {
+                                             "CEReactions" => 1,
                                              "Exposed" => 1,
                                              "NewObject" => 1,
                                              "SecureContext" => 1,
@@ -3424,6 +3426,9 @@ $Web::IDL::_Defs = {
                           "ArrayClass" => {
                                           "no" => 1
                                         },
+                          "CEReactions" => {
+                                           "no" => 1
+                                         },
                           "Clamp" => {
                                      "no" => 1
                                    },

@@ -765,6 +765,10 @@ sub _extended_attributes ($$$$$) {
         $dest->{LegacyUnenumerableNamedProperties} = 1;
         # XXX the interface MUST have a named getter
         next;
+      } elsif ($attr->{name} eq 'CEReactions') {
+        # XXX context validation
+        $dest->{CEReactions} = 1;
+        next;
       } elsif ($attr->{name} eq 'SecureContext') {
         # XXX context validation
         if (defined $src->{definition_type} and $src->{definition_type} eq 'interface') {

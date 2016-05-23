@@ -146,6 +146,10 @@ IDL [Replaceable] setter.
 If the value is C<LenientSetter>, the setter of the attribute is the
 Web IDL [LenientSetter] setter.
 
+=item CEReactions [boolean]
+
+Whether the [CEReactions] extended attribute is in effect or not.
+
 =item SecureContext (boolean)
 
 Whether the object is annotated (directly or indirectly) with the
@@ -163,6 +167,16 @@ attribute or not.
 
 =back
 
+XXX overload set item
+
+=over 4
+
+=item CEReactions (boolean)
+
+Whether the [CEReactions] extended attribute is in effect or not.
+
+=back
+
 =head1 SPECIFICATIONS
 
 =over 4
@@ -177,6 +191,10 @@ Web IDL "class"
 
 Web IDL [ArrayClass]
 <https://github.com/heycam/webidl/commit/853137810af373668b8fd2e9418eaade05778e9b>.
+
+=item HTML
+
+HTML Standard <https://html.spec.whatwg.org/#cereactions>.
 
 =back
 
