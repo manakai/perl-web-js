@@ -9,6 +9,7 @@ $Web::IDL::_Defs = {
                                              "Clamp" => 1,
                                              "EnforceRange" => 1,
                                              "Exposed" => 1,
+                                             "LenientSetter" => 1,
                                              "LenientThis" => 1,
                                              "PutForwards" => 1,
                                              "Replaceable" => 1,
@@ -3451,6 +3452,9 @@ $Web::IDL::_Defs = {
                           "LegacyUnenumerableNamedProperties" => {
                                                                  "no" => 1
                                                                },
+                          "LenientSetter" => {
+                                             "no" => 1
+                                           },
                           "LenientThis" => {
                                            "no" => 1
                                          },
@@ -3513,6 +3517,14 @@ $Web::IDL::_Defs = {
                                 [
                                   "Global",
                                   "PrimaryGlobal"
+                                ],
+                                [
+                                  "LenientSetter",
+                                  "PutForwards"
+                                ],
+                                [
+                                  "LenientSetter",
+                                  "Replaceable"
                                 ],
                                 [
                                   "OverrideBuiltins",

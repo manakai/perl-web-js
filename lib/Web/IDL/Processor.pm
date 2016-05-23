@@ -678,6 +678,17 @@ sub _extended_attributes ($$$$$) {
         $dest->{setter} = 'replaceable';
         # XXX MUST NOT be used on callback interface
         next;
+      } elsif ($attr->{name} eq 'LenientSetter') {
+        if ($dest->{setter}) {
+          $self->onerror->(type => 'webidl:duplicate',
+                           value => $attr->{name},
+                           di => $di,
+                           index => $attr->{index},
+                           level => 'm');
+        }
+        $dest->{setter} = 'LenientSetter';
+        # XXX SHOULD NOT be used
+        next;
       } elsif ($attr->{name} eq 'TreatNullAs') {
         if (@{$attr->{value_names} or []}) {
           if ($attr->{value_names}->[0] eq 'EmptyString') {

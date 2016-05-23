@@ -136,6 +136,16 @@ XXX
 
 =over 4
 
+=item setter
+
+XXX
+
+If the value is C<replaceable>, the setter of the attribute is the Web
+IDL [Replaceable] setter.
+
+If the value is C<LenientSetter>, the setter of the attribute is the
+Web IDL [LenientSetter] setter.
+
 =item SecureContext (boolean)
 
 Whether the object is annotated (directly or indirectly) with the
