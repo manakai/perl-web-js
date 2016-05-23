@@ -37,11 +37,6 @@ $Web::IDL::_Defs = {
                                          "Exposed" => 1,
                                          "SecureContext" => 1
                                        },
-                              "dictionary" => {
-                                              "Constructor" => 1,
-                                              "Exposed" => 1,
-                                              "SecureContext" => 1
-                                            },
                               "dictionary_member" => {
                                                      "Clamp" => 1,
                                                      "EnforceRange" => 1

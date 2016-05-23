@@ -1,4 +1,4 @@
-all: deps json-ps generated
+all: build
 
 clean: clean-json-ps
 	rm -fr local/*.json
@@ -40,6 +40,8 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 	$(WGET) -O $@ https://raw.githubusercontent.com/wakaba/perl-json-ps/master/lib/JSON/PS.pm
 
 ## ------ Build ------
+
+build: deps json-ps data
 
 data: generated
 

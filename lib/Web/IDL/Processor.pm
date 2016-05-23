@@ -474,7 +474,7 @@ sub process_parsed_struct ($$$) {
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
                 $self->_extended_attributes ($di, $mem => $mem_props, {});
-                $mem_props->{SecureContext} = 1 if $def->{SecureContext} and not $mem->{member_type} eq 'dictionary_member';
+                $mem_props->{SecureContext} = 1 if $def->{SecureContext};
               }
             } elsif ($mem->{member_type} eq 'serializer') {
               if (defined $props->{serializer}) {
@@ -744,7 +744,6 @@ sub _extended_attributes ($$$$$) {
             $self->{state}->{exposed}->{$src->{name}} = $attr->{value_names} || [];
           }
         }
-        # XXX for dictionary, there MUST be Constructor
         # XXX exposure sets MUST be subset of consequential's exposure sets
         # XXX exposure sets MUST be subset of super-interface's exposure set
         next;
@@ -761,13 +760,6 @@ sub _extended_attributes ($$$$$) {
           $dest->{SecureContext} = 1 unless $src->{partial};
           $src->{SecureContext} = 1;
           next;
-        } elsif (defined $src->{definition_type} and $src->{definition_type} eq 'dictionary') {
-          if (grep { $_->{name} eq 'Constructor' } @{$src->{extended_attributes}}) {
-            $src->{SecureContext} = 1;
-            next;
-          } else {
-            #
-          }
         } elsif (defined $src->{member_type}) {
           $dest->{SecureContext} = 1;
           next;
@@ -1450,9 +1442,7 @@ sub end_processing ($) {
   }
   for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
-    if ($def->[0] eq 'interface' or
-        $def->[0] eq 'callback_interface' or
-        ($def->[0] eq 'dictionary' and defined $def->[1]->{Constructor})) {
+    if ($def->[0] eq 'interface' or $def->[0] eq 'callback_interface') {
       if (defined $self->{state}->{exposed}->{$def_name}) {
         $def->[1]->{Exposed} = {};
         for my $gname (@{$self->{state}->{exposed}->{$def_name} or []}) {
@@ -1511,8 +1501,7 @@ sub end_processing ($) {
   for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or
-        $def->[0] eq 'callback_interface' or
-        $def->[0] eq 'dictionary') {
+        $def->[0] eq 'callback_interface') {
       my @key;
       for (sort { $a cmp $b } keys %{$def->[1]->{NamedConstructor} or {}}) {
         if (defined $gmembers->{$_}) {
@@ -1536,7 +1525,6 @@ sub end_processing ($) {
           push @key, $def_name;
         }
       } elsif ($def->[1]->{NoInterfaceObject} or
-               $def->[0] eq 'dictionary' or
                ($def->[0] eq 'callback_interface' and
                 not grep { $_->[0] eq 'const' } values %{$def->[1]->{members}})) {
         #
