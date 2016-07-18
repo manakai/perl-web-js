@@ -48,6 +48,7 @@ $Web::IDL::_Defs = {
                                              "Constructor" => 1,
                                              "Exposed" => 1,
                                              "Global" => 1,
+                                             "HTMLConstructor" => 1,
                                              "ImplicitThis" => 1,
                                              "LegacyArrayClass" => 1,
                                              "LegacyUnenumerableNamedProperties" => 1,
@@ -3448,6 +3449,9 @@ $Web::IDL::_Defs = {
                                       "id_list" => 1,
                                       "no" => 1
                                     },
+                          "HTMLConstructor" => {
+                                               "no" => 1
+                                             },
                           "ImplicitThis" => {
                                             "no" => 1
                                           },
@@ -3513,6 +3517,10 @@ $Web::IDL::_Defs = {
                                 ],
                                 [
                                   "Constructor",
+                                  "HTMLConstructor"
+                                ],
+                                [
+                                  "Constructor",
                                   "NoInterfaceObject"
                                 ],
                                 [
@@ -3522,6 +3530,10 @@ $Web::IDL::_Defs = {
                                 [
                                   "Global",
                                   "PrimaryGlobal"
+                                ],
+                                [
+                                  "HTMLConstructor",
+                                  "NoInterfaceObject"
                                 ],
                                 [
                                   "LenientSetter",
