@@ -111,10 +111,11 @@ sub process_parsed_struct ($$$) {
         if ($def->{definition_type} eq 'callback') {
           $props->{overload_set} = $self->_overload_set ($di, [$def]);
 
-          $props->{TreatNonObjectAsNull}
-              = delete [values %{$props->{overload_set}}]->[0]->{TreatNonObjectAsNull};
-          delete $props->{TreatNonObjectAsNull}
-              unless defined $props->{TreatNonObjectAsNull};
+          for (values %{$props->{overload_set}}) {
+            if (delete $_->{TreatNonObjectAsNull}) {
+              $props->{TreatNonObjectAsNull} = 1;
+            }
+          }
         } else {
           $self->_extended_attributes ($di, $def => $props, $xattr_opts);
         }

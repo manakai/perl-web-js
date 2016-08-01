@@ -155,6 +155,11 @@ Whether the [CEReactions] extended attribute is in effect or not.
 Whether the object is annotated (directly or indirectly) with the
 [SecureContext] extended attribute or not.
 
+=item TreatNonObjectAsNull (boolean)
+
+Whether the callback is annotated with the [TreatNonObjectAsNull]
+extended attribute or not.
+
 =item LegacyUnenumerableNamedProperties (boolean)
 
 Whether the interface is annotated with the
