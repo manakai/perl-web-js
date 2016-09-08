@@ -157,6 +157,54 @@ $Web::IDL::_Defs = {
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
+                                                                        "type" => "required"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "callback"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "typedef"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "setter"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "iterable"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "extends"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "enum"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "interface"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
                                                                         "type" => "class"
                                                                       }
                                                                     ],
@@ -169,73 +217,13 @@ $Web::IDL::_Defs = {
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
-                                                                        "type" => "inherit"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "enum"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "attribute"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "required"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "extends"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "callback"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
                                                                         "type" => "static"
                                                                       }
                                                                     ],
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
-                                                                        "type" => "unrestricted"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "legacycaller"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "setter"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "const"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "stringifier"
+                                                                        "type" => "inherit"
                                                                       }
                                                                     ],
                                                                     [
@@ -247,25 +235,25 @@ $Web::IDL::_Defs = {
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
-                                                                        "type" => "maplike"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "partial"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
                                                                         "type" => "getter"
                                                                       }
                                                                     ],
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
-                                                                        "type" => "iterable"
+                                                                        "type" => "const"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "attribute"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "maplike"
                                                                       }
                                                                     ],
                                                                     [
@@ -277,25 +265,37 @@ $Web::IDL::_Defs = {
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
-                                                                        "type" => "serializer"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "typedef"
-                                                                      }
-                                                                    ],
-                                                                    [
-                                                                      {
-                                                                        "set_type" => "name",
-                                                                        "type" => "interface"
+                                                                        "type" => "partial"
                                                                       }
                                                                     ],
                                                                     [
                                                                       {
                                                                         "set_type" => "name",
                                                                         "type" => "implements"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "legacycaller"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "stringifier"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "unrestricted"
+                                                                      }
+                                                                    ],
+                                                                    [
+                                                                      {
+                                                                        "set_type" => "name",
+                                                                        "type" => "serializer"
                                                                       }
                                                                     ]
                                                                   ]
