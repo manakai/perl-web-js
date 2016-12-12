@@ -252,6 +252,12 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
+                                                                  "type" => "record"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
                                                                   "type" => "interface"
                                                                 }
                                                               ],
@@ -1471,28 +1477,8 @@ $Web::IDL::_Defs = {
                                                      ],
                                                      [
                                                        {
-                                                         "set_type" => "type",
-                                                         "type" => "ByteString"
-                                                       },
-                                                       {
                                                          "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
-                                                         "type" => "DOMString"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
-                                                         "type" => "USVString"
+                                                         "value" => "StringType"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -1596,6 +1582,17 @@ $Web::IDL::_Defs = {
                                                          "set" => "type_parameterized",
                                                          "type" => "rule",
                                                          "value" => "_FrozenArrayType"
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "Null"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set" => "type_parameterized",
+                                                         "type" => "rule",
+                                                         "value" => "RecordType"
                                                        },
                                                        {
                                                          "type" => "rule",
@@ -1982,6 +1979,34 @@ $Web::IDL::_Defs = {
                                                              ]
                                                            ]
                                              },
+                       "RecordType" => {
+                                       "patterns" => [
+                                                     [
+                                                       {
+                                                         "set_type" => "type_outer",
+                                                         "type" => "record"
+                                                       },
+                                                       {
+                                                         "type" => "<"
+                                                       },
+                                                       {
+                                                         "set" => "type_key",
+                                                         "type" => "rule",
+                                                         "value" => "_RecordKeyType"
+                                                       },
+                                                       {
+                                                         "type" => ","
+                                                       },
+                                                       {
+                                                         "type" => "rule",
+                                                         "value" => "Type"
+                                                       },
+                                                       {
+                                                         "type" => ">"
+                                                       }
+                                                     ]
+                                                   ]
+                                     },
                        "Required" => {
                                      "can_be_empty" => 1,
                                      "patterns" => [
@@ -2426,6 +2451,28 @@ $Web::IDL::_Defs = {
                                                            ]
                                                          ]
                                            },
+                       "StringType" => {
+                                       "patterns" => [
+                                                     [
+                                                       {
+                                                         "set_type" => "type",
+                                                         "type" => "ByteString"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set_type" => "type",
+                                                         "type" => "DOMString"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set_type" => "type",
+                                                         "type" => "USVString"
+                                                       }
+                                                     ]
+                                                   ]
+                                     },
                        "Stringifier" => {
                                         "patterns" => [
                                                       [
@@ -2915,6 +2962,16 @@ $Web::IDL::_Defs = {
                                                              ]
                                                            ]
                                              },
+                       "_RecordKeyType" => {
+                                           "patterns" => [
+                                                         [
+                                                           {
+                                                             "type" => "rule",
+                                                             "value" => "StringType"
+                                                           }
+                                                         ]
+                                                       ]
+                                         },
                        "_SequenceType" => {
                                           "patterns" => [
                                                         [
@@ -3234,6 +3291,9 @@ $Web::IDL::_Defs = {
                                            "argument_name" => 1
                                          },
                               "readonly" => {},
+                              "record" => {
+                                          "argument_name" => 1
+                                        },
                               "required" => {
                                             "argument_name" => 1,
                                             "attribute_name" => 1

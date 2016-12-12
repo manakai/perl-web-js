@@ -578,11 +578,7 @@ UnionType Null
 
 PrimitiveType Null
 |
-'ByteString'="type" Null
-|
-'DOMString'="type" Null
-|
-'USVString'="type" Null
+StringType Null
 |
 _IDInSpecDirectiveIgnored
 identifier="type_name" Null
@@ -604,10 +600,20 @@ BufferRelatedType Null
 PromiseType=type_parameterized
 |
 _FrozenArrayType=type_parameterized Null
+|
+RecordType=type_parameterized Null
 
 * _SequenceType
 
 'sequence'="type_outer" '<' Type '>'
+
+* StringType
+
+'ByteString'="type"
+|
+'DOMString'="type"
+|
+'USVString'="type"
 
 * PromiseType
 
@@ -616,6 +622,14 @@ _FrozenArrayType=type_parameterized Null
 * _FrozenArrayType
 
 'FrozenArray'="type_outer" '<' Type '>'
+
+* RecordType
+
+'record'="type_outer" '<' _RecordKeyType=type_key ',' Type '>'
+
+* _RecordKeyType
+
+StringType
 
 * BufferRelatedType
 

@@ -822,6 +822,10 @@ sub _type ($$$;%) {
         ||= ['ref', $def->{type_name}];
   } elsif (defined $def->{type_parameterized}) {
     $value = [$def->{type_parameterized}->{type_outer},
+              (defined $def->{type_parameterized}->{type_key} ? ($self->_type ($di, {
+                index => $def->{index},
+                %{$def->{type_parameterized}->{type_key}},
+              })) : ()),
               $self->_type ($di, {index => $def->{index},
                                   %{$def->{type_parameterized}}})];
   } elsif (defined $def->{type_union}) {
