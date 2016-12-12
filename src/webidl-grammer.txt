@@ -601,12 +601,9 @@ _SequenceType=type_parameterized Null
 |
 BufferRelatedType Null
 |
-PromiseType=type_parameterized Null
+PromiseType=type_parameterized
 |
 _FrozenArrayType=type_parameterized Null
-
-|
-_ObsPromiseType=type_parameterized
 
 * _SequenceType
 
@@ -615,13 +612,6 @@ _ObsPromiseType=type_parameterized
 * PromiseType
 
 'Promise'="type_outer" '<' ReturnType '>'
-
-* _ObsPromiseType
-
-## Not in spec
-'Promise'="type_outer" Null
-
-+type="any"
 
 * _FrozenArrayType
 

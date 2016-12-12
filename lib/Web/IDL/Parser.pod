@@ -354,17 +354,13 @@ and are not (and should not) be used elsewhere.
 
 =item WEBIDL
 
-Web IDL <http://heycam.github.io/webidl/>.
+Web IDL <https://heycam.github.io/webidl/>.
 
 Web IDL "class"
 <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
-<http://dom.spec.whatwg.org/#elements>.
+<https://dom.spec.whatwg.org/#elements>.
 
 =back
-
-This implementation also supports C<Promise> type (without following
-C<< <T> >> part) for backward compatibility.  It is interpreted as C<<
-Promise<any> >>.  This will be removed in due course.
 
 In this implementation, extended attributes MUST be in one of six
 forms shown in the Web IDL specification.
@@ -375,7 +371,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2014-2015 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
