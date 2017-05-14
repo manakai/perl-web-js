@@ -754,7 +754,9 @@ sub _extended_attributes ($$$$$) {
           $dest->{SecureContext} = 1;
           next;
         }
-      } elsif ($attr->{name} eq 'AllowShared') {
+      } elsif ($attr->{name} eq 'AllowShared' or
+               $attr->{name} eq 'Serializable' or
+               $attr->{name} eq 'Transferable') {
         $dest->{$attr->{name}} = 1;
         next;
       } # $attr->{name}
