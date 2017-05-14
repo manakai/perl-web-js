@@ -211,10 +211,6 @@ Whether the [CEReactions] extended attribute is in effect or not.
 
 Web IDL <https://heycam.github.io/webidl/>.
 
-Web IDL "class"
-<https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
-<https://dom.spec.whatwg.org/#elements>.
-
 =item HTML
 
 HTML Standard <https://html.spec.whatwg.org/#cereactions>.

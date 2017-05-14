@@ -22,7 +22,6 @@ $Web::IDL::_Defs = {
                                             "TreatNonObjectAsNull" => 1
                                           },
                               "callback_interface" => {
-                                                      "ArrayClass" => 1,
                                                       "Exposed" => 1,
                                                       "Global" => 1,
                                                       "LegacyArrayClass" => 1,
@@ -36,7 +35,6 @@ $Web::IDL::_Defs = {
                                          "SecureContext" => 1
                                        },
                               "interface" => {
-                                             "ArrayClass" => 1,
                                              "Constructor" => 1,
                                              "Exposed" => 1,
                                              "Global" => 1,
@@ -181,12 +179,6 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
-                                                                  "type" => "class"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
                                                                   "type" => "const"
                                                                 }
                                                               ],
@@ -206,12 +198,6 @@ $Web::IDL::_Defs = {
                                                                 {
                                                                   "set_type" => "name",
                                                                   "type" => "enum"
-                                                                }
-                                                              ],
-                                                              [
-                                                                {
-                                                                  "set_type" => "name",
-                                                                  "type" => "extends"
                                                                 }
                                                               ],
                                                               [
@@ -3335,9 +3321,6 @@ $Web::IDL::_Defs = {
                               "callback" => {
                                             "argument_name" => 1
                                           },
-                              "class" => {
-                                         "argument_name" => 1
-                                       },
                               "const" => {
                                          "argument_name" => 1
                                        },
@@ -3351,9 +3334,6 @@ $Web::IDL::_Defs = {
                               "enum" => {
                                         "argument_name" => 1
                                       },
-                              "extends" => {
-                                           "argument_name" => 1
-                                         },
                               "false" => {},
                               "float" => {},
                               "getter" => {
@@ -3460,11 +3440,6 @@ $Web::IDL::_Defs = {
                                                 "iterator" => 1,
                                                 "toString" => 1
                                               },
-                        "class" => {
-                                   "constructor" => 1,
-                                   "iterator" => 1,
-                                   "toString" => 1
-                                 },
                         "const" => {
                                    "constructor" => 1,
                                    "iterator" => 1,
@@ -3526,9 +3501,6 @@ $Web::IDL::_Defs = {
                                    }
                       },
           "xattr_args" => {
-                          "ArrayClass" => {
-                                          "no" => 1
-                                        },
                           "CEReactions" => {
                                            "no" => 1
                                          },

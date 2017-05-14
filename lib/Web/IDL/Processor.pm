@@ -31,7 +31,6 @@ sub process_parsed_struct ($$$) {
   local $self->{obsolete} = $in->{obsolete};
   for my $def (@{$in->{definitions} or []}) {
     if ($def->{definition_type} eq 'interface' or
-        $def->{definition_type} eq 'class' or
         $def->{definition_type} eq 'dictionary' or
         $def->{definition_type} eq 'callback' or
         $def->{definition_type} eq 'enum' or
@@ -94,7 +93,6 @@ sub process_parsed_struct ($$$) {
 
         ## Inheritance
         if ($def->{definition_type} eq 'interface' or
-            $def->{definition_type} eq 'class' or
             $def->{definition_type} eq 'dictionary') {
           if (defined $def->{super_name}) {
             push @{$self->{state}->{inherits} ||= []},
@@ -141,7 +139,6 @@ sub process_parsed_struct ($$$) {
         } # enum
 
         if ($def->{definition_type} eq 'interface' or
-            $def->{definition_type} eq 'class' or
             $def->{definition_type} eq 'dictionary') {
           my @mem = grep {
             not $_->{member_type} eq 'operation';
