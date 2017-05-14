@@ -597,6 +597,9 @@ sub _extended_attributes ($$$$$) {
       } elsif ($attr->{name} eq 'Constructor') {
         push @constructor, $attr;
         next;
+      } elsif ($attr->{name} eq 'HTMLConstructor') {
+        $dest->{Constructor} = ['HTMLConstructor'];
+        next;
       } elsif ($attr->{name} eq 'NamedConstructor') {
         push @{$named_constructors->{$attr->{value_names}->[0]} ||= []}, $attr
             if @{$attr->{value_names} or []};
@@ -769,15 +772,23 @@ sub _extended_attributes ($$$$$) {
   } # $attr
 
   if (@constructor) {
-    $dest->{Constructor} = ['operation', {
-      overload_set => $self->_overload_set
-          ($di, \@constructor, type_optional => 1),
-    }];
-    $dest->{Constructor}->[1]->{SecureContext} = 1 if $src->{SecureContext};
-    my $type = $self->_type
-        ($di, {type_name => $src->{name}, index => $src->{index}});
-    for (values %{$dest->{Constructor}->[1]->{overload_set}}) {
-      $_->{type} = $type;
+    if (defined $dest->{Constructor}) {
+      $self->onerror->(type => 'webidl:not allowed',
+                       value => 'Constructor',
+                       di => $di,
+                       index => $src->{index},
+                       level => 'm');
+    } else {
+      $dest->{Constructor} = ['operation', {
+        overload_set => $self->_overload_set
+            ($di, \@constructor, type_optional => 1),
+      }];
+      $dest->{Constructor}->[1]->{SecureContext} = 1 if $src->{SecureContext};
+      my $type = $self->_type
+          ($di, {type_name => $src->{name}, index => $src->{index}});
+      for (values %{$dest->{Constructor}->[1]->{overload_set}}) {
+        $_->{type} = $type;
+      }
     }
   }
   for (sort { $a cmp $b } keys %{$named_constructors}) {
