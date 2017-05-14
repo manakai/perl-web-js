@@ -385,7 +385,9 @@ sub process_parsed_struct ($$$) {
 
                 my ($mem_xattrs_container, $type_container)
                     = $self->_split_for_xattrs
-                        ($mem, $mem->{member_type} eq 'dictionary_member');
+                        ($mem,
+                         ($mem->{member_type} eq 'dictionary_member' and
+                          not $mem->{required}));
                 $mem_props->{type} = $self->_type ($di, $type_container);
                 # XXX const: type check; MUST NOT use dictionary; MUST NOT use callback function; MUST NOT use sequence
                 # XXX attribute: type check; MUST NOT use dictionary; MUST NOT use sequence
