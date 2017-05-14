@@ -583,8 +583,7 @@ sub _extended_attributes ($$$$$) {
                          level => 'm');
       }
 
-      if ($attr->{name} eq 'ArrayClass' or
-          $attr->{name} eq 'LegacyArrayClass') {
+      if ($attr->{name} eq 'LegacyArrayClass') {
         if (defined $src->{super_name}) {
           #
         } else {
