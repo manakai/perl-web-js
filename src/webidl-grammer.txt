@@ -373,6 +373,11 @@ ReadOnly 'attribute'="member_type" TypeWithExtendedAttributes AttributeName ';'
 
 _Name
 |
+_AttributeNameKeyword
+
+* _AttributeNameKeyword
+
+_IDInSpecDirective
 AttributeNameKeyword
 
 * Inherit
@@ -465,9 +470,14 @@ ExtendedAttributeList Type Ellipsis ArgumentName
 
 * ArgumentName
 
-ArgumentNameKeyword
+_ArgumentNameKeyword
 |
 _Name
+
+* _ArgumentNameKeyword
+
+_IDInSpecDirective
+ArgumentNameKeyword
 
 * Ellipsis
 

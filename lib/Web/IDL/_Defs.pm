@@ -151,7 +151,7 @@ $Web::IDL::_Defs = {
                                                        [
                                                          {
                                                            "type" => "rule",
-                                                           "value" => "ArgumentNameKeyword"
+                                                           "value" => "_ArgumentNameKeyword"
                                                          }
                                                        ],
                                                        [
@@ -334,7 +334,7 @@ $Web::IDL::_Defs = {
                                                         [
                                                           {
                                                             "type" => "rule",
-                                                            "value" => "AttributeNameKeyword"
+                                                            "value" => "_AttributeNameKeyword"
                                                           }
                                                         ]
                                                       ]
@@ -2713,6 +2713,34 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "_ArgumentNameKeyword" => {
+                                                 "patterns" => [
+                                                               [
+                                                                 {
+                                                                   "type" => "rule",
+                                                                   "value" => "_IDInSpecDirective"
+                                                                 },
+                                                                 {
+                                                                   "type" => "rule",
+                                                                   "value" => "ArgumentNameKeyword"
+                                                                 }
+                                                               ]
+                                                             ]
+                                               },
+                       "_AttributeNameKeyword" => {
+                                                  "patterns" => [
+                                                                [
+                                                                  {
+                                                                    "type" => "rule",
+                                                                    "value" => "_IDInSpecDirective"
+                                                                  },
+                                                                  {
+                                                                    "type" => "rule",
+                                                                    "value" => "AttributeNameKeyword"
+                                                                  }
+                                                                ]
+                                                              ]
+                                                },
                        "_Callback" => {
                                       "patterns" => [
                                                     [
