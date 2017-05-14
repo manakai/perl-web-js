@@ -1,8 +1,41 @@
 $Web::IDL::_Defs = {
           "allowed_xattrs" => {
+                              "ArrayBuffer" => {
+                                               "AllowShared" => 1
+                                             },
                               "DOMString" => {
                                              "TreatNullAs" => 1
                                            },
+                              "DataView" => {
+                                            "AllowShared" => 1
+                                          },
+                              "Float32Array" => {
+                                                "AllowShared" => 1
+                                              },
+                              "Float64Array" => {
+                                                "AllowShared" => 1
+                                              },
+                              "Int16Array" => {
+                                              "AllowShared" => 1
+                                            },
+                              "Int32Array" => {
+                                              "AllowShared" => 1
+                                            },
+                              "Int8Array" => {
+                                             "AllowShared" => 1
+                                           },
+                              "Uint16Array" => {
+                                               "AllowShared" => 1
+                                             },
+                              "Uint32Array" => {
+                                               "AllowShared" => 1
+                                             },
+                              "Uint8Array" => {
+                                              "AllowShared" => 1
+                                            },
+                              "Uint8ClampedArray" => {
+                                                     "AllowShared" => 1
+                                                   },
                               "attribute" => {
                                              "CEReactions" => 1,
                                              "Exposed" => 1,
@@ -3529,6 +3562,9 @@ $Web::IDL::_Defs = {
                                    }
                       },
           "xattr_args" => {
+                          "AllowShared" => {
+                                           "no" => 1
+                                         },
                           "CEReactions" => {
                                            "no" => 1
                                          },

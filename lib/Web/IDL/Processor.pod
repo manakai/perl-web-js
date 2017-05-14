@@ -71,6 +71,11 @@ XXX
 
 =over 4
 
+=item AllowShared
+
+An annotated type with the [AllowShared] extended attributes.  The
+C<1>st item is a type value representing the type without annotation.
+
 =item Clamp
 
 An annotated type with the [Clamp] extended attributes.  The C<1>st

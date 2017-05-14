@@ -591,13 +591,9 @@ sub _extended_attributes ($$$$$) {
         }
       } elsif ($attr->{name} eq 'Clamp' or
                $attr->{name} eq 'EnforceRange') {
-        if ($src->{readonly}) {
-          #
-        } else {
-          $dest->{$attr->{name}} = 1;
-          # XXX MUST NOT use with non-integer type
-          next;
-        }
+        $dest->{$attr->{name}} = 1;
+        # XXX MUST NOT be used with readonly attribute
+        next;
       } elsif ($attr->{name} eq 'Constructor') {
         push @constructor, $attr;
         next;
@@ -758,6 +754,9 @@ sub _extended_attributes ($$$$$) {
           $dest->{SecureContext} = 1;
           next;
         }
+      } elsif ($attr->{name} eq 'AllowShared') {
+        $dest->{$attr->{name}} = 1;
+        next;
       } # $attr->{name}
     }
     $self->onerror->(type => 'webidl:not allowed',
@@ -820,7 +819,8 @@ sub _split_for_xattrs ($$$) {
     for (@{$construct->{extended_attributes} or []}) {
       if ($_->{name} eq 'Clamp' or
           $_->{name} eq 'EnforceRange' or
-          $_->{name} eq 'TreatNullAs') {
+          $_->{name} eq 'TreatNullAs' or
+          $_->{name} eq 'AllowShared') {
         push @$xattrs, $_;
       } else {
         push @{$arg_xattrs_container->{extended_attributes}}, $_;
@@ -841,6 +841,8 @@ sub _type ($$$;%) {
       $self->_extended_attributes ($di, $def->{type}, my $xattrs = {}, {context => $type});
       if ($xattrs->{Clamp}) { # [Clamp]
         $value = ['Clamp', $type];
+      } elsif ($xattrs->{AllowShared}) { # [AllowShared]
+        $value = ['AllowShared', $type];
       } elsif ($xattrs->{EnforceRange}) { # [EnforceRange]
         $value = ['EnforceRange', $type];
       } elsif ($xattrs->{TreatNullAs}) { # [TreatNullAs=EmptyString]
