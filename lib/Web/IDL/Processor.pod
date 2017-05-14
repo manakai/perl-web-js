@@ -71,6 +71,16 @@ XXX
 
 =over 4
 
+=item Clamp
+
+An annotated type with the [Clamp] extended attributes.  The C<1>st
+item is a type value representing the type without annotation.
+
+=item EnforceRange
+
+An annotated type with the [EnforceRange] extended attributes.  The
+C<1>st item is a type value representing the type without annotation.
+
 =item sequence
 
 A sequence type.  The C<1>st item is a type value representing the
@@ -101,6 +111,12 @@ describing the declaration.
 
 An C<setlike> declaration.  The C<1>st item is a hash reference
 describing the declaration.
+
+=item TreatNullAsEmptyString
+
+An annotated type with the [TreatNullAs=EmptyString] extended
+attributes.  The C<1>st item is a type value representing the type
+without annotation.
 
 =back
 
@@ -212,7 +228,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -41,7 +41,9 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 
 ## ------ Build ------
 
-build: deps json-ps data
+build: deps json-ps build-main
+
+build-main: data
 
 data: generated
 

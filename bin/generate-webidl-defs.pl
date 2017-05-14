@@ -31,6 +31,11 @@ for my $construct (sort { $a cmp $b } keys %{$data->{constructs}}) {
       if $data->{constructs}->{$construct}->{allowed_extended_attributes};
 }
 
+for my $construct (sort { $a cmp $b } keys %{$data->{types}}) {
+  $Data->{allowed_xattrs}->{$construct} = $data->{types}->{$construct}->{allowed_extended_attributes}
+      if $data->{types}->{$construct}->{allowed_extended_attributes};
+}
+
 my $disallowed_combinations = {};
 for my $name (sort { $a cmp $b } keys %{$data->{extended_attributes}}) {
   $Data->{xattr_args}->{$name} = $data->{extended_attributes}->{$name}->{args};

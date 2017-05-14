@@ -386,10 +386,14 @@ sub process_parsed_struct ($$$) {
 
                 # XXX const SHOULD NOT be used
 
-                $mem_props->{type} = $self->_type ($di, $mem);
+                my ($mem_xattrs_container, $type_container)
+                    = $self->_split_for_xattrs
+                        ($mem, $mem->{member_type} eq 'dictionary_member');
+                $mem_props->{type} = $self->_type ($di, $type_container);
                 # XXX const: type check; MUST NOT use dictionary; MUST NOT use callback function; MUST NOT use sequence
                 # XXX attribute: type check; MUST NOT use dictionary; MUST NOT use sequence
                 # XXX dictionary member: type check
+                # XXX attribute vs Promise type constraints
 
                 if ($mem->{member_type} eq 'attribute') {
                   if ($mem->{readonly}) {
@@ -458,7 +462,8 @@ sub process_parsed_struct ($$$) {
 
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
-                $self->_extended_attributes ($di, $mem => $mem_props, {});
+                $self->_extended_attributes
+                    ($di, $mem_xattrs_container => $mem_props, {});
                 $mem_props->{SecureContext} = 1 if $def->{SecureContext};
               }
             } elsif ($mem->{member_type} eq 'serializer') {
@@ -542,7 +547,7 @@ sub _extended_attributes ($$$$$) {
   my @constructor;
   my $named_constructors = {};
   for my $attr (@{$src->{extended_attributes} or []}) {
-    my $context = $src->{definition_type} || $src->{member_type} || 'argument';
+    my $context = $dest_context->{context} || $src->{definition_type} || $src->{member_type} || 'argument';
     $context = 'partial_' . $context if $src->{partial};
     $context = 'static_' . $context if $src->{static};
     $context = 'callback_' . $context if $src->{callback};
@@ -675,8 +680,6 @@ sub _extended_attributes ($$$$$) {
         if (@{$attr->{value_names} or []}) {
           if ($attr->{value_names}->[0] eq 'EmptyString') {
             $dest->{$attr->{name}} = $attr->{value_names}->[0];
-            # XXX type MUST be DOMString
-            # XXX If operation return value, it MUST be in callback interface
           } else {
             $self->onerror->(type => 'webidl:bad args',
                              di => $di,
@@ -808,13 +811,50 @@ sub _extended_attributes ($$$$$) {
   }
 } # _extended_attributes
 
+sub _split_for_xattrs ($$$) {
+  my ($self, $construct, $cond) = @_;
+  my $arg_xattrs_container = $construct;
+  my $type_container = $construct;
+  if ($cond and defined $construct->{type}) {
+    $arg_xattrs_container = {extended_attribute => []};
+    $type_container = {%$construct};
+    my $xattrs = [];
+    for (@{$construct->{extended_attributes} or []}) {
+      if ($_->{name} eq 'Clamp' or
+          $_->{name} eq 'EnforceRange' or
+          $_->{name} eq 'TreatNullAs') {
+        push @$xattrs, $_;
+      } else {
+        push @{$arg_xattrs_container->{extended_attributes}}, $_;
+      }
+    }
+    $type_container->{type} = {type => $type_container->{type},
+                               extended_attributes => $xattrs};
+  }
+  return ($arg_xattrs_container, $type_container);
+} # _split_for_xattrs
+
 sub _type ($$$;%) {
   my ($self, $di, $def, %args) = @_;
   my $value;
   if (defined $def->{type}) {
-    # XXX warn if float
-    # XXX SHOULD NOT use ByteString
-    $value = $def->{type};
+    if (ref $def->{type} eq 'HASH') {
+      my $type = $self->_type ($di, $def->{type});
+      $self->_extended_attributes ($di, $def->{type}, my $xattrs = {}, {context => $type});
+      if ($xattrs->{Clamp}) { # [Clamp]
+        $value = ['Clamp', $type];
+      } elsif ($xattrs->{EnforceRange}) { # [EnforceRange]
+        $value = ['EnforceRange', $type];
+      } elsif ($xattrs->{TreatNullAs}) { # [TreatNullAs=EmptyString]
+        $value = ['TreatNullAsEmptyString', $type];
+      } else {
+        $value = $type;
+      }
+    } else {
+      # XXX warn if float
+      # XXX SHOULD NOT use ByteString
+      $value = $def->{type};
+    }
   } elsif (defined $def->{type_name}) {
     $self->{state}->{has_ref}->{$def->{type_name}}
         ||= [undef, $di, $def->{index}];
@@ -942,7 +982,9 @@ sub _overload_set ($$$;%) {
     my %name;
     for my $i (0..($n-1)) {
       ## 5.2.
-      $args->[$i]->{type} = $self->_type ($di, $_->{arguments}->[$i]);
+      my ($arg_xattrs_container, $type_container) = $self->_split_for_xattrs
+          ($_->{arguments}->[$i], (not $_->{arguments}->[$i]->{optional}));
+      $args->[$i]->{type} = $self->_type ($di, $type_container);
       $args->[$i]->{type_serialized} = $self->_serialize_type
           ($args->[$i]->{type});
       # XXX type restrictions
@@ -1010,7 +1052,7 @@ sub _overload_set ($$$;%) {
       }
 
       $self->_extended_attributes
-          ($di, $_->{arguments}->[$i] => $args->[$i], {});
+          ($di, $arg_xattrs_container => $args->[$i], {});
     }
 
     ## Return type
@@ -1559,7 +1601,7 @@ sub processed ($) {
 
 =head1 LICENSE
 
-Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

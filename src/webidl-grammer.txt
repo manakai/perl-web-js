@@ -144,16 +144,14 @@ _DictionaryMember*=members[]
 
 +pos
 +member_type="dictionary_member"
-ExtendedAttributeList DictionaryMember
+DictionaryMember
 
 * DictionaryMember
 
-Required Type _Name Default ';'
-
-* Required
-
-'required'=required?
-?
+ExtendedAttributeList 'required'=required? TypeWithExtendedAttributes _Name
+Default ';'
+|
+ExtendedAttributeList Type _Name Default ';'
 
 * PartialDictionary
 
@@ -218,7 +216,7 @@ _Name '=' ReturnType '(' ArgumentList ')' ';'
 
 * Typedef
 
-'typedef'="definition_type" Type _Name ';'
+'typedef'="definition_type" TypeWithExtendedAttributes _Name ';'
 
 * ImplementsStatement
 
@@ -369,7 +367,7 @@ AttributeRest
 
 * AttributeRest
 
-ReadOnly 'attribute'="member_type" Type AttributeName ';'
+ReadOnly 'attribute'="member_type" TypeWithExtendedAttributes AttributeName ';'
 
 * AttributeName
 
@@ -450,18 +448,20 @@ Argument=arguments[] Arguments
 * Argument
 
 +pos
-ExtendedAttributeList OptionalOrRequiredArgument
+_Argument
 
-* OptionalOrRequiredArgument
+* _Argument
 
-'optional'=optional? Type ArgumentName Default
+ExtendedAttributeList 'optional'=optional? TypeWithExtendedAttributes
+ArgumentName Default
+
 |
 
 ## Error handling (not in spec)
 Type ArgumentName '=' DefaultValue
 
 |
-Type Ellipsis ArgumentName
+ExtendedAttributeList Type Ellipsis ArgumentName
 
 * ArgumentName
 
@@ -476,11 +476,12 @@ _Name
 
 * Iterable
 
-'iterable'="member_type" '<' Type=type1 OptionalType '>' ';'
+'iterable'="member_type" '<' TypeWithExtendedAttributes=type1
+OptionalType '>' ';'
 
 * OptionalType
 
-',' Type=type2
+',' TypeWithExtendedAttributes=type2
 ?
 
 * ReadWriteMaplike
@@ -493,16 +494,21 @@ SetlikeRest
 
 * MaplikeRest
 
-'maplike'="member_type" '<' Type=type1 ',' Type=type2 '>' ';'
+'maplike'="member_type" '<' TypeWithExtendedAttributes=type1 ',' 
+TypeWithExtendedAttributes=type2 '>' ';'
 
 * SetlikeRest
 
-'setlike'="member_type" '<' Type=type1 '>' ';'
+'setlike'="member_type" '<' TypeWithExtendedAttributes=type1 '>' ';'
 
 * ExtendedAttributeList
 
-'[' ExtendedAttribute=extended_attributes[] ExtendedAttributes ']'
+_ExtendedAttributeList
 ?
+
+* _ExtendedAttributeList
+
+'[' ExtendedAttribute=extended_attributes[] ExtendedAttributes ']'
 
 * ExtendedAttributes
 
@@ -547,6 +553,18 @@ ExtendedAttribute=extended_attributes[]
 OtherOrComma ExtendedAttributeInner
 ?
 
+* TypeWithExtendedAttributes
+
+Type
+|
+_TypeWithExtendedAttributes=type
+
+* _TypeWithExtendedAttributes
+
+_ExtendedAttributeList SingleType
+|
+_ExtendedAttributeList UnionType Null
+
 * Type
 
 SingleType
@@ -565,7 +583,7 @@ NonAnyType
 
 * UnionMemberType
 
-NonAnyType
+ExtendedAttributeList NonAnyType
 |
 UnionType Null
 
@@ -605,7 +623,7 @@ RecordType=type_parameterized Null
 
 * _SequenceType
 
-'sequence'="type_outer" '<' Type '>'
+'sequence'="type_outer" '<' TypeWithExtendedAttributes '>'
 
 * StringType
 
@@ -621,11 +639,11 @@ RecordType=type_parameterized Null
 
 * _FrozenArrayType
 
-'FrozenArray'="type_outer" '<' Type '>'
+'FrozenArray'="type_outer" '<' TypeWithExtendedAttributes '>'
 
 * RecordType
 
-'record'="type_outer" '<' _RecordKeyType=type_key ',' Type '>'
+'record'="type_outer" '<' _RecordKeyType=type_key ',' TypeWithExtendedAttributes '>'
 
 * _RecordKeyType
 
