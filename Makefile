@@ -1,7 +1,7 @@
 all: build
 
 clean: clean-json-ps
-	rm -fr local/*.json
+	rm -fr local/*.json intermediate/errors.json
 
 updatenightly: local/bin/pmbp.pl clean all
 	curl https://gist.githubusercontent.com/wakaba/34a71d3137a52abb562d/raw/gistfile1.txt | sh
@@ -43,7 +43,7 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 
 build: deps json-ps build-main
 
-build-main: data
+build-main: data intermediate/errors.json
 
 data: generated
 
@@ -59,6 +59,10 @@ local/webidl-grammer.json: bin/parse-grammer.pl src/webidl-grammer.txt
 
 local/webidl.json: 
 	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/webidl.json
+
+intermediate/errors.json: bin/generate-errors.pl \
+    src/processor-errors.txt $(JSON_PS)
+	$(PERL) $< src/processor-errors.txt > $@
 
 ## ------ Tests ------
 

@@ -226,12 +226,19 @@ sub process_parsed_struct ($$$) {
             $id_name =~ s/^indexed_//;
             my $id = [map { $_->{$id_name . '_id'} } @{$op{$key}}]->[0];
 
+            my $unforgeable;
+            my $non_unforgeable;
             my $exposed;
             my $bad_exposed;
             my $secure;
             my $insecure;
             for (sort { $a cmp $b } keys %{$mem->{overload_set}}) {
               my $v = $mem->{overload_set}->{$_};
+              if (delete $v->{Unforgeable}) {
+                $unforgeable = 1;
+              } else {
+                $non_unforgeable = 1;
+              }
               if (defined $v->{_exposed}) {
                 if (defined $exposed) {
                   unless ((join $;, @{$v->{_exposed}}) eq (join $;, @$exposed)) {
@@ -259,6 +266,15 @@ sub process_parsed_struct ($$$) {
               }
             } # $v
             $mem->{id} = $id if defined $id;
+            if ($unforgeable) {
+              $mem->{Unforgeable} = 1;
+              if (defined $non_unforgeable) {
+                $self->onerror->(type => 'webidl:bad unforgeablility',
+                                 di => $di,
+                                 index => $op{$key}->[0]->{index},
+                                 level => 'm');
+              }
+            }
             if (defined $exposed) {
               $mem->{_exposed} = $exposed;
               if ($bad_exposed) {
@@ -342,7 +358,7 @@ sub process_parsed_struct ($$$) {
                   }
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
-                  for (qw(overload_set _exposed
+                  for (qw(overload_set Unforgeable _exposed
                           obsolete spec id Unscopable SecureContext)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
@@ -685,6 +701,10 @@ sub _extended_attributes ($$$$$) {
                              level => 'm');
           }
         }
+        next;
+      } elsif ($attr->{name} eq 'Unforgeable') {
+        $dest->{$attr->{name}} = 1;
+        # XXX restrictions on consequential interfaces
         next;
       } elsif ($attr->{name} eq 'Global' or
                $attr->{name} eq 'PrimaryGlobal') {

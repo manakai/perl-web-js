@@ -1,2 +1,8 @@
 - "../../t_deps/modules/test-x1" tests
 - "../../t_deps/modules/testdataparser" tests
+
+- "../../bin/modules/web-dom" build tests
+- "../../bin/modules/web-markup" build tests tests-json
+- "../../bin/modules/web-encodings" build tests
+- "../../bin/modules/web-url" build tests
+- "../../bin/modules/web-encodings.2" build tests

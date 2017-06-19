@@ -1,0 +1,29 @@
+## Validation errors and warnings
+##
+## This file is used to generate error definition data file available
+## from <https://github.com/manakai/data-errors>.
+##
+## Per CC0 <https://creativecommons.org/publicdomain/zero/1.0/>, to
+## the extent possible under law, the author has waived all copyright
+## and related or neighboring rights to this work.
+
+module=Web::IDL::Processor
+
+* webidl:bad unforgeablility
+
+layer=feature
+default_level=m
+
+@en
+An operation is incompletely <code>[Unforgeable]</code>
+@ja
+演算が中途半端に <code>[Unforgeable]</code> です
+
+@en
+<p>If an operation has an <code>[Unforgeable]</code> extended
+attribute specified, it must appear on all operations with the same
+identifier on the interface.
+
+@ja
+<p>演算に <code>[Unforgeable]</code> 拡張属性が指定されている場合、
+同じインターフェイスで同じ識別子の全演算に指定しなければいけません。

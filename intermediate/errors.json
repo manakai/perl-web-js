@@ -1,0 +1,19 @@
+{
+   "errors" : {
+      "webidl:bad unforgeablility" : {
+         "default_level" : "m",
+         "desc" : {
+            "en" : "\u003Cp>If an operation has an \u003Ccode>[Unforgeable]\u003C/code> extended\u000Aattribute specified, it must appear on all operations with the same\u000Aidentifier on the interface.\u003C/p>",
+            "ja" : "\u003Cp>演算に \u003Ccode>[Unforgeable]\u003C/code> 拡張属性が指定されている場合、\u000A同じインターフェイスで同じ識別子の全演算に指定しなければいけません。\u003C/p>"
+         },
+         "layer" : "feature",
+         "message" : {
+            "en" : "An operation is incompletely \u003Ccode>[Unforgeable]\u003C/code>",
+            "ja" : "演算が中途半端に \u003Ccode>[Unforgeable]\u003C/code> です"
+         },
+         "modules" : {
+            "Web::IDL::Processor" : 1
+         }
+      }
+   }
+}
