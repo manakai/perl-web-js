@@ -75,6 +75,7 @@ $Web::IDL::_Defs = {
                                              "HTMLConstructor" => 1,
                                              "LegacyArrayClass" => 1,
                                              "LegacyUnenumerableNamedProperties" => 1,
+                                             "LegacyWindowAlias" => 1,
                                              "NamedConstructor" => 1,
                                              "NoInterfaceObject" => 1,
                                              "OverrideBuiltins" => 1,
@@ -3599,6 +3600,10 @@ $Web::IDL::_Defs = {
                           "LegacyUnenumerableNamedProperties" => {
                                                                  "no" => 1
                                                                },
+                          "LegacyWindowAlias" => {
+                                                 "id" => 1,
+                                                 "id_list" => 1
+                                               },
                           "LenientSetter" => {
                                              "no" => 1
                                            },
@@ -3677,6 +3682,10 @@ $Web::IDL::_Defs = {
                                 ],
                                 [
                                   "HTMLConstructor",
+                                  "NoInterfaceObject"
+                                ],
+                                [
+                                  "LegacyWindowAlias",
                                   "NoInterfaceObject"
                                 ],
                                 [

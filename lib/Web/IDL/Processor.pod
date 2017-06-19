@@ -71,6 +71,12 @@ XXX
 
 =over 4
 
+=item alias
+
+An alias to another object in the same set of members.  The C<1>st
+item is a hash reference whose C<name> value identifies the referenced
+member.
+
 =item AllowShared
 
 An annotated type with the [AllowShared] extended attributes.  The
@@ -144,6 +150,10 @@ XXX
 
 Whether the interface is annotated with the [LegacyArrayClass]
 extended attribute or not.
+
+=item name (string)
+
+The referenced member's name, used with C<alias> typed data.
 
 =item required (boolean)
 

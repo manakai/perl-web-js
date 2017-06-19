@@ -561,6 +561,7 @@ sub _extended_attributes ($$$$$) {
   my $has_xattrs = {};
   my @constructor;
   my $named_constructors = {};
+  my $window_aliases = [];
   for my $attr (@{$src->{extended_attributes} or []}) {
     my $context = $dest_context->{context} || $src->{definition_type} || $src->{member_type} || 'argument';
     $context = 'partial_' . $context if $src->{partial};
@@ -619,6 +620,11 @@ sub _extended_attributes ($$$$$) {
       } elsif ($attr->{name} eq 'NamedConstructor') {
         push @{$named_constructors->{$attr->{value_names}->[0]} ||= []}, $attr
             if @{$attr->{value_names} or []};
+        next;
+      } elsif ($attr->{name} eq 'LegacyWindowAlias') {
+        for (@{$attr->{value_names} or []}) {
+          push @$window_aliases, $_;
+        }
         next;
       } elsif ($attr->{name} eq 'LenientThis' or
                $attr->{name} eq 'TreatNonObjectAsNull') {
@@ -821,6 +827,26 @@ sub _extended_attributes ($$$$$) {
         ($di, {type_name => $src->{name}, index => $src->{index}});
     for (values %{$dest->{NamedConstructor}->{$_}->[1]->{overload_set}}) {
       $_->{type} = $type;
+    }
+  }
+  for (@$window_aliases) {
+    $self->onerror->(type => 'webidl:duplicate',
+                     value => $_,
+                     di => $src->{di},
+                     index => $src->{index},
+                     level => 'm')
+        if defined $dest->{NamedConstructor}->{$_};
+    if ($dest->{NoInterfaceObject}) {
+      $self->onerror->(type => 'webidl:not allowed',
+                       value => 'LegacyWindowAlias',
+                       di => $src->{di},
+                       index => $src->{index},
+                       level => 'm');
+    } else {
+      # XXX primary global only
+      $dest->{NamedConstructor}->{$_} = ['alias', {
+        name => $src->{name},
+      }];
     }
   }
 
