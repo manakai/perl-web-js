@@ -133,8 +133,8 @@ for the member appears.
 =item member_type
 
 The type of the member: C<attribute>, C<operation>, C<const>,
-C<serializer>, C<iterable>, C<legacyiterable>, C<maplike>, C<setlike>,
-or C<dictionary_member>.
+C<iterable>, C<legacyiterable>, C<maplike>, C<setlike>, or
+C<dictionary_member>.
 
 =item name
 
@@ -142,7 +142,7 @@ The name of the member, if applicable.
 
 =item readonly, inherit, static
 
-=item getter, setter, deleter, stringifier, serializer
+=item getter, setter, deleter, stringifier
 
 =item required
 
@@ -172,14 +172,6 @@ The value associated with the member, as an identifier, if applicable.
 =item value_empty_sequence
 
 If specified, the value is an empty sequence.
-
-=item value_map
-
-The serialization pattern (map) of the member, if applicable.
-
-=item value_list
-
-The serialization pattern (list) of the member, if applicable.
 
 =item arguments
 
@@ -250,21 +242,6 @@ any.
 
 In addition, the type key/value pairs whose target is the argument are
 also available if applicable.
-
-A serialization pattern (either map or list) is a hash reference with
-following key/value pairss:
-
-=over 4
-
-=item value_names
-
-The array reference containing the values in the pattern.
-
-=item inherit, attribute, getter
-
-Whether the keyword is specified for the serialization pattern or not.
-
-=back
 
 An extended attribute is a hash reference with following key/value
 pairs:

@@ -116,8 +116,6 @@ Const
 |
 Operation
 |
-Serializer
-|
 Stringifier
 |
 StaticMember
@@ -251,71 +249,6 @@ float="value_float"
 'Infinity'="value"
 |
 'NaN'="value"
-
-* Serializer
-
-#'serializer'=serializer? SerializerRest
-_SerializerOperation
-|
-_Serializer
-
-* SerializerRest
-
-## 'ReturnType' is not in spec grammer but required in prose
-ReturnType
-OperationRest
-|
-'=' SerializationPattern
-|
-_SerializerEnd
-
-* _SerializerOperation
-
-'serializer'=serializer? ReturnType OperationRest
-
-* _Serializer
-
-_IDInSpecDirective
-'serializer'="member_type" '=' SerializationPattern ';'
-|
-_IDInSpecDirective
-'serializer'="member_type" ';'
-
-* SerializationPattern
-
-'{' SerializationPatternMap=value_map '}'
-|
-'[' SerializationPatternList=value_list ']'
-|
-identifier="value_name"
-
-* SerializationPatternMap
-
-+value_names[]
-
-'getter'=getter?
-|
-
-## Not in spec grammer but defined in prose
-'attribute'=attribute?
-|
-'inherit'=inherit? ',' 'attribute'=attribute?
-
-|
-'inherit'=inherit? Identifiers
-|
-identifier="value_names"[] Identifiers
-
-?
-
-* SerializationPatternList
-
-+value_names[]
-
-'getter'=getter?
-|
-identifier="value_names"[] Identifiers
-?
 
 * Stringifier
 

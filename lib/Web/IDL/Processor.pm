@@ -150,7 +150,6 @@ sub process_parsed_struct ($$$) {
             my @key;
             push @key, 'legacycaller' if $mem->{legacycaller};
             push @key, 'stringifier' if $mem->{stringifier};
-            push @key, 'serializer' if $mem->{serializer};
             if ($mem->{getter} or $mem->{setter} or $mem->{deleter}) {
               if (@{$mem->{arguments} or []} and
                   defined $mem->{arguments}->[0]->{type}) {
@@ -481,26 +480,6 @@ sub process_parsed_struct ($$$) {
                     ($di, $mem_xattrs_container => $mem_props, {});
                 $mem_props->{SecureContext} = 1 if $def->{SecureContext};
               }
-            } elsif ($mem->{member_type} eq 'serializer') {
-              if (defined $props->{serializer}) {
-                $self->onerror->(type => 'webidl:duplicate',
-                                 value => 'serializer',
-                                 di => $di,
-                                 index => $mem->{index},
-                                 level => 'm');
-              } else {
-                $props->{serializer}->[0] = $mem->{member_type};
-                my $mem_props = $props->{serializer}->[1] ||= {};
-                
-                $mem_props->{value} = $self->_value
-                    ($di, $mem, optional => 1, context => 'serializer');
-                delete $mem_props->{value} unless defined $mem_props->{value};
-
-                $mem_props->{_exposed} = $xattr_opts->{Exposed}
-                    if defined $xattr_opts->{Exposed};
-                $self->_extended_attributes ($di, $mem => $mem_props, {});
-                $mem_props->{SecureContext} = 1 if $def->{SecureContext};
-              }
             } elsif ($mem->{member_type} eq 'iterable' or
                      $mem->{member_type} eq 'maplike' or
                      $mem->{member_type} eq 'setlike') {
@@ -527,6 +506,7 @@ sub process_parsed_struct ($$$) {
                 }
 
                 # XXX reserved interface member
+                # XXX toJSON restriction
 
                 $mem_props->{_exposed} = $xattr_opts->{Exposed}
                     if defined $xattr_opts->{Exposed};
@@ -734,7 +714,7 @@ sub _extended_attributes ($$$$$) {
           }
         }
         # XXX If partial interface, it MUST have named getter.
-        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, serializers, iterable, maplike, setlike
+        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, iterable, maplike, setlike
         # XXX MUST NOT have named setter, creattor, deleter
         # XXX MUST NOT inherit interface with OverrideBuiltins
         # XXX MUST NOT inherit this interface
@@ -772,6 +752,10 @@ sub _extended_attributes ($$$$$) {
       } elsif ($attr->{name} eq 'CEReactions') {
         # XXX context validation
         $dest->{CEReactions} = 1;
+        next;
+      } elsif ($attr->{name} eq 'Default') {
+        # XXX context validation
+        $dest->{Default} = 1;
         next;
       } elsif ($attr->{name} eq 'SecureContext') {
         # XXX context validation
@@ -980,10 +964,6 @@ sub _value ($$$;%) {
     return ['float', $obj->{value_float}];
   } elsif (defined $obj->{value_string}) {
     return ['string', $obj->{value_string}];
-  } elsif (defined $obj->{value_name} and
-           defined $args{context} and $args{context} eq 'serializer') {
-    return ['ref_attribute', $obj->{value_name}];
-    # XXX MUST be an attribute of serializable type
   } elsif (defined $obj->{value}) {
     return $obj->{value};
   } elsif (defined $obj->{value_map} or defined $obj->{value_list}) {
@@ -1140,9 +1120,6 @@ sub _overload_set ($$$;%) {
                          value => $self->_serialize_type ($type),
                          level => 'm');
       }
-      $expected_length = 0;
-    } elsif ($args{special} eq 'serializer') {
-      # XXX MUST be serializable type
       $expected_length = 0;
     } elsif ($args{special} eq 'getter' or
              $args{special} eq 'deleter') {
