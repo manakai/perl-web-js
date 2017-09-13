@@ -148,7 +148,6 @@ sub process_parsed_struct ($$$) {
           for my $mem (@{$def->{members} or []}) {
             next unless $mem->{member_type} eq 'operation';
             my @key;
-            push @key, 'legacycaller' if $mem->{legacycaller};
             push @key, 'stringifier' if $mem->{stringifier};
             if ($mem->{getter} or $mem->{setter} or $mem->{deleter}) {
               if (@{$mem->{arguments} or []} and
@@ -313,11 +312,6 @@ sub process_parsed_struct ($$$) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
                   $mem_props->{SecureContext} = 1 if $def->{SecureContext};
-
-                  if ($mem->{special} eq 'legacycaller') {
-                    # XXX legacycaller SHOULD NOT be used
-                    
-                  }
 
                   if (not defined $mem->{name} and $mem->{Unscopable}) {
                     $self->onerror->(type => 'webidl:not allowed',
@@ -1100,16 +1094,6 @@ sub _overload_set ($$$;%) {
     my $expected_length;
     if (not defined $args{special}) {
       #
-    } elsif ($args{special} eq 'legacycaller') {
-      if (ref $type eq 'ARRAY' and $type->[0] eq 'Promise') {
-        ## XXX union, nullable, sequence, array of Promise should also
-        ## be disallowed?
-        $self->onerror->(type => 'webidl:bad type',
-                         di => $di,
-                         index => $_->{index},
-                         value => $self->_serialize_type ($type),
-                         level => 'm');
-      }
     } elsif ($args{special} eq 'stringifier') {
       if (not ref $type and $type eq 'DOMString') { # |USVString| not allowed
         #

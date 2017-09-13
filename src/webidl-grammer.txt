@@ -346,8 +346,6 @@ Special Specials
 |
 'deleter'=deleter?
 |
-'legacycaller'=legacycaller?
-|
 
 ## Non-standard : _IDInSpecDirective
 '[' other:'*' identifier:'id' '=' string="getter_id" other:'*' ']'
@@ -358,9 +356,6 @@ Special Specials
 |
 '[' other:'*' identifier:'id' '=' string="deleter_id" other:'*' ']'
 'deleter'=deleter?
-|
-'[' other:'*' identifier:'id' '=' string="legacycaller_id" other:'*' ']'
-'legacycaller'=legacycaller?
 
 * OperationRest
 
