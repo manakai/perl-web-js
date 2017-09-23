@@ -218,6 +218,7 @@ sub process_parsed_struct ($$$) {
                        index => $op{$key}->[0]->{index}};
             $mem->{overload_set} = $self->_overload_set
                 ($di, $op{$key}, special => $mem->{special});
+            $mem->{overloaded} = 1 if @{$op{$key}} > 1;
 
             my $id_name = $key;
             $id_name =~ s/^named_//;
@@ -307,7 +308,7 @@ sub process_parsed_struct ($$$) {
                 } else {
                   $props->{$mem->{special}}->[0] = $mem->{member_type};
                   my $mem_props = $props->{$mem->{special}}->[1] ||= {};
-                  for (qw(overload_set _exposed
+                  for (qw(overload_set overloaded _exposed
                           obsolete spec id SecureContext)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
@@ -351,7 +352,7 @@ sub process_parsed_struct ($$$) {
                   }
                   my $mem_props = $props->{members}->{$mem->{name}}->[1] ||= {};
 
-                  for (qw(overload_set Unforgeable _exposed
+                  for (qw(overload_set overloaded Unforgeable _exposed
                           obsolete spec id Unscopable SecureContext)) {
                     $mem_props->{$_} = $mem->{$_} if defined $mem->{$_};
                   }
@@ -787,6 +788,7 @@ sub _extended_attributes ($$$$$) {
         overload_set => $self->_overload_set
             ($di, \@constructor, type_optional => 1),
       }];
+      $dest->{Constructor}->[1]->{overloaded} = 1 if @constructor > 1;
       $dest->{Constructor}->[1]->{SecureContext} = 1 if $src->{SecureContext};
       my $type = $self->_type
           ($di, {type_name => $src->{name}, index => $src->{index}});
@@ -801,6 +803,8 @@ sub _extended_attributes ($$$$$) {
           ($di, $named_constructors->{$_}, type_optional => 1),
       ($src->{SecureContext} ? (SecureContext => 1) : ()),
     }];
+    $dest->{NamedConstructor}->{$_}->[1]->{overloaded} = 1
+        if @{$named_constructors->{$_}} > 1;
     my $type = $self->_type
         ($di, {type_name => $src->{name}, index => $src->{index}});
     for (values %{$dest->{NamedConstructor}->{$_}->[1]->{overload_set}}) {

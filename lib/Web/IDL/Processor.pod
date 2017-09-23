@@ -217,17 +217,13 @@ Whether the interface is annotated with the
 Whether the member is annotated with the [Unscopable] extended
 attribute or not.
 
+=item overloaded (boolean)
+
+Whether the operation is overloaded or not.
+
 =back
 
 XXX overload set item
-
-=over 4
-
-=item CEReactions (boolean)
-
-Whether the [CEReactions] extended attribute is in effect or not.
-
-=back
 
 =head1 SPECIFICATIONS
 
