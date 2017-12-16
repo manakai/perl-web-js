@@ -61,7 +61,6 @@ $Web::IDL::_Defs = {
                                                           "LegacyArrayClass" => 1,
                                                           "NoInterfaceObject" => 1,
                                                           "OverrideBuiltins" => 1,
-                                                          "PrimaryGlobal" => 1,
                                                           "SecureContext" => 1
                                                         },
                                 "const" => {
@@ -79,7 +78,6 @@ $Web::IDL::_Defs = {
                                                  "NamedConstructor" => 1,
                                                  "NoInterfaceObject" => 1,
                                                  "OverrideBuiltins" => 1,
-                                                 "PrimaryGlobal" => 1,
                                                  "SecureContext" => 1,
                                                  "Serializable" => 1,
                                                  "Transferable" => 1
@@ -116,7 +114,6 @@ $Web::IDL::_Defs = {
                                                          "Exposed" => 1,
                                                          "Global" => 1,
                                                          "OverrideBuiltins" => 1,
-                                                         "PrimaryGlobal" => 1,
                                                          "SecureContext" => 1,
                                                          "Serializable" => 1,
                                                          "Transferable" => 1
@@ -3353,11 +3350,6 @@ $Web::IDL::_Defs = {
                             "OverrideBuiltins" => {
                                                     "no" => 1
                                                   },
-                            "PrimaryGlobal" => {
-                                                 "id" => 1,
-                                                 "id_list" => 1,
-                                                 "no" => 1
-                                               },
                             "PutForwards" => {
                                                "id" => 1
                                              },
@@ -3407,10 +3399,6 @@ $Web::IDL::_Defs = {
                                     "OverrideBuiltins"
                                   ],
                                   [
-                                    "Global",
-                                    "PrimaryGlobal"
-                                  ],
-                                  [
                                     "HTMLConstructor",
                                     "NoInterfaceObject"
                                   ],
@@ -3425,10 +3413,6 @@ $Web::IDL::_Defs = {
                                   [
                                     "LenientSetter",
                                     "Replaceable"
-                                  ],
-                                  [
-                                    "OverrideBuiltins",
-                                    "PrimaryGlobal"
                                   ],
                                   [
                                     "PutForwards",
