@@ -49,9 +49,6 @@ for my $path ($data_path->children (qr/\.dat$/)) {
         eq_or_diff perl2json_chars_for_record $processor->processed,
                    perl2json_chars_for_record $expected;
       } else {
-        @error = grep {
-          not /;webidl:not defined;;\[PrimaryGlobal\];/;
-        } @error;
         eq_or_diff perl2json_chars_for_record $processor->processed->{idl_defs},
                    perl2json_chars_for_record $expected;
       }
@@ -67,7 +64,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

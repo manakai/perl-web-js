@@ -687,8 +687,7 @@ sub _extended_attributes ($$$$$) {
         $dest->{$attr->{name}} = 1;
         # XXX restrictions on consequential interfaces
         next;
-      } elsif ($attr->{name} eq 'Global' or
-               $attr->{name} eq 'PrimaryGlobal') {
+      } elsif ($attr->{name} eq 'Global') {
         $dest->{Global} = 1;
         if (defined $attr->{value_names}) {
           for (@{$attr->{value_names}}) {
@@ -696,17 +695,6 @@ sub _extended_attributes ($$$$$) {
           }
         } else {
           $self->{processed}->{global_names}->{$src->{name}}->{$src->{name}} = 1;
-        }
-        if ($attr->{name} eq 'PrimaryGlobal') {
-          if (defined $self->{processed}->{primary_global}) {
-            $self->onerror->(type => 'webidl:duplicate',
-                             value => $attr->{name},
-                             di => $di,
-                             index => $attr->{index},
-                             level => 'm');
-          } else {
-            $self->{processed}->{primary_global} = $src->{name};
-          }
         }
         # XXX If partial interface, it MUST have named getter.
         # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, iterable, maplike, setlike
@@ -825,7 +813,7 @@ sub _extended_attributes ($$$$$) {
                        index => $src->{index},
                        level => 'm');
     } else {
-      # XXX primary global only
+      # XXX Window only
       $dest->{NamedConstructor}->{$_} = ['alias', {
         name => $src->{name},
       }];
@@ -1498,11 +1486,6 @@ sub end_processing ($) {
   # XXX typedefs?
 
   ## Exposedness
-  unless (defined $self->{processed}->{primary_global}) {
-    $self->onerror->(type => 'webidl:not defined',
-                     value => '[PrimaryGlobal]',
-                     level => 'w');
-  }
   for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if ($def->[0] eq 'interface' or $def->[0] eq 'callback_interface') {
@@ -1520,14 +1503,10 @@ sub end_processing ($) {
           }
         }
       } else { # No [Exposed]
-        if (defined $self->{processed}->{primary_global}) {
-          $def->[1]->{Exposed}->{$self->{processed}->{primary_global}} = 1;
+        if (defined $self->{processed}->{global_names}) {
+          $def->[1]->{Exposed} = {};
         } else {
-          if (defined $self->{processed}->{global_names}) {
-            $def->[1]->{Exposed} = {};
-          } else {
             #
-          }
         }
       }
 
