@@ -17,7 +17,7 @@ for my $path ($data_path->children (qr/\.dat$/)) {
     errors => {is_list => 1},
     processed => {is_prefixed => 1},
   }, sub {
-    my $test = shift;
+    my ($test, $opts) = @_;
     test {
       my $c = shift;
 
@@ -45,18 +45,30 @@ for my $path ($data_path->children (qr/\.dat$/)) {
       $processor->end_processing;
 
       my $expected = json_chars2perl $test->{processed}->[0];
-      if ($expected->{idl_defs}) {
-        eq_or_diff perl2json_chars_for_record $processor->processed,
-                   perl2json_chars_for_record $expected;
-      } else {
-        eq_or_diff perl2json_chars_for_record $processor->processed->{idl_defs},
-                   perl2json_chars_for_record $expected;
+      my $actual = $processor->processed;
+      unless (defined $expected->{idl_defs}) {
+        $expected = {idl_defs => $expected};
+        $actual = {idl_defs => $actual->{idl_defs}};
+        @error = grep { not /;webidl:no Exposed;/ } @error;
+        for my $def_name (keys %{$expected->{idl_defs}}) {
+          if ($expected->{idl_defs}->{$def_name}->[0] eq 'interface' or
+              $expected->{idl_defs}->{$def_name}->[0] eq 'callback_interface') {
+            $expected->{idl_defs}->{$def_name}->[1]->{Exposed} ||= {};
+          }
+        }
       }
+      my @expected_error = @{$test->{errors}->[0] || []};
 
-      eq_or_diff \@error, $test->{errors}->[0] || [];
+      eq_or_diff perl2json_chars_for_record $actual,
+          perl2json_chars_for_record $expected;
+
+      #@error = sort { $a cmp $b } @error;
+      #@expected_error = sort { $a cmp $b } @expected_error;
+      eq_or_diff \@error, \@expected_error;
 
       done $c;
-    } n => 2, name => [$path, map { $_->[0] } @{$test->{data}}];
+    } n => 2, name => [$path, $opts->{line_number},
+                       map { $_->[0] } @{$test->{data}}];
   };
 }
 

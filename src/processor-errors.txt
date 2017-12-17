@@ -27,3 +27,20 @@ identifier on the interface.
 @ja
 <p>演算に <code>[Unforgeable]</code> 拡張属性が指定されている場合、
 同じインターフェイスで同じ識別子の全演算に指定しなければいけません。
+
+* webidl:no Exposed
+
+layer=feature
+default_level=m
+
+@en
+The interface has no <code>[Exposed]</code>
+@ja
+インターフェイスに <code>[Exposed]</code> がありません
+
+@en
+<p>An interface without the <code>[Exposed]</code> extended attribute
+is not useful at all.
+
+@ja
+<p><code>[Exposed]</code> 拡張属性のないインターフェイスには意味がありません。

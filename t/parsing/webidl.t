@@ -16,7 +16,7 @@ for my $path ($data_path->children (qr/\.dat$/)) {
     errors => {is_list => 1},
     parsed => {is_prefixed => 1},
   }, sub {
-    my $test = shift;
+    my ($test, $opts) = @_;
     test {
       my $c = shift;
 
@@ -40,7 +40,7 @@ for my $path ($data_path->children (qr/\.dat$/)) {
       eq_or_diff \@error, $test->{errors}->[0] || [];
 
       done $c;
-    } n => 2, name => [$path, $test->{data}->[0]];
+    } n => 2, name => [$path, $opts->{line_number}, $test->{data}->[0]];
   };
 }
 
@@ -48,7 +48,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2014 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

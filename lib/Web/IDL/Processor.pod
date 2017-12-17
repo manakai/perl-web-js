@@ -151,6 +151,14 @@ XXX
 Whether the interface is annotated with the [LegacyArrayClass]
 extended attribute or not.
 
+=item exposed (object of string => boolean)
+
+Which globals the interface, callback interface, global member, or
+interface member is exposed to.  The value is a hash reference whose
+keys are global interface names and values are boolean true values.
+For interface members, the value can be C<undef>, which represents
+"same as the interface to which the member belongs".
+
 =item name (string)
 
 The referenced member's name, used with C<alias> typed data.

@@ -1503,11 +1503,9 @@ sub end_processing ($) {
           }
         }
       } else { # No [Exposed]
-        if (defined $self->{processed}->{global_names}) {
-          $def->[1]->{Exposed} = {};
-        } else {
-            #
-        }
+        $self->onerror->(type => 'webidl:no Exposed', level => 'w',
+                         value => $def_name);
+        $def->[1]->{Exposed} = {};
       }
 
       for my $mem_name (sort { $a cmp $b } keys %{$def->[1]->{members}}) {
