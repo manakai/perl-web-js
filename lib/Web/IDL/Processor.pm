@@ -31,6 +31,7 @@ sub process_parsed_struct ($$$) {
   local $self->{obsolete} = $in->{obsolete};
   for my $def (@{$in->{definitions} or []}) {
     if ($def->{definition_type} eq 'interface' or
+        $def->{definition_type} eq 'namespace' or
         $def->{definition_type} eq 'dictionary' or
         $def->{definition_type} eq 'callback' or
         $def->{definition_type} eq 'enum' or
@@ -58,11 +59,21 @@ sub process_parsed_struct ($$$) {
 
         if ($def->{partial}) {
           if (not defined $self->{processed}->{idl_defs}->{$def->{name}}->[0] or
-              $self->{processed}->{idl_defs}->{$def->{name}}->[0] eq $def->{definition_type} or
+              (not $def->{definition_type} eq 'interface' and
+               $self->{processed}->{idl_defs}->{$def->{name}}->[0] eq $def->{definition_type}) or
+              ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'interface' and
+               $def->{definition_type} eq 'interface' and
+               not $def->{mixin}) or
               ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'callback_interface' and
-               $def->{definition_type} eq 'interface')) {
+               $def->{definition_type} eq 'interface' and
+               not $def->{mixin}) or
+              ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'interface_mixin' and
+               $def->{definition_type} eq 'interface' and
+               $def->{mixin})) {
             #
           } else {
+            ## This partial definition's type is different from the
+            ## proper definition's type.
             $self->onerror->(type => 'webidl:bad type',
                              di => $di,
                              index => $def->{index},
@@ -70,14 +81,21 @@ sub process_parsed_struct ($$$) {
                              level => 'm');
             next;
           }
-          $self->{processed}->{idl_defs}->{$def->{name}}->[0] ||= $def->{definition_type};
-        } elsif ($def->{definition_type} eq 'interface' and $def->{callback}) {
-          $self->{processed}->{idl_defs}->{$def->{name}}->[0] = 'callback_interface';
+          $self->{processed}->{idl_defs}->{$def->{name}}->[0]
+              ||= $def->{mixin} ? 'interface_mixin' : $def->{definition_type};
         } else {
           if (not defined $self->{processed}->{idl_defs}->{$def->{name}}->[0] or
-              $self->{processed}->{idl_defs}->{$def->{name}}->[0] eq $def->{definition_type} or
+              (not $def->{definition_type} eq 'interface' and
+               $self->{processed}->{idl_defs}->{$def->{name}}->[0] eq $def->{definition_type}) or
               ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'interface' and
-               $def->{definition_type} eq 'callback_interface')) {
+               $def->{definition_type} eq 'interface' and
+               not $def->{callback} and not $def->{mixin}) or
+              ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'interface' and
+               $def->{definition_type} eq 'interface' and
+               $def->{callback}) or
+              ($self->{processed}->{idl_defs}->{$def->{name}}->[0] eq 'interface_mixin' and
+               $def->{definition_type} eq 'interface' and
+               $def->{mixin})) {
             #
           } else {
             $self->onerror->(type => 'webidl:bad type',
@@ -87,7 +105,8 @@ sub process_parsed_struct ($$$) {
                              level => 'm');
             $self->{processed}->{idl_defs}->{$def->{name}}->[1] = {};
           }
-          $self->{processed}->{idl_defs}->{$def->{name}}->[0] = $def->{definition_type};
+          $self->{processed}->{idl_defs}->{$def->{name}}->[0]
+              = $def->{callback} ? 'callback_interface' : $def->{mixin} ? 'interface_mixin' : $def->{definition_type};
         }
         my $props = $self->{processed}->{idl_defs}->{$def->{name}}->[1] ||= {};
 
@@ -138,7 +157,8 @@ sub process_parsed_struct ($$$) {
           $props->{value} = ['stringset', $vals];
         } # enum
 
-        if ($def->{definition_type} eq 'interface' or
+        if ($def->{definition_type} eq 'interface' or # interface / callback interface / interface mixin
+            $def->{definition_type} eq 'namespace' or
             $def->{definition_type} eq 'dictionary') {
           my @mem = grep {
             not $_->{member_type} eq 'operation';
@@ -519,7 +539,7 @@ sub process_parsed_struct ($$$) {
         # XXX SHOULD NOT define new callback interface with only a
         # single operation
       }
-    } elsif ($def->{definition_type} eq 'implements') {
+    } elsif ($def->{definition_type} eq 'includes') {
       push @{$self->{state}->{implements} ||= []},
           [$def->{name} => $def->{super_name}, $di, $def->{index}];
       $self->_extended_attributes ($di, $def => {}, {});
@@ -530,6 +550,9 @@ sub process_parsed_struct ($$$) {
     }
   } # definitions
 } # process_parsed_struct
+
+# XXX [SecureContext] MUST NOT be specified both to partial interface,
+# partial interface mixin, or partial namespace and to their members.
 
 sub _extended_attributes ($$$$$) {
   my ($self, $di, $src, $dest, $dest_context) = @_;
@@ -716,7 +739,7 @@ sub _extended_attributes ($$$$$) {
           # XXX MUST be subset of interface's exposure set
         } else { # interface
           if ($src->{partial}) {
-            $dest_context->{Exposed} = $attr->{value_names} || [];
+            $dest_context->{Exposed} = $attr->{value_names} || ($src->{mixin} ? undef : []);
             # XXX
           } else {
             $self->{state}->{exposed}->{$src->{name}} = $attr->{value_names} || [];
@@ -1331,6 +1354,8 @@ sub end_processing ($) {
                        level => 'm');
       next;
     }
+    ## XXX Left-hand MUST be a non-callback interface.
+    ## XXX Right-hand MUST be an interface mixin.
 
     if (not defined $super_def) {
       $self->onerror->(type => 'webidl:not defined',
@@ -1488,7 +1513,10 @@ sub end_processing ($) {
   ## Exposedness
   for my $def_name (sort { $a cmp $b } keys %{$self->{processed}->{idl_defs}}) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
-    if ($def->[0] eq 'interface' or $def->[0] eq 'callback_interface') {
+    if ($def->[0] eq 'interface' or
+        $def->[0] eq 'callback_interface' or
+        $def->[0] eq 'interface_mixin' or
+        $def->[0] eq 'namespace') {
       if (defined $self->{state}->{exposed}->{$def_name}) {
         $def->[1]->{Exposed} = {};
         for my $gname (@{$self->{state}->{exposed}->{$def_name} or []}) {
@@ -1503,9 +1531,16 @@ sub end_processing ($) {
           }
         }
       } else { # No [Exposed]
-        $self->onerror->(type => 'webidl:no Exposed', level => 'w',
-                         value => $def_name);
-        $def->[1]->{Exposed} = {};
+        ## There MUST be [Exposed] if $def is:
+        ##   XXX non-callback interface without [NoInterfaceObject]
+        ##   XXX callback interface with const
+        ##   namespace
+        unless ($def->[0] eq 'interface_mixin') {
+          $self->onerror->(type => 'webidl:no Exposed',
+                           level => ($def->[0] eq 'namespace' ? 'm' : 'w'),
+                           value => $def_name);
+          $def->[1]->{Exposed} = {};
+        }
       }
 
       for my $mem_name (sort { $a cmp $b } keys %{$def->[1]->{members}}) {
@@ -1515,12 +1550,17 @@ sub end_processing ($) {
           for my $gname (@{delete $mem->[1]->{_exposed}}) {
             if (defined $self->{processed}->{global_names}->{$gname}) {
               for (sort { $a cmp $b } keys %{$self->{processed}->{global_names}->{$gname} or {}}) {
-                if ($def->[1]->{Exposed}->{$_}) {
+                if ($def->[0] eq 'interface_mixin' and
+                    not defined $def->[1]->{Exposed}) {
                   $mem->[1]->{Exposed}->{$_} = 1;
                 } else {
-                  $self->onerror->(type => 'webidl:not allowed',
-                                   value => "[Exposed=$_]",
-                                   level => 'w');
+                  if ($def->[1]->{Exposed}->{$_}) {
+                    $mem->[1]->{Exposed}->{$_} = 1;
+                  } else {
+                    $self->onerror->(type => 'webidl:not allowed',
+                                     value => "[Exposed=$_]",
+                                     level => 'w');
+                  }
                 }
               }
             } else {
@@ -1582,8 +1622,11 @@ sub end_processing ($) {
         $gmembers->{$_}->[1]->{Exposed} = $def->[1]->{Exposed}
             if defined $def->[1]->{Exposed};
       }
+    } elsif ($def->[0] eq 'namespace') {
+      $gmembers->{$def_name} = $def;
+      delete $self->{processed}->{idl_defs}->{$def_name};
     }
-  }
+  } # idl_defs
 
         # XXX warn if an object implements multiple interfaces with a special operation
 
@@ -1602,7 +1645,7 @@ sub processed ($) {
 
 =head1 LICENSE
 
-Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2018 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

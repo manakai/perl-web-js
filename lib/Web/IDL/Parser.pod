@@ -71,7 +71,7 @@ for the definition appears.
 
 =item definition_name
 
-Type of the definition: C<interface>, C<class>, C<dictionary>,
+Type of the definition: C<interface>, C<namespace>, C<dictionary>,
 C<enum>, or C<callback>.
 
 Note that the C<definition_name> for a C<callback interface> is
@@ -86,6 +86,10 @@ Whether the definition has the C<partial> keyword or not.
 Whether the definition is an interface and it has the C<callback>
 keyword or not.  Note that for a non-interface callback, this value is
 false.
+
+=item mixin
+
+Whether the definition is an interface mixin definition or not.
 
 =item name
 
@@ -325,7 +329,7 @@ C<[*spec=...*]>, and C<[*obsolete*]>.  These directives are only used
 for internal processing of <https://github.com/manakai/data-web-defs>
 and are not (and should not) be used elsewhere.
 
-=head1 SPECIFICATIONS
+=head1 SPECIFICATION
 
 =over 4
 
@@ -333,13 +337,9 @@ and are not (and should not) be used elsewhere.
 
 Web IDL <https://heycam.github.io/webidl/>.
 
-Web IDL "class"
-<https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>,
-<https://dom.spec.whatwg.org/#elements>.
-
 =back
 
-In this implementation, extended attributes MUST be in one of six
+In this implementation, extended attributes MUST be in one of various
 forms shown in the Web IDL specification.
 
 =head1 AUTHOR
@@ -348,7 +348,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2018 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

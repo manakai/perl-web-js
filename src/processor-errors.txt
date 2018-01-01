@@ -34,13 +34,18 @@ layer=feature
 default_level=m
 
 @en
-The interface has no <code>[Exposed]</code>
+The definition has no <code>[Exposed]</code>
 @ja
-インターフェイスに <code>[Exposed]</code> がありません
+定義に <code>[Exposed]</code> がありません
 
 @en
-<p>An interface without the <code>[Exposed]</code> extended attribute
-is not useful at all.
+<p>An interface (except for callback interface without constants and
+interface without <code>[NoInterfaceObject]</code>) or namespace
+without the <code>[Exposed]</code> extended attribute is not useful at
+all.
 
 @ja
-<p><code>[Exposed]</code> 拡張属性のないインターフェイスには意味がありません。
+<p><code>[Exposed]</code> 拡張属性のないインターフェイス
+(定数のないコールバックインターフェイスや
+<code>[NoInterfaceObject]</code> のインターフェイスを除きます。) 
+や名前空間には意味がありません。

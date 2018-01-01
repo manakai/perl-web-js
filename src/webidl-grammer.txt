@@ -23,7 +23,9 @@ ExtendedAttributeList Definition
 
 * Definition
 
-CallbackOrInterface
+CallbackOrInterfaceOrMixin
+|
+Namespace
 |
 Partial
 |
@@ -33,31 +35,24 @@ Enum
 |
 Typedef
 |
-ImplementsStatement
+IncludesStatement
 
-## Not in spec
-|
-_Class
-
-* CallbackOrInterface
+* CallbackOrInterfaceOrMixin
 
 _Callback
 |
-Interface
+_InterfaceOrMixin
 
 * _Callback
 
-#'callback' CallbackRestOrInterface
+# 'callback' CallbackRestOrInterface
+#
+# CallbackRestOrInterface:
+#   CallbackRest | InterfaceInCallbackRestOrInterface
 
 'callback'="definition_type" CallbackRest
 |
-'callback'=callback? Interface
-
-* CallbackRestOrInterface
-
-CallbackRest
-|
-Interface
+'callback'=callback? _InterfaceInCallbackRestOrInterface
 
 * _Name
 
@@ -76,16 +71,23 @@ identifier=_"name"
 '[' other:'*' identifier:'id' '=' string other:'*' ']'
 ?
 
-* Interface
+* _InterfaceOrMixin
 
-'interface'="definition_type" _Name Inheritance '{' InterfaceMembers '}' ';'
+'interface'="definition_type" InterfaceOrMixin
 
-* _Class
+* _InterfaceInCallbackRestOrInterface
 
-## Not in spec
-## <http://dom.spec.whatwg.org/#elements>
-## <https://www.w3.org/Bugs/Public/show_bug.cgi?id=23225>
-'class'="definition_type" _Name _ClassInheritance '{' InterfaceMembers '}' ';'
+'interface'="definition_type" InterfaceRest
+
+* InterfaceOrMixin
+
+InterfaceRest
+|
+MixinRest
+
+* InterfaceRest
+
+_Name Inheritance '{' InterfaceMembers '}' ';'
 
 * Partial
 
@@ -93,13 +95,26 @@ identifier=_"name"
 
 * PartialDefinition
 
-PartialInterface
+_PartialInterfaceOrPartialMixin
+|
+Namespace
 |
 PartialDictionary
 
-* PartialInterface
+* _PartialInterfaceOrPartialMixin
 
-'interface'="definition_type" _Name '{' InterfaceMembers '}' ';'
+'interface'="definition_type" 
+PartialInterfaceOrPartialMixin
+
+* PartialInterfaceOrPartialMixin
+
+PartialInterfaceRest
+|
+MixinRest
+
+* PartialInterfaceRest
+
+_Name '{' InterfaceMembers '}' ';'
 
 * InterfaceMembers
 
@@ -129,6 +144,55 @@ ReadWriteAttribute
 ReadWriteMaplike
 |
 ReadWriteSetlike
+
+* MixinRest
+
+'mixin'=mixin?
+_Name '{' MixinMembers '}' ';'
+
+* MixinMembers
+
+_MixinMember*=members[]
+
+* _MixinMember
+
++pos
+ExtendedAttributeList
+MixinMember
+
+* MixinMember
+
+Const
+|
+RegularOperation
+|
+Stringifier
+|
+ReadOnly AttributeRest
+
+* Namespace
+
+'namespace'="definition_type" _Name '{' NamespaceMembers '}' ';'
+
+* NamespaceMembers
+
+_NamespaceMember*=members[]
+
+* _NamespaceMember
+
++pos
+ExtendedAttributeList NamespaceMember
+
+* NamespaceMember
+
+_NamespaceOperation
+|
+_ReadOnlyAttributeRest
+
+* _NamespaceOperation
+
++member_type="operation"
+RegularOperation
 
 * Dictionary
 
@@ -174,12 +238,6 @@ string="value_string"
 ':' _SuperName
 ?
 
-* _ClassInheritance
-
-## Not in spec
-'extends' _SuperName
-?
-
 * _SuperName
 
 _IDInSpecDirectiveIgnored
@@ -216,9 +274,9 @@ _Name '=' ReturnType '(' ArgumentList ')' ';'
 
 'typedef'="definition_type" TypeWithExtendedAttributes _Name ';'
 
-* ImplementsStatement
+* IncludesStatement
 
-identifier="name" 'implements'="definition_type" _SuperName ';'
+identifier="name" 'includes'="definition_type" _SuperName ';'
 
 * Const
 
@@ -259,7 +317,7 @@ _IDInSpecDirective
 
 AttributeRest
 |
-ReturnType OperationRest
+RegularOperation
 |
 _StringifierEnd
 
@@ -278,7 +336,7 @@ _StringifierEnd
 
 AttributeRest
 |
-ReturnType OperationRest
+RegularOperation
 
 * ReadonlyMember
 
@@ -301,6 +359,10 @@ AttributeRest
 * AttributeRest
 
 ReadOnly 'attribute'="member_type" TypeWithExtendedAttributes AttributeName ';'
+
+* _ReadOnlyAttributeRest
+
+'readonly'=readonly? AttributeRest
 
 * AttributeName
 
@@ -325,13 +387,17 @@ AttributeNameKeyword
 
 * Operation
 
-ReturnType OperationRest
+RegularOperation
 |
 SpecialOperation
 
+* RegularOperation
+
+ReturnType OperationRest
+
 * SpecialOperation
 
-Special Specials ReturnType OperationRest
+Special Specials RegularOperation
 
 * Specials
 
