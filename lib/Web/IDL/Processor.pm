@@ -764,7 +764,9 @@ sub _extended_attributes ($$$$$) {
         next;
       } elsif ($attr->{name} eq 'SecureContext') {
         # XXX context validation
-        if (defined $src->{definition_type} and $src->{definition_type} eq 'interface') {
+        if (defined $src->{definition_type} and
+            ($src->{definition_type} eq 'interface' or # interface, callback_interface, interface_mixin
+             $src->{definition_type} eq 'namespace')) {
           $dest->{SecureContext} = 1 unless $src->{partial};
           $src->{SecureContext} = 1;
           next;
