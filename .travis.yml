@@ -8,6 +8,12 @@ perl:
 before_install: git submodule update --init
 install: "make test-deps"
 script: "make test"
+jobs:
+  include:
+    - stage: merge
+      before_install: "true"
+      install: "true"
+      script: curl -f https://gist.githubusercontent.com/wakaba/ab553f86cd017e0cb28c6dbb5364b009/raw/travis-merge-job.pl | perl
 notifications:
   email:
     - wakaba@suikawiki.org
@@ -18,5 +24,3 @@ notifications:
 env:
   global:
     secure: "dt0z4U8XreIRutzRpcTiYZPDnyKsUbWB/5T15fKBjgjrWVZIwmNGI2yfDzk7S0d0i0CFZ5sRdCrWJ40ja4cFF//2OKkowTGPN8JYJyygYVyPXpL4XjIs0vn9hFXa99B/vOkwCdfVEq3CIDWq1MEwflPL5+yTOAj+WZuZDqR2QR8="
-after_success:
-  - curl https://gist.githubusercontent.com/wakaba/9970857/raw/travis-merger.pl | perl
