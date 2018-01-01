@@ -49,3 +49,73 @@ all.
 (定数のないコールバックインターフェイスや
 <code>[NoInterfaceObject]</code> のインターフェイスを除きます。) 
 や名前空間には意味がありません。
+
+* webidl:cyclic inheritance
+
+layer=feature
+default_level=m
+
+@en
+The definition inherits from itself
+@ja
+定義が自身から継承しています
+
+@en
+<p>An interface or dictionary cannot be inherited from itself directly
+or indirectly.
+
+@ja
+<p>インターフェイスや辞書は、自身を直接または間接に継承することはできません。
+
+* webidl:dictionary:cyclic
+
+layer=feature
+default_level=m
+
+@en
+The dictionary is referenced by its member
+@ja
+辞書メンバーが辞書を参照しています
+
+@en
+<p>A dictionary cannot be used as the type of its member directly or
+indirectly.
+
+@ja
+<p>辞書を直接または間接にその辞書メンバーの型とすることはできません。
+
+* webidl:includes:left is not interface
+
+layer=feature
+default_level=m
+
+@en
+The left-hand side of the <code>includes</code> statement is not an
+interface
+@ja
+<code>includes</code> 文の左辺がインターフェイスではありません
+
+@en
+<p>The left-hand side of an <code>includes</code> statement must be
+the name of a non-callback interface.
+
+@ja
+<p><code>includes</code> 文の左辺はコールバックでないインターフェイスの名前でなければいけません。
+
+* webidl:includes:right is not mixin
+
+layer=feature
+default_level=m
+
+@en
+The right-hand side of the <code>includes</code> statement is not an
+interface mixin
+@ja
+<code>includes</code> 文の右辺がインターフェイスmixinではありません
+
+@en
+<p>The right-hand side of an <code>includes</code> statement must be
+the name of an interface mixin.
+
+@ja
+<p><code>includes</code> 文の右辺はインターフェイスmixinの名前でなければいけません。

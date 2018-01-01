@@ -708,7 +708,7 @@ sub _extended_attributes ($$$$$) {
         next;
       } elsif ($attr->{name} eq 'Unforgeable') {
         $dest->{$attr->{name}} = 1;
-        # XXX restrictions on consequential interfaces
+        # XXX MUST NOT on namespace's attribute
         next;
       } elsif ($attr->{name} eq 'Global') {
         $dest->{Global} = 1;
@@ -720,7 +720,7 @@ sub _extended_attributes ($$$$$) {
           $self->{processed}->{global_names}->{$src->{name}}->{$src->{name}} = 1;
         }
         # XXX If partial interface, it MUST have named getter.
-        # XXX interface and consequential interfaces MUST NOT have duplicate identifiers, stringifiers, iterable, maplike, setlike
+        # XXX interface and mixins MUST NOT have duplicate identifiers, stringifiers, iterable, maplike, setlike
         # XXX MUST NOT have named setter, creattor, deleter
         # XXX MUST NOT inherit interface with OverrideBuiltins
         # XXX MUST NOT inherit this interface
@@ -745,8 +745,7 @@ sub _extended_attributes ($$$$$) {
             $self->{state}->{exposed}->{$src->{name}} = $attr->{value_names} || [];
           }
         }
-        # XXX exposure sets MUST be subset of consequential's exposure sets
-        # XXX exposure sets MUST be subset of super-interface's exposure set
+        # XXX exposure sets vs inheritance/includes
         next;
       } elsif ($attr->{name} eq 'Unscopable') {
         $dest->{Unscopable} = 1;
@@ -1291,6 +1290,8 @@ sub end_processing ($) {
 
       # XXX more distinguishability checks
     }
+
+    # XXX error if ref_interface_mixin
   } # types
 
   ## Resolve inheritance
@@ -1311,8 +1312,7 @@ sub end_processing ($) {
                        index => $index,
                        value => $super,
                        level => 'm');
-    } elsif (($super_def->[1]->{implements} or {})->{$sub} or
-             $sub eq $super) {
+    } elsif (($super_def->[1]->{implements} or {})->{$sub} or $sub eq $super) {
       $self->onerror->(type => 'webidl:cyclic inheritance',
                        di => $di,
                        index => $index,
@@ -1339,13 +1339,12 @@ sub end_processing ($) {
     }
   } # inherits
 
-  my $is_supplemental = {};
   for (@{$self->{state}->{implements} or []}) {
     my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{processed}->{idl_defs}->{$sub};
     my $super_def = $self->{processed}->{idl_defs}->{$super};
-    $is_supplemental->{$super} = 1;
 
+    ## Left-hand side
+    my $sub_def = $self->{processed}->{idl_defs}->{$sub};
     if (not defined $sub_def) {
       $self->onerror->(type => 'webidl:not defined',
                        di => $di,
@@ -1353,9 +1352,15 @@ sub end_processing ($) {
                        value => $sub,
                        level => 'm');
       next;
+    } elsif ($sub_def->[0] eq 'interface') {
+      #
+    } else {
+      $self->onerror->(type => 'webidl:includes:left is not interface',
+                       di => $di,
+                       index => $index,
+                       value => $sub,
+                       level => 'm');
     }
-    ## XXX Left-hand MUST be a non-callback interface.
-    ## XXX Right-hand MUST be an interface mixin.
 
     if (not defined $super_def) {
       $self->onerror->(type => 'webidl:not defined',
@@ -1363,31 +1368,13 @@ sub end_processing ($) {
                        index => $index,
                        value => $super,
                        level => 'm');
-    } elsif (not $sub_def->[0] eq $super_def->[0] or
-             not $super_def->[0] eq 'interface') {
-      $self->onerror->(type => 'webidl:bad type',
-                       di => $di,
-                       index => $index,
-                       value => $super,
-                       level => 'm');
-    } elsif (($super_def->[1]->{implements} or {})->{$sub} or
-             ($sub_def->[1]->{implements} or {})->{$super} or
-             $sub eq $super) {
-      $self->onerror->(type => 'webidl:cyclic inheritance',
-                       di => $di,
-                       index => $index,
-                       value => $super,
-                       level => 'm');
-    } else {
+    } elsif ($super_def->[0] eq 'interface_mixin') {
       $sub_def->[1]->{implements}->{$super}->{depth} = 1;
       $sub_def->[1]->{implements}->{$super}->{supplemental} = 1;
-      $sub_def->[1]->{implements}->{$super}->{consequential} = 1;
       for (keys %{$super_def->[1]->{implements} or {}}) {
         $sub_def->[1]->{implements}->{$_}->{depth}
             = 1 + $super_def->[1]->{implements}->{$_}->{depth};
         $sub_def->[1]->{implements}->{$_}->{supplemental} = 1;
-        $is_supplemental->{$_} = 1;
-        $sub_def->[1]->{implements}->{$_}->{consequential} = 1;
       }
 
       for my $n (keys %{$self->{processed}->{idl_defs}}) {
@@ -1399,26 +1386,17 @@ sub end_processing ($) {
                 = $n_def->[1]->{implements}->{$sub}->{depth}
                 + $sub_def->[1]->{implements}->{$_}->{depth};
             $n_def->[1]->{implements}->{$_}->{supplemental} = 1;
-            $is_supplemental->{$_} = 1;
-            $n_def->[1]->{implements}->{$_}->{consequential} = 1
-                if $n_def->[1]->{implements}->{$sub}->{consequential};
           }
         }
       }
-    }
-  } # implements
-
-  for (@{$self->{state}->{implements} or []}) {
-    my ($sub, $super, $di, $index) = @$_;
-    my $sub_def = $self->{processed}->{idl_defs}->{$sub} or next;
-    if ($is_supplemental->{$sub}) {
-      $self->onerror->(type => 'webidl:implements implements',
+    } else {
+      $self->onerror->(type => 'webidl:includes:right is not mixin',
                        di => $di,
                        index => $index,
-                       value => $sub,
-                       level => 'w');
+                       value => $super,
+                       level => 'm');
     }
-  }
+  } # includes statements
 
   ## Argument optionality
   for (@{$self->{state}->{args} or []}) {
@@ -1503,11 +1481,12 @@ sub end_processing ($) {
   for my $def_name (@dict_name) {
     my $def = $self->{processed}->{idl_defs}->{$def_name};
     if (($def->[1]->{dictionaries_included_by_members} or {})->{$def_name}) {
-      $self->onerror->(type => 'webidl:cyclic inheritance',
+      $self->onerror->(type => 'webidl:dictionary:cyclic',
                        value => $def_name,
                        level => 'm');
     }
   } # defs
+  # XXX mixin members
   # XXX typedefs?
 
   ## Exposedness
@@ -1634,7 +1613,7 @@ sub end_processing ($) {
         # XXX If there is indexed*, there MUST be indexedGetter
         # XXX no special operation on callback interface
         # XXX inherited dictionary's member's name MUST NOT be used
-        # XXX there MUST NOT be identifier conflicting member on consequential interfaces
+  # XXX there MUST NOT be identifier conflicting member on included mixins
 } # end_processing
 
 sub processed ($) {

@@ -173,6 +173,10 @@ XXX
 Whether the interface is annotated with the [LegacyArrayClass]
 extended attribute or not.
 
+=item CEReactions (boolean)
+
+Whether the [CEReactions] extended attribute is in effect or not.
+
 =item Exposed (hash reference of string => boolean)
 
 Which globals the interface, callback interface, interface mixin,
@@ -181,37 +185,69 @@ member is exposed to.  The value is a hash reference whose keys are
 global interface names (not global names) and values are boolean true
 values.
 
-For an interface mixin, the value can be C<undef>, which represents
-that the interface mixin has no C<Exposed> extended attribute.
+For an interface mixin, the value might not be defined, which
+represents that the interface mixin has no C<Exposed> extended
+attribute.
 
 For an interface member, interface mixin member, or namespace member,
-the value can be C<undef>, which represents the exposure set is same
-as that of the definition the member belongs to.
+the value might not be defined, which represents the exposure set is
+same as that of the definition the member belongs to.
 
 =item getter (boolean)
 
 Whether the attribute has a getter or not.
 
-=item name (string)
+=item implements (hash reference of string => hash reference of key/value pairs)
 
-The referenced member's name, used with C<alias> typed data.
+For an interface, callback interface, or dictionary, the set of the
+inherited interfaces or the inherited dictionaries with included
+interfaces, if it is not empty.
 
-=item required (boolean)
+The keys of the hash reference are the names of the interfaces or
+dictionaries.  The interface or dictionary itself is not listed here.
+The corresponding value is the description of the inheritance, with
+following key/value pairs:
 
-Whether the dictionary member is required or not.
+=over 4
 
-=item read (boolean)
+=item depth (integer)
 
-Always true for C<maplike> or C<setlike> declaration.
+The distance, i.e. the number of "inherits" or C<includes>
+relationships to this interface, callback interface, interface mixin,
+or dictionary.
 
-=item write (boolean)
+=item supplemental (boolean)
 
-Whether the C<maplike> or C<setlike> declaration is I<not> read-only.
+Whether this is an interface mixin included by an C<includes>
+statement.
+
+=back
 
 =item keys_type (type)
 
 The first type in the C<maplike> or C<iterable> declaration when two
 types are specified.
+
+=item name (string)
+
+The referenced member's name, used with C<alias> typed data.
+
+=item overloaded (boolean)
+
+Whether the operation is overloaded or not.
+
+=item read (boolean)
+
+Always true for C<maplike> or C<setlike> declaration.
+
+=item required (boolean)
+
+Whether the dictionary member is required or not.
+
+=item SecureContext (boolean)
+
+Whether the object is annotated (directly or indirectly) with the
+[SecureContext] extended attribute or not.
 
 =item setter
 
@@ -224,15 +260,6 @@ If the value is C<LenientSetter>, the setter of the attribute is the
 Web IDL [LenientSetter] setter.
 
 If no value is specified, the attribute has no setter.
-
-=item CEReactions [boolean]
-
-Whether the [CEReactions] extended attribute is in effect or not.
-
-=item SecureContext (boolean)
-
-Whether the object is annotated (directly or indirectly) with the
-[SecureContext] extended attribute or not.
 
 =item TreatNonObjectAsNull (boolean)
 
@@ -254,9 +281,9 @@ attribute or not.
 The last type in the C<maplike>, C<setlike>, C<iterable>, or
 C<legacyiterable> declaration.
 
-=item overloaded (boolean)
+=item write (boolean)
 
-Whether the operation is overloaded or not.
+Whether the C<maplike> or C<setlike> declaration is I<not> read-only.
 
 =back
 
