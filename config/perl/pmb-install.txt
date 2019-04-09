@@ -2,6 +2,7 @@ Algorithm::Diff~1.1903
 AnyEvent~7.15
 Capture::Tiny~0.48
 Carp~1.50
+Date::Parse~2.30
 JE~0.066
 Path::Class~0.37
 Path::Tiny~0.108
@@ -10,4 +11,3 @@ Term::ANSIColor~4.06
 Test::Differences~0.67
 Test::More~1.302162
 Text::Diff~1.45
-Time::Zone~2.24
