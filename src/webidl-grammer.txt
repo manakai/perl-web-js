@@ -289,8 +289,6 @@ BooleanLiteral
 FloatLiteral
 |
 integer="value_integer"
-|
-'null'="value"
 
 * BooleanLiteral
 
@@ -679,9 +677,9 @@ StringType
 
 * ConstType
 
-PrimitiveType Null
+PrimitiveType
 |
-identifier="type_name" Null
+identifier="type_name"
 
 * PrimitiveType
 
