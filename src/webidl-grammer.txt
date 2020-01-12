@@ -596,9 +596,11 @@ UnionType Null
 
 * SingleType
 
-NonAnyType
+DistinguishableType
 |
 'any'="type"
+|
+PromiseType=type_parameterized
 
 * UnionType
 
@@ -606,7 +608,7 @@ NonAnyType
 
 * UnionMemberType
 
-ExtendedAttributeList NonAnyType
+ExtendedAttributeList DistinguishableType
 |
 UnionType Null
 
@@ -615,7 +617,7 @@ UnionType Null
 'or' UnionMemberType=type_union[] UnionMemberTypes
 ?
 
-* NonAnyType
+* DistinguishableType
 
 PrimitiveType Null
 |
@@ -635,8 +637,6 @@ _SequenceType=type_parameterized Null
 'DOMException'="type" Null
 |
 BufferRelatedType Null
-|
-PromiseType=type_parameterized
 |
 _FrozenArrayType=type_parameterized Null
 |

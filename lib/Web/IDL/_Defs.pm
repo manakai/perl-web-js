@@ -837,6 +837,127 @@ $Web::IDL::_Defs = {
                                                             ]
                                                           ]
                                             },
+                       "DistinguishableType" => {
+                                                "patterns" => [
+                                                              [
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "PrimitiveType"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "StringType"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "_IDInSpecDirectiveIgnored"
+                                                                },
+                                                                {
+                                                                  "set_value" => "type_name",
+                                                                  "type" => "identifier"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set" => "type_parameterized",
+                                                                  "type" => "rule",
+                                                                  "value" => "_SequenceType"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "type",
+                                                                  "type" => "object"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "type",
+                                                                  "type" => "Date"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "type",
+                                                                  "type" => "RegExp"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "type",
+                                                                  "type" => "DOMException"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "BufferRelatedType"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set" => "type_parameterized",
+                                                                  "type" => "rule",
+                                                                  "value" => "_FrozenArrayType"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set" => "type_parameterized",
+                                                                  "type" => "rule",
+                                                                  "value" => "RecordType"
+                                                                },
+                                                                {
+                                                                  "type" => "rule",
+                                                                  "value" => "Null"
+                                                                }
+                                                              ]
+                                                            ]
+                                              },
                        "Ellipsis" => {
                                      "can_be_empty" => 1,
                                      "patterns" => [
@@ -1647,134 +1768,6 @@ $Web::IDL::_Defs = {
                                                            ]
                                                          ]
                                            },
-                       "NonAnyType" => {
-                                       "patterns" => [
-                                                     [
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "PrimitiveType"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "StringType"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "_IDInSpecDirectiveIgnored"
-                                                       },
-                                                       {
-                                                         "set_value" => "type_name",
-                                                         "type" => "identifier"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set" => "type_parameterized",
-                                                         "type" => "rule",
-                                                         "value" => "_SequenceType"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
-                                                         "type" => "object"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
-                                                         "type" => "Date"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
-                                                         "type" => "RegExp"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
-                                                         "type" => "DOMException"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "BufferRelatedType"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set" => "type_parameterized",
-                                                         "type" => "rule",
-                                                         "value" => "PromiseType"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set" => "type_parameterized",
-                                                         "type" => "rule",
-                                                         "value" => "_FrozenArrayType"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set" => "type_parameterized",
-                                                         "type" => "rule",
-                                                         "value" => "RecordType"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ]
-                                                   ]
-                                     },
                        "Null" => {
                                  "can_be_empty" => 1,
                                  "patterns" => [
@@ -2197,13 +2190,20 @@ $Web::IDL::_Defs = {
                                                      [
                                                        {
                                                          "type" => "rule",
-                                                         "value" => "NonAnyType"
+                                                         "value" => "DistinguishableType"
                                                        }
                                                      ],
                                                      [
                                                        {
                                                          "set_type" => "type",
                                                          "type" => "any"
+                                                       }
+                                                     ],
+                                                     [
+                                                       {
+                                                         "set" => "type_parameterized",
+                                                         "type" => "rule",
+                                                         "value" => "PromiseType"
                                                        }
                                                      ]
                                                    ]
@@ -2515,7 +2515,7 @@ $Web::IDL::_Defs = {
                                                             },
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "NonAnyType"
+                                                              "value" => "DistinguishableType"
                                                             }
                                                           ],
                                                           [
