@@ -505,7 +505,7 @@ sub process_parsed_struct ($$$) {
                                  index => $mem->{index},
                                  level => 'm');
               } else {
-                $props->{iterable}->[0] = $mem->{member_type};
+                $props->{iterable}->[0] = ($mem->{async} ? 'async_' : '') . $mem->{member_type};
                 my $mem_props = $props->{iterable}->[1] ||= {};
 
                 if (defined $mem->{type2}) {
@@ -720,7 +720,7 @@ sub _extended_attributes ($$$$$) {
           $self->{processed}->{global_names}->{$src->{name}}->{$src->{name}} = 1;
         }
         # XXX If partial interface, it MUST have named getter.
-        # XXX interface and mixins MUST NOT have duplicate identifiers, stringifiers, iterable, maplike, setlike
+        # XXX interface and mixins MUST NOT have duplicate identifiers, stringifiers, iterable, async iterable, maplike, setlike
         # XXX MUST NOT have named setter, creattor, deleter
         # XXX MUST NOT inherit interface with OverrideBuiltins
         # XXX MUST NOT inherit this interface
@@ -1411,6 +1411,7 @@ sub end_processing ($) {
           ($_->{type}->[0] eq 'ref_dictionary' or
            ($_->{type}->[0] eq 'union' and
             $_->{type}->[1]->{has_dictionary}))) {
+        # XXX no longer part of the spec
         if ($_->{optionality} eq 'required') {
           # XXX allow required if the dictionary (or its ancestor) has required member
           $self->onerror->(type => 'webidl:bad optionality',

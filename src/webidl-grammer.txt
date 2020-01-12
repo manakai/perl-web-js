@@ -137,6 +137,8 @@ StaticMember
 |
 Iterable
 |
+AsyncIterable
+|
 ReadonlyMember
 |
 ReadWriteAttribute
@@ -501,6 +503,12 @@ ArgumentNameKeyword
 
 'iterable'="member_type" '<' TypeWithExtendedAttributes=type1
 OptionalType '>' ';'
+
+* AsyncIterable
+
+'async'=async? 'iterable'="member_type"
+'<' TypeWithExtendedAttributes=type1
+',' TypeWithExtendedAttributes=type2 '>' ';'
 
 * OptionalType
 

@@ -36,6 +36,10 @@ $Web::IDL::_Defs = {
                               "Uint8ClampedArray" => {
                                                      "AllowShared" => 1
                                                    },
+                              "async_iterable" => {
+                                                  "Exposed" => 1,
+                                                  "SecureContext" => 1
+                                                },
                               "attribute" => {
                                              "CEReactions" => 1,
                                              "Exposed" => 1,
@@ -360,6 +364,42 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "AsyncIterable" => {
+                                          "patterns" => [
+                                                        [
+                                                          {
+                                                            "set_true" => "async",
+                                                            "type" => "async"
+                                                          },
+                                                          {
+                                                            "set_type" => "member_type",
+                                                            "type" => "iterable"
+                                                          },
+                                                          {
+                                                            "type" => "<"
+                                                          },
+                                                          {
+                                                            "set" => "type1",
+                                                            "type" => "rule",
+                                                            "value" => "TypeWithExtendedAttributes"
+                                                          },
+                                                          {
+                                                            "type" => ","
+                                                          },
+                                                          {
+                                                            "set" => "type2",
+                                                            "type" => "rule",
+                                                            "value" => "TypeWithExtendedAttributes"
+                                                          },
+                                                          {
+                                                            "type" => ">"
+                                                          },
+                                                          {
+                                                            "type" => ";"
+                                                          }
+                                                        ]
+                                                      ]
+                                        },
                        "AttributeName" => {
                                           "patterns" => [
                                                         [
@@ -1499,6 +1539,12 @@ $Web::IDL::_Defs = {
                                                             {
                                                               "type" => "rule",
                                                               "value" => "Iterable"
+                                                            }
+                                                          ],
+                                                          [
+                                                            {
+                                                              "type" => "rule",
+                                                              "value" => "AsyncIterable"
                                                             }
                                                           ],
                                                           [
@@ -3366,6 +3412,7 @@ $Web::IDL::_Defs = {
                               "Uint8Array" => {},
                               "Uint8ClampedArray" => {},
                               "any" => {},
+                              "async" => {},
                               "attribute" => {
                                              "argument_name" => 1
                                            },
