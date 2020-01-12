@@ -666,6 +666,15 @@ $Web::IDL::_Defs = {
                                                            "set_true" => "value_empty_sequence",
                                                            "type" => "]"
                                                          }
+                                                       ],
+                                                       [
+                                                         {
+                                                           "type" => "{"
+                                                         },
+                                                         {
+                                                           "set_true" => "value_empty_dictionary",
+                                                           "type" => "}"
+                                                         }
                                                        ]
                                                      ]
                                        },
@@ -3651,11 +3660,19 @@ $Web::IDL::_Defs = {
                                 ],
                                 [
                                   "Constructor",
+                                  "Global"
+                                ],
+                                [
+                                  "Constructor",
                                   "HTMLConstructor"
                                 ],
                                 [
                                   "Constructor",
                                   "NoInterfaceObject"
+                                ],
+                                [
+                                  "Global",
+                                  "NamedConstructor"
                                 ],
                                 [
                                   "Global",

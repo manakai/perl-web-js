@@ -247,6 +247,8 @@ _IDInSpecDirectiveIgnored
 string="value_string"
 |
 '[' ']'=value_empty_sequence?
+|
+'{' '}'=value_empty_dictionary?
 
 * Inheritance
 

@@ -992,6 +992,8 @@ sub _value ($$$;%) {
     return \@v;
   } elsif ($obj->{value_empty_sequence}) {
     return ['sequence_value', []];
+  } elsif ($obj->{value_empty_dictionary}) {
+    return ['dictionary_value', {}];
   } elsif ($args{optional}) {
     return undef;
   }
@@ -1626,7 +1628,7 @@ sub processed ($) {
 
 =head1 LICENSE
 
-Copyright 2014-2018 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2020 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
