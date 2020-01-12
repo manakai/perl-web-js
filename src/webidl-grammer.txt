@@ -365,13 +365,17 @@ ReadWriteSetlike
 
 * ReadWriteAttribute
 
-'inherit'=inherit? ReadOnly AttributeRest
+'inherit'=inherit? _RWAttributeRest
 |
 AttributeRest
 
 * AttributeRest
 
-ReadOnly 'attribute'="member_type" TypeWithExtendedAttributes AttributeName ';'
+ReadOnly _RWAttributeRest
+
+* _RWAttributeRest
+
+'attribute'="member_type" TypeWithExtendedAttributes AttributeName ';'
 
 * _ReadOnlyAttributeRest
 
@@ -625,8 +629,6 @@ _SequenceType=type_parameterized Null
 'Date'="type" Null
 |
 'RegExp'="type" Null
-|
-'Error'="type" Null
 |
 'DOMException'="type" Null
 |

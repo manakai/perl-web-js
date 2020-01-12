@@ -1718,16 +1718,6 @@ $Web::IDL::_Defs = {
                                                      [
                                                        {
                                                          "set_type" => "type",
-                                                         "type" => "Error"
-                                                       },
-                                                       {
-                                                         "type" => "rule",
-                                                         "value" => "Null"
-                                                       }
-                                                     ],
-                                                     [
-                                                       {
-                                                         "set_type" => "type",
                                                          "type" => "DOMException"
                                                        },
                                                        {
@@ -3351,7 +3341,6 @@ $Web::IDL::_Defs = {
                               "DOMString" => {},
                               "DataView" => {},
                               "Date" => {},
-                              "Error" => {},
                               "Float32Array" => {},
                               "Float64Array" => {},
                               "FrozenArray" => {},
