@@ -48,7 +48,7 @@ _InterfaceOrMixin
 # 'callback' CallbackRestOrInterface
 #
 # CallbackRestOrInterface:
-#   CallbackRest | InterfaceInCallbackRestOrInterface
+#   CallbackRest | _InterfaceInCallbackRestOrInterface
 
 'callback'="definition_type" CallbackRest
 |
@@ -77,7 +77,7 @@ identifier=_"name"
 
 * _InterfaceInCallbackRestOrInterface
 
-'interface'="definition_type" InterfaceRest
+'interface'="definition_type" _Name '{' CallbackInterfaceMembers '}' ';'
 
 * InterfaceOrMixin
 
@@ -144,6 +144,21 @@ ReadWriteAttribute
 ReadWriteMaplike
 |
 ReadWriteSetlike
+
+* CallbackInterfaceMembers
+
+_CallbackInterfaceMember*=members[]
+
+* _CallbackInterfaceMember
+
++pos
+ExtendedAttributeList CallbackInterfaceMember
+
+* CallbackInterfaceMember
+
+Const
+|
+RegularOperation
 
 * MixinRest
 

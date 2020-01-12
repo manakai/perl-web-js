@@ -57,10 +57,6 @@ $Web::IDL::_Defs = {
                                           },
                               "callback_interface" => {
                                                       "Exposed" => 1,
-                                                      "Global" => 1,
-                                                      "LegacyArrayClass" => 1,
-                                                      "NoInterfaceObject" => 1,
-                                                      "OverrideBuiltins" => 1,
                                                       "SecureContext" => 1
                                                     },
                               "const" => {
@@ -501,6 +497,34 @@ $Web::IDL::_Defs = {
                                                             ]
                                                           ]
                                             },
+                       "CallbackInterfaceMember" => {
+                                                    "patterns" => [
+                                                                  [
+                                                                    {
+                                                                      "type" => "rule",
+                                                                      "value" => "Const"
+                                                                    }
+                                                                  ],
+                                                                  [
+                                                                    {
+                                                                      "type" => "rule",
+                                                                      "value" => "RegularOperation"
+                                                                    }
+                                                                  ]
+                                                                ]
+                                                  },
+                       "CallbackInterfaceMembers" => {
+                                                     "patterns" => [
+                                                                   [
+                                                                     {
+                                                                       "append" => "members",
+                                                                       "multiple" => 1,
+                                                                       "type" => "rule",
+                                                                       "value" => "_CallbackInterfaceMember"
+                                                                     }
+                                                                   ]
+                                                                 ]
+                                                   },
                        "CallbackOrInterfaceOrMixin" => {
                                                        "patterns" => [
                                                                      [
@@ -2733,6 +2757,21 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "_CallbackInterfaceMember" => {
+                                                     "patterns" => [
+                                                                   [
+                                                                     {
+                                                                       "type" => "rule",
+                                                                       "value" => "ExtendedAttributeList"
+                                                                     },
+                                                                     {
+                                                                       "type" => "rule",
+                                                                       "value" => "CallbackInterfaceMember"
+                                                                     }
+                                                                   ]
+                                                                 ],
+                                                     "set_index" => 1
+                                                   },
                        "_Definition" => {
                                         "patterns" => [
                                                       [
@@ -2892,7 +2931,20 @@ $Web::IDL::_Defs = {
                                                                                 },
                                                                                 {
                                                                                   "type" => "rule",
-                                                                                  "value" => "InterfaceRest"
+                                                                                  "value" => "_Name"
+                                                                                },
+                                                                                {
+                                                                                  "type" => "{"
+                                                                                },
+                                                                                {
+                                                                                  "type" => "rule",
+                                                                                  "value" => "CallbackInterfaceMembers"
+                                                                                },
+                                                                                {
+                                                                                  "type" => "}"
+                                                                                },
+                                                                                {
+                                                                                  "type" => ";"
                                                                                 }
                                                                               ]
                                                                             ]
