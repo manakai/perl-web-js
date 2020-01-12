@@ -1042,13 +1042,6 @@ sub _overload_set ($$$;%) {
       # XXX type restrictions
 
       my $name = $args->[$i]->{name} = $_->{arguments}->[$i]->{name};
-      if ($Web::IDL::_Defs->{reserved}->{argument}->{$name}) {
-        $self->onerror->(type => 'webidl:reserved',
-                         value => $name,
-                         di => $di,
-                         index => $_->{index},
-                         level => 'm');
-      }
       if ($name{$name}) {
         $self->onerror->(type => 'webidl:duplicate',
                          value => $name,

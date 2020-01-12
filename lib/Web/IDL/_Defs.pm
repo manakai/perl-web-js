@@ -237,6 +237,12 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
+                                                                  "type" => "constructor"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
                                                                   "type" => "deleter"
                                                                 }
                                                               ],
@@ -3544,7 +3550,9 @@ $Web::IDL::_Defs = {
                               "const" => {
                                          "argument_name" => 1
                                        },
-                              "constructor" => {},
+                              "constructor" => {
+                                               "argument_name" => 1
+                                             },
                               "deleter" => {
                                            "argument_name" => 1
                                          },
