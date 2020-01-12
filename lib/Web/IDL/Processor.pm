@@ -163,6 +163,7 @@ sub process_parsed_struct ($$$) {
           my @mem = grep {
             not $_->{member_type} eq 'operation';
           } @{$def->{members} or []};
+          my @constructor;
 
           my %op;
           for my $mem (@{$def->{members} or []}) {
@@ -379,6 +380,8 @@ sub process_parsed_struct ($$$) {
                   $mem_props->{SecureContext} = 1 if $def->{SecureContext};
                 }
               }
+            } elsif ($mem->{member_type} eq 'constructor') {
+              push @constructor, $mem;
             } elsif ($mem->{member_type} eq 'const' or
                      $mem->{member_type} eq 'attribute' or
                      $mem->{member_type} eq 'dictionary_member') {
@@ -534,6 +537,28 @@ sub process_parsed_struct ($$$) {
                                level => 'u');
             } # member_type
           }
+
+          if (@constructor) {
+            if (defined $props->{Constructor}) { # has [HTMLConstructor]
+              $self->onerror->(type => 'webidl:not allowed',
+                               value => 'Constructor',
+                               di => $di,
+                               index => $def->{index},
+                               level => 'm');
+            } else {
+              $props->{Constructor} = ['operation', {
+                overload_set => $self->_overload_set
+                    ($di, \@constructor, type_optional => 1),
+              }];
+              $props->{Constructor}->[1]->{overloaded} = 1 if @constructor > 1;
+              $props->{Constructor}->[1]->{SecureContext} = 1 if $def->{SecureContext};
+              my $type = $self->_type
+                  ($di, {type_name => $def->{name}, index => $def->{index}});
+              for (values %{$props->{Constructor}->[1]->{overload_set}}) {
+                $_->{type} = $type;
+              }
+            }
+          } # @constructor
         } # has member
 
         # XXX SHOULD NOT define new callback interface with only a
@@ -557,7 +582,6 @@ sub process_parsed_struct ($$$) {
 sub _extended_attributes ($$$$$) {
   my ($self, $di, $src, $dest, $dest_context) = @_;
   my $has_xattrs = {};
-  my @constructor;
   my $named_constructors = {};
   my $window_aliases = [];
   for my $attr (@{$src->{extended_attributes} or []}) {
@@ -609,9 +633,6 @@ sub _extended_attributes ($$$$$) {
         $dest->{$attr->{name}} = 1;
         # XXX MUST NOT be used with readonly attribute
         next;
-      } elsif ($attr->{name} eq 'Constructor') {
-        push @constructor, $attr;
-        next;
       } elsif ($attr->{name} eq 'HTMLConstructor') {
         $dest->{Constructor} = ['HTMLConstructor'];
         next;
@@ -651,6 +672,7 @@ sub _extended_attributes ($$$$$) {
         # XXX MUST NOT be used if there is any static operation
         # XXX MUST NOT be used on callback interface with no constant
         # XXX Any super interface MUST have [NoInterfaceObject]
+        # XXX MUST NOT if constructor() or [HTMLConstructor]
         next;
       } elsif ($attr->{name} eq 'OverrideBuiltins') {
         $dest->{$attr->{name}} = 1;
@@ -788,27 +810,6 @@ sub _extended_attributes ($$$$$) {
                      level => 'm');
   } # $attr
 
-  if (@constructor) {
-    if (defined $dest->{Constructor}) {
-      $self->onerror->(type => 'webidl:not allowed',
-                       value => 'Constructor',
-                       di => $di,
-                       index => $src->{index},
-                       level => 'm');
-    } else {
-      $dest->{Constructor} = ['operation', {
-        overload_set => $self->_overload_set
-            ($di, \@constructor, type_optional => 1),
-      }];
-      $dest->{Constructor}->[1]->{overloaded} = 1 if @constructor > 1;
-      $dest->{Constructor}->[1]->{SecureContext} = 1 if $src->{SecureContext};
-      my $type = $self->_type
-          ($di, {type_name => $src->{name}, index => $src->{index}});
-      for (values %{$dest->{Constructor}->[1]->{overload_set}}) {
-        $_->{type} = $type;
-      }
-    }
-  }
   for (sort { $a cmp $b } keys %{$named_constructors}) {
     $dest->{NamedConstructor}->{$_} = ['operation', {
       overload_set => $self->_overload_set

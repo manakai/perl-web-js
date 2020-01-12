@@ -68,7 +68,6 @@ $Web::IDL::_Defs = {
                                          "SecureContext" => 1
                                        },
                               "interface" => {
-                                             "Constructor" => 1,
                                              "Exposed" => 1,
                                              "Global" => 1,
                                              "HTMLConstructor" => 1,
@@ -678,6 +677,29 @@ $Web::IDL::_Defs = {
                                                      ]
                                                    ]
                                      },
+                       "Constructor" => {
+                                        "patterns" => [
+                                                      [
+                                                        {
+                                                          "set_type" => "member_type",
+                                                          "type" => "constructor"
+                                                        },
+                                                        {
+                                                          "type" => "("
+                                                        },
+                                                        {
+                                                          "type" => "rule",
+                                                          "value" => "ArgumentList"
+                                                        },
+                                                        {
+                                                          "type" => ")"
+                                                        },
+                                                        {
+                                                          "type" => ";"
+                                                        }
+                                                      ]
+                                                    ]
+                                      },
                        "Default" => {
                                     "can_be_empty" => 1,
                                     "patterns" => [
@@ -1526,61 +1548,13 @@ $Web::IDL::_Defs = {
                                                           [
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "Const"
+                                                              "value" => "PartialInterfaceMember"
                                                             }
                                                           ],
                                                           [
                                                             {
                                                               "type" => "rule",
-                                                              "value" => "Operation"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "Stringifier"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "StaticMember"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "Iterable"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "AsyncIterable"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "ReadonlyMember"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "ReadWriteAttribute"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "ReadWriteMaplike"
-                                                            }
-                                                          ],
-                                                          [
-                                                            {
-                                                              "type" => "rule",
-                                                              "value" => "ReadWriteSetlike"
+                                                              "value" => "Constructor"
                                                             }
                                                           ]
                                                         ]
@@ -2007,6 +1981,82 @@ $Web::IDL::_Defs = {
                                                             ]
                                                           ]
                                             },
+                       "PartialInterfaceMember" => {
+                                                   "patterns" => [
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "Const"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "Operation"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "Stringifier"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "StaticMember"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "Iterable"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "AsyncIterable"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "ReadonlyMember"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "ReadWriteAttribute"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "ReadWriteMaplike"
+                                                                   }
+                                                                 ],
+                                                                 [
+                                                                   {
+                                                                     "type" => "rule",
+                                                                     "value" => "ReadWriteSetlike"
+                                                                   }
+                                                                 ]
+                                                               ]
+                                                 },
+                       "PartialInterfaceMembers" => {
+                                                    "patterns" => [
+                                                                  [
+                                                                    {
+                                                                      "append" => "members",
+                                                                      "multiple" => 1,
+                                                                      "type" => "rule",
+                                                                      "value" => "_PartialInterfaceMember"
+                                                                    }
+                                                                  ]
+                                                                ]
+                                                  },
                        "PartialInterfaceOrPartialMixin" => {
                                                            "patterns" => [
                                                                          [
@@ -2035,7 +2085,7 @@ $Web::IDL::_Defs = {
                                                                  },
                                                                  {
                                                                    "type" => "rule",
-                                                                   "value" => "InterfaceMembers"
+                                                                   "value" => "PartialInterfaceMembers"
                                                                  },
                                                                  {
                                                                    "type" => "}"
@@ -3175,6 +3225,21 @@ $Web::IDL::_Defs = {
                                                                 ]
                                                               ]
                                                 },
+                       "_PartialInterfaceMember" => {
+                                                    "patterns" => [
+                                                                  [
+                                                                    {
+                                                                      "type" => "rule",
+                                                                      "value" => "ExtendedAttributeList"
+                                                                    },
+                                                                    {
+                                                                      "type" => "rule",
+                                                                      "value" => "PartialInterfaceMember"
+                                                                    }
+                                                                  ]
+                                                                ],
+                                                    "set_index" => 1
+                                                  },
                        "_PartialInterfaceOrPartialMixin" => {
                                                             "patterns" => [
                                                                           [
@@ -3479,6 +3544,7 @@ $Web::IDL::_Defs = {
                               "const" => {
                                          "argument_name" => 1
                                        },
+                              "constructor" => {},
                               "deleter" => {
                                            "argument_name" => 1
                                          },
@@ -3674,10 +3740,6 @@ $Web::IDL::_Defs = {
                           "Clamp" => {
                                      "no" => 1
                                    },
-                          "Constructor" => {
-                                           "args" => 1,
-                                           "no" => 1
-                                         },
                           "Default" => {
                                        "no" => 1
                                      },
@@ -3762,18 +3824,6 @@ $Web::IDL::_Defs = {
                                   "EnforceRange"
                                 ],
                                 [
-                                  "Constructor",
-                                  "Global"
-                                ],
-                                [
-                                  "Constructor",
-                                  "HTMLConstructor"
-                                ],
-                                [
-                                  "Constructor",
-                                  "NoInterfaceObject"
-                                ],
-                                [
                                   "Global",
                                   "NamedConstructor"
                                 ],
@@ -3803,7 +3853,6 @@ $Web::IDL::_Defs = {
                                 ]
                               ],
           "xattr_multiple" => {
-                              "Constructor" => 1,
                               "NamedConstructor" => 1
                             }
         };

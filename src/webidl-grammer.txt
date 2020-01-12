@@ -114,7 +114,7 @@ MixinRest
 
 * PartialInterfaceRest
 
-_Name '{' InterfaceMembers '}' ';'
+_Name '{' PartialInterfaceMembers '}' ';'
 
 * InterfaceMembers
 
@@ -125,7 +125,22 @@ _InterfaceMember*=members[]
 +pos
 ExtendedAttributeList InterfaceMember
 
+* PartialInterfaceMembers
+
+_PartialInterfaceMember*=members[]
+
+* _PartialInterfaceMember
+
++pos
+ExtendedAttributeList PartialInterfaceMember
+
 * InterfaceMember
+
+PartialInterfaceMember
+|
+Constructor
+
+* PartialInterfaceMember
 
 Const
 |
@@ -443,6 +458,10 @@ Special Specials
 |
 '[' other:'*' identifier:'id' '=' string="deleter_id" other:'*' ']'
 'deleter'=deleter?
+
+* Constructor
+
+'constructor'="member_type" '(' ArgumentList ')' ';'
 
 * OperationRest
 
