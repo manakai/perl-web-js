@@ -214,6 +214,12 @@ $Web::IDL::_Defs = {
                                                               [
                                                                 {
                                                                   "set_type" => "name",
+                                                                  "type" => "async"
+                                                                }
+                                                              ],
+                                                              [
+                                                                {
+                                                                  "set_type" => "name",
                                                                   "type" => "attribute"
                                                                 }
                                                               ],
@@ -418,6 +424,12 @@ $Web::IDL::_Defs = {
                                         },
                        "AttributeNameKeyword" => {
                                                  "patterns" => [
+                                                               [
+                                                                 {
+                                                                   "set_type" => "name",
+                                                                   "type" => "async"
+                                                                 }
+                                                               ],
                                                                [
                                                                  {
                                                                    "set_type" => "name",
@@ -1841,12 +1853,38 @@ $Web::IDL::_Defs = {
                                                     ]
                                                   ]
                                     },
+                       "OperationName" => {
+                                          "patterns" => [
+                                                        [
+                                                          {
+                                                            "type" => "rule",
+                                                            "value" => "_Name"
+                                                          }
+                                                        ],
+                                                        [
+                                                          {
+                                                            "type" => "rule",
+                                                            "value" => "_OperationNameKeyword"
+                                                          }
+                                                        ]
+                                                      ]
+                                        },
+                       "OperationNameKeyword" => {
+                                                 "patterns" => [
+                                                               [
+                                                                 {
+                                                                   "set_type" => "name",
+                                                                   "type" => "includes"
+                                                                 }
+                                                               ]
+                                                             ]
+                                               },
                        "OperationRest" => {
                                           "patterns" => [
                                                         [
                                                           {
                                                             "type" => "rule",
-                                                            "value" => "OptionalIdentifier"
+                                                            "value" => "OptionalOperationName"
                                                           },
                                                           {
                                                             "type" => "("
@@ -1870,17 +1908,6 @@ $Web::IDL::_Defs = {
                                                           ]
                                                         ]
                                         },
-                       "OptionalIdentifier" => {
-                                               "can_be_empty" => 1,
-                                               "patterns" => [
-                                                             [
-                                                               {
-                                                                 "type" => "rule",
-                                                                 "value" => "_Name"
-                                                               }
-                                                             ]
-                                                           ]
-                                             },
                        "OptionalLong" => {
                                          "can_be_empty" => 1,
                                          "patterns" => [
@@ -1891,6 +1918,17 @@ $Web::IDL::_Defs = {
                                                        ]
                                                      ]
                                        },
+                       "OptionalOperationName" => {
+                                                  "can_be_empty" => 1,
+                                                  "patterns" => [
+                                                                [
+                                                                  {
+                                                                    "type" => "rule",
+                                                                    "value" => "OperationName"
+                                                                  }
+                                                                ]
+                                                              ]
+                                                },
                        "OptionalType" => {
                                          "can_be_empty" => 1,
                                          "patterns" => [
@@ -2138,13 +2176,13 @@ $Web::IDL::_Defs = {
                                                              [
                                                                {
                                                                  "type" => "rule",
-                                                                 "value" => "ReadWriteMaplike"
+                                                                 "value" => "MaplikeRest"
                                                                }
                                                              ],
                                                              [
                                                                {
                                                                  "type" => "rule",
-                                                                 "value" => "ReadWriteSetlike"
+                                                                 "value" => "SetlikeRest"
                                                                }
                                                              ]
                                                            ]
@@ -3123,6 +3161,20 @@ $Web::IDL::_Defs = {
                                                              ]
                                                            ]
                                              },
+                       "_OperationNameKeyword" => {
+                                                  "patterns" => [
+                                                                [
+                                                                  {
+                                                                    "type" => "rule",
+                                                                    "value" => "_IDInSpecDirective"
+                                                                  },
+                                                                  {
+                                                                    "type" => "rule",
+                                                                    "value" => "OperationNameKeyword"
+                                                                  }
+                                                                ]
+                                                              ]
+                                                },
                        "_PartialInterfaceOrPartialMixin" => {
                                                             "patterns" => [
                                                                           [
@@ -3412,7 +3464,10 @@ $Web::IDL::_Defs = {
                               "Uint8Array" => {},
                               "Uint8ClampedArray" => {},
                               "any" => {},
-                              "async" => {},
+                              "async" => {
+                                         "argument_name" => 1,
+                                         "attribute_name" => 1
+                                       },
                               "attribute" => {
                                              "argument_name" => 1
                                            },
@@ -3440,7 +3495,8 @@ $Web::IDL::_Defs = {
                                           "argument_name" => 1
                                         },
                               "includes" => {
-                                            "argument_name" => 1
+                                            "argument_name" => 1,
+                                            "operation_name" => 1
                                           },
                               "inherit" => {
                                            "argument_name" => 1

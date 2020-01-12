@@ -363,9 +363,9 @@ RegularOperation
 
 AttributeRest
 |
-ReadWriteMaplike
+MaplikeRest
 |
-ReadWriteSetlike
+SetlikeRest
 
 * ReadWriteAttribute
 
@@ -447,12 +447,23 @@ Special Specials
 * OperationRest
 
 +member_type="operation"
-OptionalIdentifier '(' ArgumentList ')' ';'
+OptionalOperationName '(' ArgumentList ')' ';'
 
-* OptionalIdentifier
+* OptionalOperationName
+
+OperationName
+?
+
+* OperationName
 
 _Name
-?
+|
+_OperationNameKeyword
+
+* _OperationNameKeyword
+
+_IDInSpecDirective
+OperationNameKeyword
 
 * ArgumentList
 

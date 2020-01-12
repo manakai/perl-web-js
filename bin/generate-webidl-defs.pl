@@ -22,6 +22,10 @@ for (sort { $a cmp $b } keys %{$data->{keyword_tokens}}) {
     push @{$Data->{grammer}->{AttributeNameKeyword}->{patterns} ||= []},
         [{type => $_, set_type => 'name'}];
   }
+  if ($data->{keyword_tokens}->{$_}->{operation_name}) {
+    push @{$Data->{grammer}->{OperationNameKeyword}->{patterns} ||= []},
+        [{type => $_, set_type => 'name'}];
+  }
 }
 
 for my $construct (sort { $a cmp $b } keys %{$data->{constructs}}) {
