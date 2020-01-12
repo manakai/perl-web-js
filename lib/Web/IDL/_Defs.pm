@@ -394,19 +394,8 @@ $Web::IDL::_Defs = {
                                                             "value" => "ReadOnly"
                                                           },
                                                           {
-                                                            "set_type" => "member_type",
-                                                            "type" => "attribute"
-                                                          },
-                                                          {
                                                             "type" => "rule",
-                                                            "value" => "TypeWithExtendedAttributes"
-                                                          },
-                                                          {
-                                                            "type" => "rule",
-                                                            "value" => "AttributeName"
-                                                          },
-                                                          {
-                                                            "type" => ";"
+                                                            "value" => "_RWAttributeRest"
                                                           }
                                                         ]
                                                       ]
@@ -2055,11 +2044,7 @@ $Web::IDL::_Defs = {
                                                                },
                                                                {
                                                                  "type" => "rule",
-                                                                 "value" => "ReadOnly"
-                                                               },
-                                                               {
-                                                                 "type" => "rule",
-                                                                 "value" => "AttributeRest"
+                                                                 "value" => "_RWAttributeRest"
                                                                }
                                                              ],
                                                              [
@@ -3107,6 +3092,27 @@ $Web::IDL::_Defs = {
                                                                           ]
                                                                         ]
                                                           },
+                       "_RWAttributeRest" => {
+                                             "patterns" => [
+                                                           [
+                                                             {
+                                                               "set_type" => "member_type",
+                                                               "type" => "attribute"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "TypeWithExtendedAttributes"
+                                                             },
+                                                             {
+                                                               "type" => "rule",
+                                                               "value" => "AttributeName"
+                                                             },
+                                                             {
+                                                               "type" => ";"
+                                                             }
+                                                           ]
+                                                         ]
+                                           },
                        "_ReadOnlyAttributeRest" => {
                                                    "patterns" => [
                                                                  [
