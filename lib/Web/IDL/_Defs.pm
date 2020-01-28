@@ -621,10 +621,6 @@ $Web::IDL::_Defs = {
                                       "patterns" => [
                                                       [
                                                         {
-                                                          "type" => "rule",
-                                                          "value" => "_IDInSpecDirective"
-                                                        },
-                                                        {
                                                           "set_type" => "member_type",
                                                           "type" => "const"
                                                         },
@@ -690,6 +686,10 @@ $Web::IDL::_Defs = {
                          "Constructor" => {
                                             "patterns" => [
                                                             [
+                                                              {
+                                                                "type" => "rule",
+                                                                "value" => "_IDInSpecDirective"
+                                                              },
                                                               {
                                                                 "set_type" => "member_type",
                                                                 "type" => "constructor"
