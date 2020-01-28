@@ -461,6 +461,7 @@ Special Specials
 
 * Constructor
 
+_IDInSpecDirective
 'constructor'="member_type" '(' ArgumentList ')' ';'
 
 * OperationRest
