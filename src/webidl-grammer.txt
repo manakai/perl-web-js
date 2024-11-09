@@ -598,6 +598,8 @@ ExtendedAttributeIdentList
 ExtendedAttributeNoArgs
 |
 ExtendedAttributeIdent
+|
+ExtendedAttributeWildcard
 
 * ExtendedAttributeRest
 
@@ -863,6 +865,13 @@ _IDInSpecDirective
 identifier="name" '='
 _IDInSpecDirective
 identifier="value_names"[]!'='!'('
+
+* ExtendedAttributeWildcard
+
+_IDInSpecDirective
+identifier="name" '='
+_IDInSpecDirective
+other:'*'="value_names"[]
 
 * ExtendedAttributeIdentList
 

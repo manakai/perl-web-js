@@ -1156,6 +1156,12 @@ $Web::IDL::_Defs = {
                                                                       "type" => "rule",
                                                                       "value" => "ExtendedAttributeIdent"
                                                                     }
+                                                                  ],
+                                                                  [
+                                                                    {
+                                                                      "type" => "rule",
+                                                                      "value" => "ExtendedAttributeWildcard"
+                                                                    }
                                                                   ]
                                                                 ],
                                                   "set_index" => 1
@@ -1382,6 +1388,32 @@ $Web::IDL::_Defs = {
                                                                       ]
                                                                     ]
                                                     },
+                         "ExtendedAttributeWildcard" => {
+                                                          "patterns" => [
+                                                                          [
+                                                                            {
+                                                                              "type" => "rule",
+                                                                              "value" => "_IDInSpecDirective"
+                                                                            },
+                                                                            {
+                                                                              "set_value" => "name",
+                                                                              "type" => "identifier"
+                                                                            },
+                                                                            {
+                                                                              "type" => "="
+                                                                            },
+                                                                            {
+                                                                              "type" => "rule",
+                                                                              "value" => "_IDInSpecDirective"
+                                                                            },
+                                                                            {
+                                                                              "append_value" => "value_names",
+                                                                              "type" => "other",
+                                                                              "value" => "*"
+                                                                            }
+                                                                          ]
+                                                                        ]
+                                                        },
                          "ExtendedAttributes" => {
                                                    "can_be_empty" => 1,
                                                    "patterns" => [
