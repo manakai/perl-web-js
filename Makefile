@@ -1,3 +1,5 @@
+CURL = curl
+
 all: build
 
 clean: clean-json-ps
@@ -8,6 +10,7 @@ updatenightly: local/bin/pmbp.pl clean all
 	git add t_deps/modules
 	perl local/bin/pmbp.pl --update
 	git add config lib/
+	$(CURL) -sSLf https://raw.githubusercontent.com/wakaba/ciconfig/master/ciconfig | RUN_GIT=1 REMOVE_UNUSED=1 perl
 
 ## ------ Setup ------
 
