@@ -2,7 +2,6 @@ Algorithm::Diff~1.201
 AnyEvent~7.17
 Capture::Tiny~0.50
 Carp~1.50
-Date::Parse~2.33
 JE~0.066
 Path::Class~0.37
 Path::Tiny~0.150
@@ -12,3 +11,4 @@ Term::Table~0.024
 Test::Differences~0.72
 Test::More~1.302214
 Text::Diff~1.45
+Time::Zone~2.24
